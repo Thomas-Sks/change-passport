@@ -2,7 +2,6 @@
 """Run the whole Change Passport pipeline on one agent change, live, end to end.
 
   python3 pipeline.py --req REQ-2283            # console
-  POST /pipeline/REQ-2283 on server.py          # same run, progress shown in demo.html
 
 Steps (each one logged to out/live/<REQ>/status.json so a page can follow it):
   1 Sort     policy zones, orphan code, provisional lane         (deterministic, no evidence yet)

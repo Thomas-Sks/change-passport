@@ -101,9 +101,9 @@ textarea,input[type=text],select{font:inherit;width:100%;box-sizing:border-box;p
 <script>
 const P={"id": "REQ-2297", "fp": "780ee6688887bd9c", "lane": "RED"};
 const REPLAYS=[];
-const SERVED=location.protocol.startsWith('http');
+const SERVED=false;  // no server: proofs are replayed from the command line
 async function openReplay(id){const p=document.getElementById('rp-'+id);p.classList.toggle('hidden');const ta=document.getElementById('sc-'+id);
- if(!SERVED){document.getElementById('st-'+id).textContent='Page opened as a file: run “python3 factory/server.py” then open http://127.0.0.1:8765/ — or “python3 factory/replay.py '+id+' --req '+P.id+'”.';return}
+ if(!SERVED){document.getElementById('st-'+id).textContent='Replay this proof on base and branch: python3 factory/replay.py '+id+' --req '+P.id;return}
  if(!ta.value){try{const r=await fetch('/scenario/'+P.id+'/'+id);const j=await r.json();ta.value=j.text||''}catch(e){ta.value=''}}}
 async function runReplay(id){const st=document.getElementById('st-'+id),out=document.getElementById('res-'+id);st.textContent='Running in the sandbox on base and branch…';out.innerHTML='';
  try{const r=await fetch('/replay/'+P.id+'/'+id,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({scenario:document.getElementById('sc-'+id).value})});const j=await r.json();

@@ -18,11 +18,10 @@
 | `seed_bugs.py` | Test bench: 8 bugs injected on local branches |
 | `repro-REQ-*.yaml`, `sandbox.yaml`, `scenarios/` | How to replay each piece of evidence (editable scenarios) and where the isolated worktrees are |
 | `replay.py` | Replays one piece of evidence on base and branch, side by side |
-| `server.py` | Local server (127.0.0.1): passport page + “Replay” button |
 | `mutate.py` | “Revert one hunk” mutation testing on the diff's code |
 | `catching.py` | Catching tests generated from the criteria, run on base/branch |
 | `pipeline.py` | **Live end-to-end chain** on one change: sort → prove (replays) → evidence → blind AI review (`claude -p`, read-only) → verification against proofs → passport. Status in `out/live/<REQ>/status.json` |
-| `build_demo.py`, `demo/demo.template.html` | Builds `out/demo.html`, the jury demo page (all passports, recorded replays and measurements embedded); `--record REQ:ID …` re-records replay fallbacks |
+| `build_demo.py`, `demo/flow.html` | Builds the static demo site: `../public/index.html` (site root, deployable as is) — the technical pipeline walkthrough, Mermaid vendored in `demo/vendor/` |
 | `pr_flow.py` | Puts the passport in a real pull request: posts it as a PR comment, sets `passport/lane` and `passport/owner-signature` commit statuses, and signs (bound to the commit, refused for the wrong signer, a stale commit, unanswered refusals, or a red change accepted without `--full-read`) |
 | `out/` | JSON/HTML passports for the 4 branches, live run of REQ-2283 (`*.live.*`, `live/`), recorded replays, signed attestations (`attestation-REQ-2297.json` from the owner page, `signatures/` from the PR flow), seeded-bug, mutation and catching results |
 
@@ -35,14 +34,12 @@ python3 passport.py --repo ../upstream-repo --req requirements/REQ-2297.yaml \
 python3 render.py out/REQ-2297.passport.json        # → out/REQ-2297.html
 python3 seed_bugs.py --worktree <2297 worktree> --out out
 python3 replay.py E3                                 # base / branch replay on the command line
-python3 server.py   # then http://127.0.0.1:8765/REQ-2297.html → “Replay” button
 python3 mutate.py --req requirements/REQ-2297.yaml --agent-filter "FullyQualifiedName~CodeCoverageExclusionTests" --out out
 python3 catching.py --req requirements/REQ-2297.yaml --out out
 
 # live chain and demo page
 python3 pipeline.py --req REQ-2283 [--skip-review]     # → out/REQ-2283.live.html
-python3 build_demo.py                                  # → out/demo.html
-python3 server.py 8765                                 # http://127.0.0.1:8765/ : live replays (POST /replay/REQ/ID) and live pipeline (POST /pipeline/REQ)
+python3 build_demo.py                                  # → ../public/index.html (static demo site)
 
 # pull-request flow (gh CLI, one private repository)
 python3 pr_flow.py publish --repo OWNER/NAME REQ-2297
