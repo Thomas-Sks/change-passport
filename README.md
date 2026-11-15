@@ -53,6 +53,7 @@ flowchart LR
 | [`public/`](public/) | **The demo site**: a technical walkthrough of the pipeline, step by step (Mermaid diagrams, stack, rationale, result). Static, works offline; deployable as is (`vercel.json`). |
 | [`factory/`](factory/) | **The reference implementation** (Python) that produced every number above. See [`factory/README.md`](factory/README.md). |
 | [`notes/`](notes/) | Working notes: research report, analyses, measurements, early concept drafts. |
+| [Pull request #1](../../pull/1) | **The concept in a real PR flow**: the agent's REQ-2297 branch (`ju26-issue-2297`) against its base (`sample/base`), with the passport posted as a comment, a `passport/lane` status, and a `passport/owner-signature` status that stayed pending until the named owner signed (here: sent back, bound to commit `a0aa5ab2`). These two branches hold the sample code only; the project is on `main`. |
 
 ## Run it
 

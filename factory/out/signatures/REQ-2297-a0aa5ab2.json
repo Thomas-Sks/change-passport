@@ -2,7 +2,7 @@
  "passport": "REQ-2297",
  "fingerprint": "780ee6688887bd9c",
  "commit": "a0aa5ab2de7f5a669d97e37184a89034c1de82b6",
- "pr": "https://github.com/Thomas-Sks/change-passport-demo/pull/4",
+ "pr": "https://github.com/Thomas-Sks/change-passport/pull/1",
  "lane": "RED",
  "decision": "send-back",
  "full_read": false,
@@ -156,6 +156,6 @@
  ],
  "residual_risk": "None accepted: change sent back (CS0579 break E3, netstandard gap E5)",
  "signed_by": "Camille Durand (synthetic)",
- "date": "2026-11-15T03:41:27+00:00",
- "digest": "43cab90d7d3f5994"
+ "date": "2026-11-15T07:27:24+00:00",
+ "digest": "058aadb97b2ec1ae"
 }
