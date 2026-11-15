@@ -181,7 +181,7 @@ const S = [
 
 { key:"E2E", t:"Sandbox · end-to-end", title:"Run it as a user would, before and after",
   what:"A real consumer project, written from the criteria, is built against the base and the head, three times each, then inspected. The difference between base and head is the signal.",
-  stack:["dotnet build (net8.0 + netstandard2.0)","System.Reflection inspection","xUnit acceptance tests","replay.py (one-click replay)"],
+  stack:["dotnet build (net8.0 + netstandard2.0)","System.Reflection inspection","xUnit acceptance tests","replay.py (one-command replay)"],
   why:["Reading shows what code says; running shows what it does","The agent's own tests are not independent evidence","3 runs per side: unstable results never count"],
   res:[["agent tests","fail → pass (weak: agent-written)"],["existing user project","builds → compile error","bad"],["older target","feature missing","bad"],["criteria","AC-2, AC-3 contradicted","bad"]],
   effect:"Two criteria contradicted by execution → lane forced to RED.",

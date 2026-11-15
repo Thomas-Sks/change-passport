@@ -17,7 +17,7 @@
 
 ## Step 3 in detail — the evidence factory
 
-Everything in this box runs in a **disposable sandbox** (no secrets, no outbound network), on the **base** and on the **branch**, **3 times each**. Every result can be **replayed in one click** by the owner.
+Everything in this box runs in a **disposable sandbox** (no secrets, no outbound network), on the **base** and on the **branch**, **3 times each**. Every result can be **replayed with one command** by the owner.
 
 ![What runs in the sandbox](diagrams/evidence.png)
 

@@ -9,7 +9,7 @@
 
 Agents now write code faster than humans can read it. Reading every line no longer scales, and letting an AI approve removes accountability.
 
-We propose a different object of review: the **Change Passport**. Every agent-written change travels with a passport that says **what was asked**, **what the agent claims it did**, **the proof for each claim** — obtained by *running* the code before and after the change, not by asking an AI's opinion — **what the AI refused to decide**, and **how much a human must read**. A **named owner** reads only what the risk requires, can **replay any proof in one click**, and **signs** what was checked and what was not.
+We propose a different object of review: the **Change Passport**. Every agent-written change travels with a passport that says **what was asked**, **what the agent claims it did**, **the proof for each claim** — obtained by *running* the code before and after the change, not by asking an AI's opinion — **what the AI refused to decide**, and **how much a human must read**. A **named owner** reads only what the risk requires, can **replay any proof with one command**, and **signs** what was checked and what was not.
 
 > **The AI reviews. The proofs decide what is true. A human decides and stays accountable.**
 
@@ -56,7 +56,7 @@ So the design keeps three things separate: **the requirement** (human), **the ev
 | Says what was **not** checked | ✗ | ✗ | ✗ | ✗ | ✓ |
 | AI refusals made visible | — | ✗ | ✗ | — | ✓ |
 | Named human for **every** change | ✓ | ✓ | ✗ for auto-approved changes | ✓ | ✓ |
-| Proofs replayable by the signer | ✗ | ✗ | ✗ | ✗ | ✓ one click |
+| Proofs replayable by the signer | ✗ | ✗ | ✗ | ✗ | ✓ one command |
 | Trust measured and earned per zone | ✗ | ✗ | partly | ✗ | ✓ |
 
 **In one sentence:** the others make review faster *or* safer; the passport changes **what is reviewed** — proofs instead of lines — so it can be both, while keeping a named human accountable for every change.

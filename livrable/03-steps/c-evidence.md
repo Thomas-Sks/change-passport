@@ -1,6 +1,6 @@
 # Step 3 — Independent evidence
 
-The core idea: **reading tells you what code says; running it tells you what it does.** Every piece of evidence runs on the **base** (before the change) and the **branch** (after), in a disposable sandbox, and can be **replayed in one click**.
+The core idea: **reading tells you what code says; running it tells you what it does.** Every piece of evidence runs on the **base** (before the change) and the **branch** (after), in a disposable sandbox, and can be **replayed with one command**.
 
 ![What runs in the sandbox](../diagrams/evidence.png)
 
@@ -62,7 +62,7 @@ How every executed scenario is classified (end-to-end runs and catching tests):
 | **Test ↔ criterion link**: each test cites the criterion it covers; a criterion is "supported" only if a linked test passes | A link is not a proof; only a linked, passing execution is (ReqToCode, 2026) |
 | **Environment claims are evidence too**: if the agent asserts something about the platform ("X is not available on target Y"), it must be checked | Agents encode false premises in code, docs and tests at once |
 
-## 3.5 One-click replay
+## 3.5 One-command replay
 
 **What it does.** Every executed evidence can be re-run by the owner on base and branch, side by side; the scenario is editable to explore; each replay is recorded in the attestation.
 

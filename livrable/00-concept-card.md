@@ -27,7 +27,7 @@ Don't ask reviewers to read agent code faster: **change what they review.** Ever
 |---|---|
 | **Risk** | Explainable rules route attention: green 1–2 min, orange reads a listed part, red goes back to the agent |
 | **Hallucination** | Every AI finding must quote code and is checked against proofs: *confirmed*, *rejected*, or *opinion — proofs disagree* |
-| **Transparency** | The passport says what was **not** checked and why; every proof replays in one click |
+| **Transparency** | The passport says what was **not** checked and why; every proof replays with one command |
 | **Confidence** | No model-stated confidence is used. Evidence sets severity |
 | **Quality** | Mutation testing measures the agent's tests; catching tests come from the criteria, not from the agent |
 

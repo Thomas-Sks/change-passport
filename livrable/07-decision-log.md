@@ -14,7 +14,7 @@
 | D10 | Policy zones restricted after a false red (doc of an existing diagnostic treated as a new public identifier) | The policy is itself a reviewed, versioned artifact | Keep broad rules |
 | D11 | Derived files read through their source | Avoid reading the same logic twice | Read everything |
 | D12 | Exclusions from any rule must be **listed and justified** | Otherwise permanent false positives or silent gaps | Ignore silently |
-| D13 | **One-click replay** of every executed evidence, base vs branch, editable scenario, logged in the attestation | Trust comes from evidence a person can check themselves | Frozen evidence to believe |
+| D13 | **One-command replay** of every executed evidence, base vs branch, editable scenario, logged in the attestation | Trust comes from evidence a person can check themselves | Frozen evidence to believe |
 | D14 | **Diff-scoped mutation testing** | Measures test strength instead of assuming it | Line coverage |
 | D15 | **Catching tests** from the criteria, base vs branch, never committed; fail-both goes to a human | Meta JiTTests; fail-both may mean an unmet criterion | Discard everything that does not diverge |
 | D16 | **End-to-end evidence in a sandbox** for backend, frontend and libraries | Reading tells what code says, running tells what it does (OpenAI Codex, Minitap, Greptile, Devin) | Agent unit tests only |
