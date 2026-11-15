@@ -1,0 +1,16 @@
+# Per-zone trust registry (updated by the measurement loop).
+# levels: new | trusted | suspended
+# Earn: >= 20 signed changes over 60 days, 0 reverts/incidents, counter-review agreement >= 90%.
+# Lose: 1 revert or incident linked to a passport in the zone -> suspended.
+zones:
+  snapshots:          { level: trusted, signed_60d: 0, escapes_60d: 0, note: "deterministic mechanical rule; trust carried by the rule, not by the history" }
+  docs:               { level: trusted, signed_60d: 0, escapes_60d: 0 }
+  tests:              { level: new,     signed_60d: 0, escapes_60d: 0 }
+  compiled-templates: { level: new,     signed_60d: 0, escapes_60d: 0 }
+  generator-output:   { level: new,     signed_60d: 0, escapes_60d: 0 }
+  generator-analysis: { level: new,     signed_60d: 0, escapes_60d: 0 }
+  public-api:         { level: new,     signed_60d: 0, escapes_60d: 0 }
+  diagnostics:        { level: new,     signed_60d: 0, escapes_60d: 0 }
+  build-ci-agents:    { level: new,     signed_60d: 0, escapes_60d: 0 }
+  runtime:            { level: new,     signed_60d: 0, escapes_60d: 0 }
+  other:              { level: new,     signed_60d: 0, escapes_60d: 0 }

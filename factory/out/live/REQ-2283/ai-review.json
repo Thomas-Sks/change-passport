@@ -1,0 +1,106 @@
+{
+ "reviewer": "claude -p --model sonnet",
+ "mode": "read-only, diff + requirement only, no execution, blind to the proofs",
+ "reviewed_at": "2026-11-15T03:29:22",
+ "findings": [
+  {
+   "id": "F1",
+   "lens": "correctness",
+   "severity": "high",
+   "title": "Diagnostics are filtered by a wrapper, but the crash fix itself is not shown; the metadata-declared struct path (e.g. DeclaringSyntaxReferences[0] elsewhere) may still throw",
+   "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+   "line": 985,
+   "quote": "GetPropertyIdentifierLocation(item)",
+   "affects": [
+    "AC-1",
+    "AC-2"
+   ],
+   "confidence": 0.35
+  },
+  {
+   "id": "F2",
+   "lens": "correctness",
+   "severity": "medium",
+   "title": "Diagnostic.Create with a null location passes the filter check only via the wrapper. Diagnostics for metadata members are silently dropped, including ones the consuming project may legitimately want (e.g. the type is unusable). This hides real problems for referenced types.",
+   "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+   "line": 1429,
+   "quote": "if (diagnostic.Location.IsInSource && this.compilation.ContainsSyntaxTree(diagnostic.Location.SourceTree))",
+   "affects": [
+    "C2",
+    "AC-4"
+   ],
+   "confidence": 0.45
+  },
+  {
+   "id": "F3",
+   "lens": "test quality",
+   "severity": "high",
+   "title": "No test performs a runtime serialize/deserialize round trip, so AC-3 is not covered",
+   "file": "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs",
+   "line": 499,
+   "quote": "await RunWithMetadataReferenceAsync(defineSource, usageSource, \"TempProject.MyResolver.g.cs\");",
+   "affects": [
+    "AC-3"
+   ],
+   "confidence": 0.8
+  },
+  {
+   "id": "F4",
+   "lens": "test quality",
+   "severity": "medium",
+   "title": "Resolver check only asserts the resolver file hint name exists, not that it contains a formatter for the generic struct (AC-2). The main test also skips generated-source comparison.",
+   "file": "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs",
+   "line": 640,
+   "quote": "Assert.Contains(expectedResolverHintName, hintNames);",
+   "affects": [
+    "AC-2",
+    "C4"
+   ],
+   "confidence": 0.7
+  },
+  {
+   "id": "F5",
+   "lens": "test quality",
+   "severity": "medium",
+   "title": "Tests only pass LanguageVersion.CSharp7_3 for the plain struct case, and the unkeyed-member test expects zero diagnostics, which encodes the silent-drop behaviour as correct; it does not verify the analyzer is never invoked on metadata types for the other crash site (AD0001).",
+   "file": "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs",
+   "line": 578,
+   "quote": "await RunWithMetadataReferenceAsync(defineSource, usageSource, \"TempProject.MyResolver.g.cs\");",
+   "affects": [
+    "AC-1",
+    "C4"
+   ],
+   "confidence": 0.4
+  },
+  {
+   "id": "F6",
+   "lens": "correctness",
+   "severity": "low",
+   "title": "README states closed generic types from referenced assemblies work, but the defining type is only checked for diagnostics, not that the defining assembly's [MessagePackObject] attribute is honored at runtime",
+   "file": "README.md",
+   "line": 1641,
+   "quote": "Closed generic types defined in a referenced assembly (for example, `Item<int>` where `Item<T>` is defined in another project or NuGet package) can be used as members of your `[MessagePackObject]` types, including generic value types and record structs.",
+   "affects": [
+    "C1",
+    "C3"
+   ],
+   "confidence": 0.3
+  }
+ ],
+ "refusals": [
+  {
+   "id": "AI-R1",
+   "question": "Is it acceptable that diagnostics about members of referenced-assembly types are silently dropped in the consuming project rather than surfaced there?",
+   "why_refused": "This is a user-visible behaviour decision about which diagnostics users see. It is not something I can settle by reading the code.",
+   "decider": "maintainer",
+   "kind": "user-visible-behaviour"
+  },
+  {
+   "id": "AI-R2",
+   "question": "Does the claim that diagnostics are reported by the defining assembly hold for all consumers, for example when the referenced assembly was built without the analyzer?",
+   "why_refused": "I can't check by reading whether the defining assembly ran the analyzer. The claim depends on build setups outside this diff.",
+   "decider": "maintainer",
+   "kind": "unproven-claim"
+  }
+ ]
+}

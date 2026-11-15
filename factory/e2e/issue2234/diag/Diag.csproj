@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- REQ-2234 / E1: a consumer whose [MessagePackObject(SuppressSourceGeneration = true)] types break the contract.
+       The analyzer must still report MsgPack00x diagnostics for them. Severities are lowered to warnings in
+       .editorconfig so that the build completes on both sides and every diagnostic is listed. -->
+  <PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net8.0</TargetFramework><Nullable>disable</Nullable><LangVersion>latest</LangVersion></PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Net.Compilers.Toolset" Version="4.12.0" PrivateAssets="all" />
+    <ProjectReference Include="$(MessagePackRepo)/src/MessagePack/MessagePack.csproj" />
+    <ProjectReference Include="$(MessagePackRepo)/src/MessagePack.SourceGenerator/MessagePack.SourceGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+  </ItemGroup>
+</Project>

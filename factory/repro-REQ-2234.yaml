@@ -1,0 +1,26 @@
+# How to replay each piece of evidence for REQ-2234, on base AND branch, in isolated worktrees.
+base: 32258fdb
+head: origin/ju26-issue-2234
+
+evidence:
+  E1:
+    title: "Does the analyzer still report its diagnostics on [MessagePackObject(SuppressSourceGeneration = true)] types?"
+    kind: e2e-project
+    template: e2e/issue2234
+    build: diag/Diag.csproj
+    run: diag/Diag.csproj
+    warn_regex: "(\\w+\\.cs\\(\\d+,\\d+\\)|CSC ): (warning|error) (MsgPack\\d+|AD0001|CS8785)"
+    scenario: {file: scenarios/E2E-2234-Diagnostics.cs, dest: diag/Program.cs}
+  E2:
+    title: "With SuppressSourceGeneration = true, is no formatter generated (while a normal type still gets one)?"
+    kind: e2e-project
+    template: e2e/issue2234
+    build: app/App.csproj
+    run: app/App.csproj
+    warn_regex: "(\\w+\\.cs\\(\\d+,\\d+\\)|CSC ): (warning|error) (MsgPack\\d+|AD0001|CS8785)"
+    scenario: {file: scenarios/E2E-2234-Program.cs, dest: app/Program.cs}
+  E3:
+    title: "The agent's analyzer tests (SuppressSourceGenerationAnalyzerTests): do they fail before and pass after?"
+    kind: dotnet-test
+    scenario: {file: scenarios/SuppressSourceGenerationAnalyzerTests.cs, dest: tests/MessagePack.SourceGenerator.Tests/SuppressSourceGenerationAnalyzerTests.cs}
+    filter: "FullyQualifiedName~SuppressSourceGenerationAnalyzerTests"

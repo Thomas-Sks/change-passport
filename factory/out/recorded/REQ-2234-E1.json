@@ -1,0 +1,55 @@
+{
+ "evidence": "E1",
+ "title": "Does the analyzer still report its diagnostics on [MessagePackObject(SuppressSourceGeneration = true)] types?",
+ "kind": "e2e-project",
+ "scenario_file": "scenarios/E2E-2234-Diagnostics.cs",
+ "scenario_modified": false,
+ "base_ref": "32258fdb",
+ "head_ref": "origin/ju26-issue-2234",
+ "base": {
+  "status": "ran with warnings",
+  "runs": [
+   "ran with warnings",
+   "ran with warnings",
+   "ran with warnings"
+  ],
+  "lines": [
+   "warnings: 9",
+   "  CSC : warning AD0001: Analyzer 'MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer' threw an exception of type 'System.ArgumentException' with message 'An item with the same key has a",
+   "  CSC : warning AD0001: Analyzer 'MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer' threw an exception of type 'System.InvalidOperationException' with message 'Nullable object must ha",
+   "  CSC : warning CS8785: Generator 'MessagePackGenerator' failed to generate source. It will not contribute to the output and compilation errors may occur as a result. Exception was of type 'ArgumentExce",
+   "  Program.cs(15,19): warning MsgPack004: Properties and fields of MessagePackObject-attributed types require either KeyAttribute or IgnoreMemberAttribute: global::Diag.MissingKey.NoKey (https://github.c",
+   "  Program.cs(23,5): warning MsgPack005: All KeyAttribute arguments must be unique (https://github.com/MessagePack-CSharp/MessagePack-CSharp/blob/master/doc/analyzers/MsgPack005.md)",
+   "  Program.cs(31,5): warning MsgPack005: All KeyAttribute arguments must be of the same type (either string or int) (https://github.com/MessagePack-CSharp/MessagePack-CSharp/blob/master/doc/analyzers/Msg",
+   "  Program.cs(39,5): warning MsgPack005: All KeyAttribute arguments must be unique (https://github.com/MessagePack-CSharp/MessagePack-CSharp/blob/master/doc/analyzers/MsgPack005.md)",
+   "  Program.cs(48,5): warning MsgPack005: All KeyAttribute arguments must be of the same type (either string or int) (https://github.com/MessagePack-CSharp/MessagePack-CSharp/blob/master/doc/analyzers/Msg",
+   "  Program.cs(58,37): warning MsgPack003: Type must be marked with MessagePackObjectAttribute: BadMemberType.Member (https://github.com/MessagePack-CSharp/MessagePack-CSharp/blob/master/doc/analyzers/Msg",
+   "compiled; see the analyzer diagnostics listed above"
+  ],
+  "seconds": 13
+ },
+ "branch": {
+  "status": "ran with warnings",
+  "runs": [
+   "ran with warnings",
+   "ran with warnings",
+   "ran with warnings"
+  ],
+  "lines": [
+   "warnings: 8",
+   "  Program.cs(15,19): warning MsgPack004: Properties and fields of MessagePackObject-attributed types require either KeyAttribute or IgnoreMemberAttribute: global::Diag.MissingKey.NoKey (https://github.c",
+   "  Program.cs(23,5): warning MsgPack005: All KeyAttribute arguments must be unique (https://github.com/MessagePack-CSharp/MessagePack-CSharp/blob/master/doc/analyzers/MsgPack005.md)",
+   "  Program.cs(31,5): warning MsgPack005: All KeyAttribute arguments must be of the same type (either string or int) (https://github.com/MessagePack-CSharp/MessagePack-CSharp/blob/master/doc/analyzers/Msg",
+   "  Program.cs(39,5): warning MsgPack005: All KeyAttribute arguments must be unique (https://github.com/MessagePack-CSharp/MessagePack-CSharp/blob/master/doc/analyzers/MsgPack005.md)",
+   "  Program.cs(40,16): warning MsgPack004: Properties and fields of MessagePackObject-attributed types require either KeyAttribute or IgnoreMemberAttribute: global::Diag.DuplicateThenMissingKey.C (https:/",
+   "  Program.cs(48,5): warning MsgPack005: All KeyAttribute arguments must be of the same type (either string or int) (https://github.com/MessagePack-CSharp/MessagePack-CSharp/blob/master/doc/analyzers/Msg",
+   "  Program.cs(49,16): warning MsgPack004: Properties and fields of MessagePackObject-attributed types require either KeyAttribute or IgnoreMemberAttribute: global::Diag.MixedThenMissingKey.C (https://git",
+   "  Program.cs(58,37): warning MsgPack003: Type must be marked with MessagePackObjectAttribute: BadMemberType.Member (https://github.com/MessagePack-CSharp/MessagePack-CSharp/blob/master/doc/analyzers/Msg",
+   "compiled; see the analyzer diagnostics listed above"
+  ],
+  "seconds": 14
+ },
+ "verdict": "different behaviour",
+ "repeat": 3,
+ "replayed_at": "2026-11-15T02:35:31"
+}

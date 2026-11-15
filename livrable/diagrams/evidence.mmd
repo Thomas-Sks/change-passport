@@ -1,0 +1,11 @@
+flowchart LR
+  IN["Locked<br/>criteria"] --> BOX
+  subgraph BOX["SANDBOX — each test runs BEFORE and AFTER the change, 3 times"]
+    E["End-to-end<br/>run the real product"]
+    C["Catching tests<br/>from the criteria"]
+    M["Mutation testing<br/>are changes checked?"]
+    G["Regenerate<br/>generated files"]
+  end
+  BOX --> OUT["Proofs in the passport<br/>replayable in one click"]
+  classDef box fill:#e3ecfa,stroke:#1f5fbf,color:#172033
+  class E,C,M,G box

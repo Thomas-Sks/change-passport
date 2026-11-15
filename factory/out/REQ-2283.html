@@ -1,0 +1,95 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Passport REQ-2283</title><style>
+:root{--bg:#fafaf9;--fg:#1c1917;--mut:#6b6560;--card:#fff;--line:#e7e5e4;--red:#c2410c;--orange:#b45309;--green:#15803d;--ok:#dcfce7;--okf:#166534;--bad:#fee2e2;--badf:#991b1b;--warn:#fef3c7;--warnf:#92400e;--code:#f5f5f4}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#161412;--fg:#ece9e6;--mut:#a8a29e;--card:#1f1c1a;--line:#34302c;--code:#2a2623;--ok:#14532d;--okf:#bbf7d0;--bad:#7f1d1d;--badf:#fecaca;--warn:#78350f;--warnf:#fde68a}}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 system-ui,sans-serif} main{max-width:1000px;margin:auto;padding:24px 16px 80px}
+h1{font-size:22px;margin:0 0 4px} h2{font-size:17px;margin:32px 0 8px;border-bottom:1px solid var(--line);padding-bottom:4px} h3{font-size:15px}
+.muted{color:var(--mut);font-size:13px} table{width:100%;border-collapse:collapse;font-size:14px} td,th{text-align:left;padding:6px;border-bottom:1px solid var(--line);vertical-align:top}
+.card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:12px;margin:8px 0} .row{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+pre{background:var(--code);padding:8px;border-radius:6px;overflow-x:auto;font-size:12px;white-space:pre-wrap} code{font-size:12px;word-break:break-all}
+.b{display:inline-block;padding:1px 8px;border-radius:99px;font-size:12px;white-space:nowrap} .ok{background:var(--ok);color:var(--okf)} .bad{background:var(--bad);color:var(--badf)} .warn{background:var(--warn);color:var(--warnf)} .neutral{background:var(--code)}
+.lane{display:inline-block;padding:4px 14px;border-radius:6px;color:#fff;background:var(--orange);font-weight:600}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin:16px 0} .kpi{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px} .kpi b{font-size:22px;display:block}
+li.red{color:var(--red)} .gate{border:2px dashed var(--line);border-radius:8px;padding:12px} .hidden{display:none}
+button{font:inherit;padding:6px 12px;border-radius:6px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer} button.primary{background:var(--fg);color:var(--bg)} .flag{font-size:12px;margin-top:6px}
+.rp{margin-top:6px;font-size:13px} .rpanel{margin-top:8px;border:1px solid var(--line);border-radius:8px;padding:10px;background:var(--bg)}
+textarea.code{font:12px/1.4 ui-monospace,monospace} .cmp{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:8px;margin-top:8px}
+.cmp .side{border:1px solid var(--line);border-radius:6px;padding:8px;min-width:0} .cmp pre{max-height:260px;overflow:auto} .verdict{grid-column:1/-1;font-weight:600}
+textarea,input[type=text],select{font:inherit;width:100%;box-sizing:border-box;padding:6px;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--fg)} select{min-width:150px}
+</style></head><body><main>
+<div class="muted">Change passport · fingerprint 65715c14341ee79a · ju26-issue-2283 32258fdb..9df83c38</div>
+<h1>REQ-2283 — Generator and analyzer crash with IndexOutOfRangeException on a closed generic struct from a referenced assembly</h1>
+<div class="row"><div>Named owner: <b>Camille Durand (synthetic) — CODEOWNER src/MessagePack.SourceGenerator</b><br><span class="muted">Policy guardian: Sam Leroy (synthetic) — tech lead · <a href="https://github.com/MessagePack-CSharp/MessagePack-CSharp/issues/2283">source requirement</a></span></div>
+<div><span class="lane">Orange lane</span></div></div>
+<div class="card"><b>Action:</b> Targeted reading of the reading contract + refusals settled + signature</div>
+<div class="kpis"><div class="kpi"><b>3 / 4</b>files to read</div><div class="kpi"><b>39 / 228</b>lines to read</div>
+<div class="kpi"><b>0</b>files proven by rule</div><div class="kpi"><b>2</b>decisions refused by the AI</div><div class="kpi"><b>0</b>verified AI findings</div></div>
+
+<h2>1 · Before looking at the AI's opinion</h2>
+<div class="gate" id="gate"><p>Answer first, in your own words (orange and red):</p>
+<p>a) Do the acceptance criteria faithfully reflect the source requirement?</p><textarea id="q1" rows="2"></textarea>
+<p>b) Which behaviour must absolutely stay unchanged for users?</p><textarea id="q2" rows="2"></textarea>
+<p><button class="primary" onclick="openPassport()">Show the passport</button> <span class="muted" id="gmsg"></span></p></div>
+
+<div id="body" class="hidden">
+<h2>2 · Requirement: locked criteria and the agent's claims</h2>
+<table><tr><th>Criterion</th><th>Text (locked)</th><th>Status</th><th>Evidence</th><th>Linked tests (result on the branch)</th></tr><tr><td>AC-1</td><td>Neither the generator (CS8785) nor the analyzer (AD0001) crashes when a [MessagePackObject] type has a member whose type is a closed generic value type (struct or record struct) declared in a referenced assembly.</td><td><span class="b ok">supported</span></td><td>E1</td><td><code>E2E-2283-Program</code> <span class="b ok">passes</span></td></tr><tr><td>AC-2</td><td>In that case, the consuming assembly gets a generated resolver that provides a formatter for the type.</td><td><span class="b ok">supported</span></td><td>E1</td><td><code>E2E-2283-Program</code> <span class="b ok">passes</span></td></tr><tr><td>AC-3</td><td>At runtime, such a type round-trips (serialize then deserialize) with the generated resolver.</td><td><span class="b ok">supported</span></td><td>E1</td><td><code>E2E-2283-Program</code> <span class="b ok">passes</span></td></tr><tr><td>AC-4</td><td>Cases that already worked (non-generic struct, generic class, generic struct declared in the same assembly) keep working.</td><td><span class="b ok">supported without a passing linked test</span></td><td>E2</td><td><span class="b warn">no linked test</span></td></tr></table>
+<p class="muted">A criterion is “supported” only if at least one test that cites it (AC-n) passes on the branch, with no assertion weakness.</p>
+<h3>The agent's claims</h3><table><tr><th>ID</th><th>Claim</th><th>Status</th><th>Evidence</th></tr><tr><td>C1</td><td>Closed generic types from a referenced assembly, including generic value types and record structs, can be used as members of [MessagePackObject] types.</td><td><span class="b ok">proven</span></td><td>E1</td></tr><tr><td>C2</td><td>Diagnostics about members of such a type are reported by the defining assembly, not by the consuming project (the analyzer only reports on members declared in the project being compiled).</td><td><span class="b warn">unproven</span></td><td>—</td></tr><tr><td>C3</td><td>Documentation describes the new behaviour.</td><td><span class="b warn">unproven</span></td><td>—</td></tr><tr><td>C4</td><td>Tests cover closed generic structs and record structs from a metadata reference.</td><td><span class="b ok">proven (weak evidence)</span></td><td>E3, TEST-QUALITY</td></tr></table>
+
+<h2>3 · Evidence (independent of the agent)</h2>
+<table><tr><th>ID</th><th>What was checked</th><th>Result</th><th>By</th></tr><tr><td>E1</td><td>Does the issue&#x27;s lib + app project compile without a crash, with a working resolver?<div class="muted">Base: CS8785 + AD0001 (IndexOutOfRangeException), no resolver generated. Branch: no warnings, resolver generated, formatter for Cmd, round-trip OK.</div><div><button class="rp" onclick="openReplay('E1')">▶ Replay base / branch</button></div><div id="rp-E1" class="rpanel hidden"><div class="muted">Scenario (editable):</div><textarea id="sc-E1" rows="10" class="code"></textarea><div class="row"><button class="primary" onclick="runReplay('E1')">Run</button><span id="st-E1" class="muted"></span></div><div id="res-E1" class="cmp"></div></div></td><td><span class="b ok">fail-before</span></td><td>E2E sandbox: the issue&#x27;s reproduction project (lib + app), built and run on base and branch</td></tr><tr><td>E2</td><td>Full MessagePack.SourceGenerator.Tests suite on the branch (regenerates and compares the snapshots)<div class="muted">170 passed / 0 failed</div></td><td><span class="b ok">pass</span></td><td>Isolated CI (dotnet test)</td></tr><tr><td>E3</td><td>Agent&#x27;s tests (…FromMetadataReference) on base 32258fdb<div class="muted">3/3 fail on base, 3/3 pass on the branch</div></td><td><span class="b ok">fail-before</span></td><td>Isolated CI (dotnet test)</td></tr><tr><td>TEST-QUALITY</td><td>Assertion strength and test → criterion links across 20 tests<div class="muted">19 agent test(s) linked to no criterion</div></td><td><span class="b warn">weak</span></td><td>static analysis of the tests (test_quality.py)</td></tr></table>
+<p class="muted">Mechanical rule derived from the requirement: 0 files compliant · 0 flagged.</p>
+
+
+
+<h2>4 · What the AI found (opinion + verification)</h2><p class="muted">No AI review for this change.</p>
+      
+
+<h2>5 · What the AI refused to decide — for you to settle</h2>
+<table><tr><th>ID</th><th>Question</th><th>Severity</th><th>Decider</th><th>Decision</th></tr><tr><td>R1</td><td>Accept claim C2 without evidence: “Diagnostics about members of such a type are reported by the defining assembly, not by the consuming project (the analyzer only reports on members declared in the project being compiled).”<div class="muted">No executed or mechanical evidence · source: rule</div></td>
+        <td><span class="b neutral">minor</span></td><td>named owner</td>
+        <td><select data-ref="R1"><option value="">— to decide —</option><option>Accepted</option><option>Rejected: send back to the agent</option><option>Accepted with condition</option></select></td></tr><tr><td>R2</td><td>Accept claim C3 without evidence: “Documentation describes the new behaviour.”<div class="muted">No executed or mechanical evidence · source: rule</div></td>
+        <td><span class="b neutral">minor</span></td><td>named owner</td>
+        <td><select data-ref="R2"><option value="">— to decide —</option><option>Accepted</option><option>Rejected: send back to the agent</option><option>Accepted with condition</option></select></td></tr></table>
+
+<h2>6 · Why this lane (deterministic verdict engine)</h2><ul><li>sensitive zone generator-analysis touched</li><li>zone generator-analysis not trusted yet (new)</li><li>zone tests not trusted yet (new)</li><li>criterion AC-4 supported without a passing linked test</li><li>claim C2 unproven</li><li>claim C3 unproven</li><li>claim C4 proven (weak evidence)</li><li>refusal R1: Accept claim C2 without evidence: “Diagnostics about members of such a type are reported by the defining assembly, not by the consuming project (the analyzer only reports on members declared in the project being compiled).”</li><li>refusal R2: Accept claim C3 without evidence: “Documentation describes the new behaviour.”</li></ul>
+<details><summary>Partition by the policy</summary><table><tr><th>Zone</th><th>Class</th><th>Files</th><th>Lines</th><th>Trust</th></tr><tr><td>tests</td><td>tests</td><td>1</td><td>189</td><td>new</td></tr><tr><td>generator-analysis</td><td>sensitive</td><td>1</td><td>29</td><td>new</td></tr><tr><td>docs</td><td>ordinary</td><td>2</td><td>10</td><td>trusted</td></tr></table></details>
+
+<h2>7 · Reading contract — 39 lines out of 228</h2>
+<ul style="list-style:none;padding-left:0"><li><label><input type="checkbox" class="rd"> <code>src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs</code> <span class="muted">-1077 +1077 · 2 lines · zone generator-analysis</span></label></li><li><label><input type="checkbox" class="rd"> <code>src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs</code> <span class="muted">-1428,0 +1429,23 · 23 lines · zone generator-analysis</span></label></li><li><label><input type="checkbox" class="rd"> <code>src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs</code> <span class="muted">-239 +239 · 2 lines · zone generator-analysis</span></label></li><li><label><input type="checkbox" class="rd"> <code>src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs</code> <span class="muted">-985 +985 · 2 lines · zone generator-analysis</span></label></li><li><label><input type="checkbox" class="rd"> <code>README.md</code> <span class="muted">-1638,0 +1639,5 · 5 lines · zone docs</span></label></li><li><label><input type="checkbox" class="rd"> <code>doc/analyzers/MsgPack004.md</code> <span class="muted">-47,0 +48,5 · 5 lines · zone docs</span></label></li></ul>
+<p class="muted">Sorted by risk: orphan code and files outside the rule first, then weak tests, then sensitive zones.</p>
+<h3>What does not need reading, and why</h3>
+<table><tr><th>Excluded</th><th>Lines</th><th>Why</th><th>Proof</th></tr><tr><td>1 test file(s)</td><td>189</td><td>summarised by the evidence (execution, assertion strength, links to criteria)</td><td class="muted">TEST-QUALITY + executed evidence</td></tr></table>
+
+<h2>8 · Attestation</h2>
+<h3>Checked — by whom / what</h3><table><tr><td>Does the issue&#x27;s lib + app project compile without a crash, with a working resolver? → fail-before</td><td>E2E sandbox: the issue&#x27;s reproduction project (lib + app), built and run on base and branch</td></tr><tr><td>Full MessagePack.SourceGenerator.Tests suite on the branch (regenerates and compares the snapshots) → pass</td><td>Isolated CI (dotnet test)</td></tr><tr><td>Agent&#x27;s tests (…FromMetadataReference) on base 32258fdb → fail-before</td><td>Isolated CI (dotnet test)</td></tr><tr><td>Assertion strength and test → criterion links across 20 tests → weak</td><td>static analysis of the tests (test_quality.py)</td></tr><tr><td>6 reading-contract hunks (39 lines)</td><td>owner (to tick)</td></tr></table>
+<h3>Not checked — why</h3><table><tr><td>Claim C2: Diagnostics about members of such a type are reported by the defining assembly, not by the consuming project (the analyzer only reports on members declared in the project being compiled).</td><td>no executed or mechanical evidence</td></tr><tr><td>Claim C3: Documentation describes the new behaviour.</td><td>no executed or mechanical evidence</td></tr><tr><td>Criterion AC-4 by a linked test</td><td>supported without a passing linked test</td></tr><tr><td>Analyzer diagnostics that are now filtered (claim C2)</td><td>no scenario has yet checked that a legitimate diagnostic without a location is not suppressed</td></tr><tr><td>Trimmed / NativeAOT applications mentioned in the issue</td><td>no AOT environment in the sandbox</td></tr></table>
+<h3>Residual risk I accept</h3><textarea id="risk" rows="3" placeholder="Write the risk you accept, or “none: change sent back”"></textarea>
+<p><input type="text" id="name" placeholder="Your name (named owner)"></p>
+<button class="primary" onclick="sign()">Sign the passport</button> <span id="smsg" class="muted"></span>
+<pre id="out" class="hidden"></pre>
+</div></main>
+<script>
+const P={"id": "REQ-2283", "fp": "65715c14341ee79a", "lane": "ORANGE"};
+const REPLAYS=[];
+const SERVED=location.protocol.startsWith('http');
+async function openReplay(id){const p=document.getElementById('rp-'+id);p.classList.toggle('hidden');const ta=document.getElementById('sc-'+id);
+ if(!SERVED){document.getElementById('st-'+id).textContent='Page opened as a file: run “python3 factory/server.py” then open http://127.0.0.1:8765/ — or “python3 factory/replay.py '+id+' --req '+P.id+'”.';return}
+ if(!ta.value){try{const r=await fetch('/scenario/'+P.id+'/'+id);const j=await r.json();ta.value=j.text||''}catch(e){ta.value=''}}}
+async function runReplay(id){const st=document.getElementById('st-'+id),out=document.getElementById('res-'+id);st.textContent='Running in the sandbox on base and branch…';out.innerHTML='';
+ try{const r=await fetch('/replay/'+P.id+'/'+id,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({scenario:document.getElementById('sc-'+id).value})});const j=await r.json();
+ if(j.error){st.textContent=j.error;return}
+ REPLAYS.push({evidence:id,verdict:j.verdict,scenario_modified:j.scenario_modified,at:j.replayed_at});
+ const esc=t=>t.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+ const side=(n,s)=>`<div class="side"><b>${n}</b> — ${esc(s.status)} <span class="muted">(${s.seconds} s)</span><pre>${esc(s.lines.join('\n'))}</pre></div>`;
+ out.innerHTML=`<div class="verdict">${esc(j.verdict)}${j.scenario_modified?' — scenario modified':''}</div>`+side('Base '+j.base_ref,j.base)+side('Branch',j.branch);
+ st.textContent='Replayed at '+j.replayed_at+' — recorded in the attestation.'}catch(e){st.textContent='Failed: local server unreachable.'}}
+function openPassport(){if(!q1.value.trim()||!q2.value.trim()){gmsg.textContent='Answer both questions before seeing the AI\'s opinion.';return}gate.classList.add('hidden');body.classList.remove('hidden')}
+function sign(){const d=[...document.querySelectorAll('select[data-ref]')].map(s=>({refusal:s.dataset.ref,decision:s.value}));
+const unread=[...document.querySelectorAll('.rd')].filter(c=>!c.checked).length;
+if(d.some(x=>!x.decision)){smsg.textContent='Decide every refusal.';return} if(unread){smsg.textContent=unread+' reading-contract item(s) not ticked.';return}
+if(!risk.value.trim()||!name.value.trim()){smsg.textContent='Residual risk and name required.';return}
+const a={passport:P.id,fingerprint:P.fp,lane:P.lane,answers:{criteria_reflect_requirement:q1.value,must_not_change:q2.value},decisions:d,replays:REPLAYS,residual_risk:risk.value,signed_by:name.value,date:new Date().toISOString()};
+out.textContent=JSON.stringify(a,null,2);out.classList.remove('hidden');smsg.textContent='Attestation produced.'}
+</script></body></html>

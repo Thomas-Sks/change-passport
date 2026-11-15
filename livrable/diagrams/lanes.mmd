@@ -1,0 +1,11 @@
+flowchart LR
+  Q1{"Proof contradicts a criterion?<br/>Public API? Major refusal?"} -- yes --> R["RED<br/>send back or full read"]
+  Q1 -- no --> Q2{"Sensitive file? Unproven claim?<br/>Orphan code? Zone not trusted?"}
+  Q2 -- yes --> O["ORANGE<br/>read the listed parts"]
+  Q2 -- no --> G["GREEN<br/>quick check"]
+  classDef red fill:#fde7e4,stroke:#b42318,color:#7a1610,font-weight:bold
+  classDef orange fill:#fdf0d9,stroke:#a15c00,color:#6b3d00,font-weight:bold
+  classDef green fill:#e2f4e8,stroke:#17803d,color:#0f5228,font-weight:bold
+  class R red
+  class O orange
+  class G green

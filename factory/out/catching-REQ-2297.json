@@ -1,0 +1,88 @@
+{
+  "requirement": "REQ-2297",
+  "generator": "claude -p --model sonnet",
+  "scenarios": 8,
+  "catches": [
+    {
+      "test": "C5_AC_3_UserResolverAlreadyAnnotated",
+      "criterion": "AC-3",
+      "base": "passes",
+      "branch": "fails",
+      "class": "CATCH",
+      "message_base": null,
+      "message_branch": "[] MessagePack.SourceGenerator/MessagePack.SourceGenerator.MessagePackGenerator/App.MyResolver.g.cs(13,2): error CS0579: Duplicate 'global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage' attribute"
+    }
+  ],
+  "proven": [],
+  "to_review": [
+    {
+      "test": "C1_AC_1_AllEmittedTypesAnnotated_DefaultTarget",
+      "criterion": "AC-1",
+      "base": "fails",
+      "branch": "fails",
+      "class": "FAILS ON BOTH SIDES",
+      "message_base": "[default] types missing [ExcludeFromCodeCoverage]: App.MyResolver, App.MyResolver.FormatterCache<T>, App.MyResolver.MyResolverGetFormatterHelper, App.MyResolver.App, App.MyResolver.App.BoxFormatter<T>, App.MyResolver.App.CatFormatter, App.MyResolver.App.DogFormatter, App.MyResolver.App.NamedFormatte",
+      "message_branch": "[default] types missing [ExcludeFromCodeCoverage]: App.MyResolver.App"
+    },
+    {
+      "test": "C2_AC_1_NestedResolverAndHelperTypesAnnotated",
+      "criterion": "AC-1",
+      "base": "fails",
+      "branch": "fails",
+      "class": "FAILS ON BOTH SIDES",
+      "message_base": "[nested] types missing [ExcludeFromCodeCoverage]: App.Host.InnerResolver, App.Host.InnerResolver.FormatterCache<T>, App.Host.InnerResolver.InnerResolverGetFormatterHelper, App.Host.InnerResolver.App, App.Host.InnerResolver.App.HolderFormatter, App.Host.InnerResolver.App.ItemFormatter",
+      "message_branch": "[nested] types missing [ExcludeFromCodeCoverage]: App.Host.InnerResolver.App"
+    },
+    {
+      "test": "C3_AC_2_AnnotatedOnAllTargetsWhereAttributeExists",
+      "criterion": "AC-2",
+      "base": "fails",
+      "branch": "fails",
+      "class": "FAILS ON BOTH SIDES",
+      "message_base": "[] types missing [ExcludeFromCodeCoverage]: App.MyResolver, App.MyResolver.FormatterCache<T>, App.MyResolver.MyResolverGetFormatterHelper, App.MyResolver.App, App.MyResolver.App.BoxFormatter<T>, App.MyResolver.App.CatFormatter, App.MyResolver.App.DogFormatter, App.MyResolver.App.NamedFormatter, App.",
+      "message_branch": "[] types missing [ExcludeFromCodeCoverage]: App.MyResolver.App"
+    },
+    {
+      "test": "C8_AC_4_SerializationBehaviourUnchanged",
+      "criterion": "AC-4",
+      "base": "fails",
+      "branch": "fails",
+      "class": "FAILS ON BOTH SIDES",
+      "message_base": "Assert.Equal() Failure: Collections differ ↓ (pos 1) Expected: [146, 0, 145, 161, 100] Actual: [146, 210, 0, 0, 0, ···] ↑ (pos 1)",
+      "message_branch": "Assert.Equal() Failure: Collections differ ↓ (pos 1) Expected: [146, 0, 145, 161, 100] Actual: [146, 210, 0, 0, 0, ···] ↑ (pos 1)"
+    }
+  ],
+  "flaky": [],
+  "discarded": [
+    {
+      "test": "C4_AC_2_LegacyTargetsStillCompileWithoutAttributeOnUserTypes",
+      "criterion": "AC-2",
+      "base": "passes",
+      "branch": "passes",
+      "class": "no information",
+      "message_base": null,
+      "message_branch": null
+    },
+    {
+      "test": "C6_AC_3_NestedInGenericConstrainedContainerCompiles",
+      "criterion": "AC-3",
+      "base": "passes",
+      "branch": "passes",
+      "class": "no information",
+      "message_base": null,
+      "message_branch": null
+    },
+    {
+      "test": "C7_AC_3_UserShadowingNamespacesAndLookAlikeAttribute",
+      "criterion": "AC-3",
+      "base": "passes",
+      "branch": "passes",
+      "class": "no information",
+      "message_base": null,
+      "message_branch": null
+    }
+  ],
+  "repeat": 3,
+  "seconds": 16,
+  "scenario_file": "scenarios/CatchingTests.cs"
+}

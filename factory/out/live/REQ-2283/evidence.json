@@ -1,0 +1,96 @@
+{
+ "change": "origin/ju26-issue-2283",
+ "environment": "live pipeline run 2026-11-15T03:33:44",
+ "runs": [
+  {
+   "id": "E1",
+   "type": "executed-e2e",
+   "by": "Live sandbox replay (e2e-project), base vs branch, 3 runs per side",
+   "what": "Does the issue's project (lib + app) compile without a generator crash, with a working resolver?",
+   "result": "fail-before",
+   "detail": "Base: ran with warnings. Branch: ran. warnings: none; AC-2 resolver generated in app: yes; AC-2 formatter for Cmd: yes; AC-3 round-trip: OK",
+   "replayed_at": "2026-11-15T03:31:35",
+   "test_results": [
+    {
+     "test": "E2E-2283-Program",
+     "base": "fails",
+     "branch": "passes",
+     "criteria": [
+      "AC-1",
+      "AC-2",
+      "AC-3",
+      "C1"
+     ]
+    }
+   ],
+   "supports": [
+    "AC-1",
+    "AC-2",
+    "AC-3",
+    "C1"
+   ]
+  },
+  {
+   "id": "E3",
+   "type": "executed",
+   "by": "Live sandbox replay (dotnet-test), base vs branch, 3 runs per side",
+   "what": "The agent's tests for closed generic structs from a metadata reference: do they fail before and pass after?",
+   "result": "fail-before",
+   "detail": "Base: fails. Branch: passes. Passed GenericsFormatterTests.ClosedGenericRecordStruct_FromMetadataReference [1 m 1 s]; Passed GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference_UnkeyedMember; Passed GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference; Total tests: 3",
+   "replayed_at": "2026-11-15T03:33:44",
+   "test_results": [
+    {
+     "test": "ClosedGenericRecordStruct_FromMetadataReference",
+     "base": "fails",
+     "branch": "passes",
+     "criteria": [
+      "C4"
+     ]
+    },
+    {
+     "test": "ClosedGenericStruct_FromMetadataReference_UnkeyedMember",
+     "base": "fails",
+     "branch": "passes",
+     "criteria": [
+      "C4"
+     ]
+    },
+    {
+     "test": "ClosedGenericStruct_FromMetadataReference",
+     "base": "fails",
+     "branch": "passes",
+     "criteria": [
+      "C4"
+     ]
+    }
+   ],
+   "supports": [
+    "C4"
+   ]
+  },
+  {
+   "id": "E2",
+   "type": "executed",
+   "by": "Isolated CI (dotnet test) — reused (recorded run, not replayed live)",
+   "regenerates": [
+    "snapshots"
+   ],
+   "what": "Full MessagePack.SourceGenerator.Tests suite on the branch (regenerates and compares the snapshots)",
+   "result": "pass",
+   "detail": "170 passed / 0 failed",
+   "supports": [
+    "AC-4"
+   ]
+  }
+ ],
+ "not_checked": [
+  {
+   "what": "Analyzer diagnostics that are now filtered (claim C2)",
+   "why": "no scenario has yet checked that a legitimate diagnostic without a location is not suppressed"
+  },
+  {
+   "what": "Trimmed / NativeAOT applications mentioned in the issue",
+   "why": "no AOT environment in the sandbox"
+  }
+ ]
+}

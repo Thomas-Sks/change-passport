@@ -1,0 +1,61 @@
+{
+ "evidence": "E3",
+ "title": "The agent's analyzer tests (SuppressSourceGenerationAnalyzerTests): do they fail before and pass after?",
+ "kind": "dotnet-test",
+ "scenario_file": "scenarios/SuppressSourceGenerationAnalyzerTests.cs",
+ "scenario_modified": false,
+ "base_ref": "32258fdb",
+ "head_ref": "origin/ju26-issue-2234",
+ "base": {
+  "status": "fails",
+  "runs": [
+   "fails",
+   "fails",
+   "fails"
+  ],
+  "lines": [
+   "/tmp/claude-1000/-home-weaver-Documents-30-hackathons-junction26-ai-code-review/0eea537c-1f04-4448-b28b-60af5434becb/scratchpad/wt-base/tests/MessagePack.SourceGenerator.Tests/SuppressSourceGenerationAnalyzerTests.cs(117",
+   "/tmp/claude-1000/-home-weaver-Documents-30-hackathons-junction26-ai-code-review/0eea537c-1f04-4448-b28b-60af5434becb/scratchpad/wt-base/tests/MessagePack.SourceGenerator.Tests/SuppressSourceGenerationAnalyzerTests.cs(139",
+   "/tmp/claude-1000/-home-weaver-Documents-30-hackathons-junction26-ai-code-review/0eea537c-1f04-4448-b28b-60af5434becb/scratchpad/wt-base/tests/MessagePack.SourceGenerator.Tests/SuppressSourceGenerationAnalyzerTests.cs(95,",
+   "/tmp/claude-1000/-home-weaver-Documents-30-hackathons-junction26-ai-code-review/0eea537c-1f04-4448-b28b-60af5434becb/scratchpad/wt-base/tests/MessagePack.SourceGenerator.Tests/SuppressSourceGenerationAnalyzerTests.cs(161",
+   "Passed SuppressSourceGenerationAnalyzerTests.SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed",
+   "Passed SuppressSourceGenerationAnalyzerTests.MemberTypeMustBeMessagePackObjectIsReported",
+   "Failed SuppressSourceGenerationAnalyzerTests.DuplicateStringKeysAreReportedWithoutAnalyzerFailure",
+   "at SuppressSourceGenerationAnalyzerTests.DuplicateStringKeysAreReportedWithoutAnalyzerFailure() in /tmp/claude-1000/-home-weaver-Documents-30-hackathons-junction26-ai-code-review/0eea537c-1f04-4448-b28b-60af5434becb/scra",
+   "Failed SuppressSourceGenerationAnalyzerTests.MixedKeyKindsAreReportedWithoutAnalyzerFailure",
+   "at SuppressSourceGenerationAnalyzerTests.MixedKeyKindsAreReportedWithoutAnalyzerFailure() in /tmp/claude-1000/-home-weaver-Documents-30-hackathons-junction26-ai-code-review/0eea537c-1f04-4448-b28b-60af5434becb/scratchpad",
+   "Passed SuppressSourceGenerationAnalyzerTests.MemberWithoutKeyIsReported",
+   "Failed SuppressSourceGenerationAnalyzerTests.DuplicateIntKeysAreReportedWithoutAnalyzerFailure",
+   "at SuppressSourceGenerationAnalyzerTests.DuplicateIntKeysAreReportedWithoutAnalyzerFailure() in /tmp/claude-1000/-home-weaver-Documents-30-hackathons-junction26-ai-code-review/0eea537c-1f04-4448-b28b-60af5434becb/scratch",
+   "Passed SuppressSourceGenerationAnalyzerTests.AllowPrivateRequiredIsReported",
+   "Failed SuppressSourceGenerationAnalyzerTests.DuplicateKeysAreReportedWithoutAnalyzerFailureForGeneratedTypes",
+   "at SuppressSourceGenerationAnalyzerTests.DuplicateKeysAreReportedWithoutAnalyzerFailureForGeneratedTypes() in /tmp/claude-1000/-home-weaver-Documents-30-hackathons-junction26-ai-code-review/0eea537c-1f04-4448-b28b-60af54",
+   "Total tests: 8",
+   "SuppressSourceGenerationAnalyzerTests.DuplicateStringKeysAreReportedWithoutAnalyzerFailure [FAIL]"
+  ],
+  "seconds": 15
+ },
+ "branch": {
+  "status": "passes",
+  "runs": [
+   "passes",
+   "passes",
+   "passes"
+  ],
+  "lines": [
+   "Passed SuppressSourceGenerationAnalyzerTests.SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed",
+   "Passed SuppressSourceGenerationAnalyzerTests.MemberTypeMustBeMessagePackObjectIsReported",
+   "Passed SuppressSourceGenerationAnalyzerTests.DuplicateStringKeysAreReportedWithoutAnalyzerFailure",
+   "Passed SuppressSourceGenerationAnalyzerTests.MixedKeyKindsAreReportedWithoutAnalyzerFailure",
+   "Passed SuppressSourceGenerationAnalyzerTests.MemberWithoutKeyIsReported",
+   "Passed SuppressSourceGenerationAnalyzerTests.DuplicateIntKeysAreReportedWithoutAnalyzerFailure",
+   "Passed SuppressSourceGenerationAnalyzerTests.AllowPrivateRequiredIsReported",
+   "Passed SuppressSourceGenerationAnalyzerTests.DuplicateKeysAreReportedWithoutAnalyzerFailureForGeneratedTypes",
+   "Total tests: 8"
+  ],
+  "seconds": 16
+ },
+ "verdict": "different behaviour",
+ "repeat": 3,
+ "replayed_at": "2026-11-15T02:35:46"
+}

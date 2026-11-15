@@ -1,0 +1,21 @@
+# How to replay each piece of evidence for REQ-2283, on base AND branch, in isolated worktrees.
+base: 32258fdb
+head: origin/ju26-issue-2283
+
+evidence:
+  E1:
+    title: "Does the issue's project (lib + app) compile without a generator crash, with a working resolver?"
+    kind: e2e-project
+    template: e2e/issue2283
+    build: app/App.csproj
+    run: app/App.csproj
+    warn_regex: "warning (CS8785|AD0001)"
+    scenario: {file: scenarios/E2E-2283-Program.cs, dest: app/Program.cs}
+    criteria: [AC-1, AC-2, AC-3, C1]
+    bad_regex: "AD0001|CS8785|: NO\\b|round-trip: FAIL"
+  E3:
+    title: "The agent's tests for closed generic structs from a metadata reference: do they fail before and pass after?"
+    kind: dotnet-test
+    scenario: {file: scenarios/GenericsFormatterTests-2283.cs, dest: tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs}
+    filter: "FullyQualifiedName~FromMetadataReference"
+    criteria: [C4]

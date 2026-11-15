@@ -1,0 +1,42 @@
+{
+ "evidence": "E3",
+ "title": "The agent's tests for closed generic structs from a metadata reference: do they fail before and pass after?",
+ "kind": "dotnet-test",
+ "scenario_file": "scenarios/GenericsFormatterTests-2283.cs",
+ "scenario_modified": false,
+ "base_ref": "32258fdb",
+ "head_ref": "origin/ju26-issue-2283",
+ "base": {
+  "status": "fails",
+  "runs": [
+   "fails",
+   "fails",
+   "fails"
+  ],
+  "lines": [
+   "Failed GenericsFormatterTests.ClosedGenericRecordStruct_FromMetadataReference",
+   "Failed GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference_UnkeyedMember",
+   "Failed GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference",
+   "Total tests: 3"
+  ],
+  "seconds": 129
+ },
+ "branch": {
+  "status": "passes",
+  "runs": [
+   "passes",
+   "passes",
+   "passes"
+  ],
+  "lines": [
+   "Passed GenericsFormatterTests.ClosedGenericRecordStruct_FromMetadataReference [1 m 1 s]",
+   "Passed GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference_UnkeyedMember",
+   "Passed GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference",
+   "Total tests: 3"
+  ],
+  "seconds": 128
+ },
+ "verdict": "different behaviour",
+ "repeat": 3,
+ "replayed_at": "2026-11-15T03:33:44"
+}

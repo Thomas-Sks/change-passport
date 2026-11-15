@@ -1,0 +1,38 @@
+id: REQ-2234
+title: "The analyzer does not work if SuppressSourceGeneration = true"
+source: https://github.com/MessagePack-CSharp/MessagePack-CSharp/issues/2234
+branch: ju26-issue-2234
+base: 32258fdb
+owner: "Camille Durand (synthetic) — CODEOWNER src/MessagePack.SourceGenerator"
+policy_guardian: "Sam Leroy (synthetic) — tech lead"
+
+# Written from the issue text only, before reading the agent's fix. Locked.
+# (Translated to English from the original French wording; meaning unchanged.)
+acceptance_criteria:
+  - id: AC-1
+    text: "The analyzer reports its diagnostics when SuppressSourceGeneration = true."
+  - id: AC-2
+    text: "No code is generated when SuppressSourceGeneration = true."
+
+# Claims: the commit message only repeats the issue title, so they are taken from the diff
+# (README section "Opting out of source generation", code comments and test names), after the criteria were locked.
+claims:
+  - id: C1
+    text: "The analyzer still validates [MessagePackObject(SuppressSourceGeneration = true)] types: missing [Key]/[IgnoreMember] (MsgPack004), unique and same-kind keys (MsgPack005), AllowPrivate (MsgPack015), serializable member types (MsgPack003), accessibility (MsgPack012)."
+    criteria: [AC-1]
+    trace_files: ['README.md']
+  - id: C2
+    text: "Duplicate keys and mixed int/string keys are reported (MsgPack005) without the analyzer failing; the conflicting member is skipped and analysis continues."
+    criteria: [AC-1]
+    trace_patterns: ['ContainsKey\(member\.(Int|String)Key\)', 'The key kind does not match']
+  - id: C3
+    text: "No formatter is generated for a type that opts out of source generation; it is serialized at run time by the dynamic resolvers."
+    criteria: [AC-2]
+    trace_files: ['tests/MessagePack.SourceGenerator.ExecutionTests/SuppressedSourceGenerationTests.cs']
+  - id: C4
+    text: "The partial-class requirement (MsgPack011) and the AOT-only checks (MsgPack016, MsgPack017) are not reported for suppressed types."
+    criteria: []
+  - id: C5
+    text: "Analyzer tests cover suppressed types: missing key, AllowPrivate, non-serializable member type, duplicate and mixed keys, and source-generation-only diagnostics."
+    criteria: [AC-1]
+    trace_files: ['tests/MessagePack.SourceGenerator.Tests/SuppressSourceGenerationAnalyzerTests.cs']

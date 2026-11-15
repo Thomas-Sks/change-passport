@@ -1,0 +1,85 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Change Passport Card</title><style>
+:root{--fg:#1f2328;--mut:#57606a;--line:#d8dee4;--soft:#f6f8fa;--acc:#1f5fbf;--bg:#fff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--fg:#e6edf3;--mut:#9da7b3;--line:#30363d;--soft:#161b22;--acc:#58a6ff;--bg:#0d1117}}
+@page{size:A4;margin:10mm}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:12.5px/1.45 -apple-system,Segoe UI,Helvetica,Arial,sans-serif;margin:0}
+main{max-width:1100px;margin:0 auto;padding:22px 16px;columns:2 340px;column-gap:28px}
+h1{column-span:all;font-size:26px;margin:0 0 2px} h1+p{column-span:all;color:var(--mut);margin:0 0 10px}
+h2{font-size:14px;text-transform:uppercase;letter-spacing:.04em;color:var(--acc);margin:12px 0 4px;break-after:avoid}
+p,ul,ol,table,blockquote{margin:0 0 6px;break-inside:avoid} ul,ol{padding-left:18px} li{margin:1px 0}
+table{border-collapse:collapse;width:100%;font-size:11.5px} td,th{border:1px solid var(--line);padding:3px 6px;vertical-align:top;text-align:left} th{background:var(--soft)}
+blockquote{border-left:4px solid var(--acc);padding:4px 10px;background:var(--soft);font-size:14px}
+code{background:var(--soft);padding:0 4px;border-radius:3px}
+@media print{body{font-size:10.4px} main{padding:0;columns:2;column-gap:7mm} h1{font-size:20px} blockquote{font-size:12px} table{font-size:9.6px}}
+</style><main><h1>The Change Passport: concept card</h1>
+<p><em>Tieto challenge &quot;Earned Trust in AI Code&quot;, Junction 2026</em></p>
+<h2>Recommendation</h2>
+<p>Don't ask reviewers to read agent code faster: <strong>change what they review.</strong> Every agent-written change ships with a <strong>passport</strong> that states what was asked, what the agent claims, an <strong>executed proof</strong> for each claim (before vs after, in a sandbox), what the AI <strong>refused to decide</strong>, and <strong>how much a human must read</strong>. A <strong>named owner</strong> reads only what the risk requires and signs a <strong>bounded attestation</strong>. The AI advises with evidence. It never approves.</p>
+<blockquote>
+<p><strong>The LLM proposes, execution proves, rules decide, a named human signs.</strong></p>
+</blockquote>
+<p><strong>Change</strong> (code + requirement ID + agent claims) → <strong>Sort</strong> (zones, traceability, orphan code) → <strong>Prove</strong> (sandbox, base vs branch, 3 runs) → <strong>AI review</strong> (blind to proofs, then verified against them) → <strong>Lane</strong> (green / orange / red, explicit rules) → <strong>Owner signs</strong> (bound to the commit)</p>
+<h2>Principles</h2>
+<ol>
+<li><strong>Requirement first:</strong> short acceptance criteria locked by a human before review.</li>
+<li><strong>Evidence, not confidence:</strong> a claim counts only if an executed proof supports it.</li>
+<li><strong>Independence from the agent:</strong> the agent's own tests are the weakest evidence.</li>
+<li><strong>Rules decide the lane:</strong> the AI can raise risk, never lower it.</li>
+<li><strong>Review depth follows risk:</strong> a human signs in every lane, even green.</li>
+<li><strong>Refusing is a normal output:</strong> API, user-visible behaviour, compatibility and risk acceptance go to a person.</li>
+<li><strong>Trust is earned per zone:</strong> it is lightened by track record and suspended after an escape.</li>
+<li><strong>The factory secures itself:</strong> PR content is untrusted input, and no AI has merge rights.</li>
+</ol>
+<h2>How it balances the five tensions</h2>
+<table>
+<thead>
+<tr>
+<th>Tension</th>
+<th>Our answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Risk</strong></td>
+<td>Explainable rules route attention: green 1–2 min, orange reads a listed part, red goes back to the agent</td>
+</tr>
+<tr>
+<td><strong>Hallucination</strong></td>
+<td>Every AI finding must quote code and is checked against proofs: <em>confirmed</em>, <em>rejected</em>, or <em>opinion — proofs disagree</em></td>
+</tr>
+<tr>
+<td><strong>Transparency</strong></td>
+<td>The passport says what was <strong>not</strong> checked and why; every proof replays in one click</td>
+</tr>
+<tr>
+<td><strong>Confidence</strong></td>
+<td>No model-stated confidence is used. Evidence sets severity</td>
+</tr>
+<tr>
+<td><strong>Quality</strong></td>
+<td>Mutation testing measures the agent's tests; catching tests come from the criteria, not from the agent</td>
+</tr>
+</tbody>
+</table>
+<h2>What the owner signs</h2>
+<p><strong>Checked</strong> (by whom or what) · <strong>Not checked</strong> (why) · a decision on <strong>each AI refusal</strong> · <strong>residual risk accepted</strong> · bound to the <strong>commit</strong> and the passport fingerprint. The signing step itself refuses the wrong signer, a newer commit, unanswered refusals, and a red change accepted without a full read.</p>
+<h2>Shown on REQ-2297 (agent-written, 237 files)</h2>
+<p>The agent's 169 tests were green, yet execution against the criteria found <strong>2 user-breaking regressions</strong>. The owner had to read <strong>46 of 1,392 lines</strong>. The AI reviewer made 4 findings, all confirmed by proofs, <strong>missed 1</strong> and <strong>refused 6 decisions</strong>. Lane <strong>red</strong>: Camille Durand (synthetic) signed &quot;send back&quot; on the real PR, bound to commit <code>a0aa5ab2</code>. On two bug fixes the issue's reproduction <strong>crashes before and works after</strong>, with 39 and 36 lines to read.</p>
+<h2>How trust is measured</h2>
+<p>Reverts and incidents <strong>per lane and zone</strong> · <strong>random counter-review</strong> of 10% of green changes · <strong>canary bugs</strong> injected continuously · share of AI findings confirmed by evidence · time to merge per lane · share routed to humans. <strong>Circuit breakers</strong> are set in advance: an escape suspends its zone, and a canary passing green suspends the green lane.</p>
+<h2>Trade-offs and limits</h2>
+<ul>
+<li><strong>Cost:</strong> humans write 3–6 criteria per change, and each repository needs one end-to-end harness per product type.</li>
+<li><strong>Friction:</strong> a signature even in green. <em>A false orange costs a review; a false green costs an incident.</em></li>
+<li><strong>Bounded by the criteria:</strong> a wrong criterion gives a passport that is proven and wrong.</li>
+<li><strong>Not judged:</strong> architecture and product intent. They become refusals, that is, human decisions.</li>
+<li><strong>Without agent claims and harnesses,</strong> the passport still routes and records accountability, but the owner reads everything.</li>
+</ul>
+<h2>The judges' questions</h2>
+<ul>
+<li><strong>Who owns the decision?</strong> The named CODEOWNER signs and merges. The policy guardian owns the rules. The AI owns nothing.</li>
+<li><strong>What would make us distrust our own output?</strong> A canary passing green, a revert linked to a green passport, counter-review agreement dropping, or signatures faster than the required reading.</li>
+<li><strong>How does it scale?</strong> Reading grows with <strong>risk</strong>, not diff size (3–17% of lines on our samples). Proofs run in parallel on existing CI runners, and the chain takes minutes per change.</li>
+</ul>
+</main></html>

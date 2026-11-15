@@ -1,0 +1,6 @@
+flowchart LR
+  A["Reviewer model<br/>(different from the author)"] --> B["Findings<br/>each quotes the code"]
+  B --> C["Checked against<br/>the sandbox proofs"]
+  C --> D["Confirmed<br/>→ shown"]
+  C --> E["Not proven<br/>→ 'opinion' only"]
+  A --> F["Refusals<br/>decisions for a person"]

@@ -1,0 +1,7 @@
+# separate clone of the challenge repository
+upstream-repo/
+# runtime / temporary
+__pycache__/
+*.pyc
+factory/out/server.log
+factory/out/.scenario-*.tmp

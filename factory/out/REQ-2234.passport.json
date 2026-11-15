@@ -1,0 +1,521 @@
+{
+  "schema": "change-passport/2",
+  "change": {
+    "branch": "ju26-issue-2234",
+    "base": "32258fdb",
+    "head": "9007cee1",
+    "files": 4,
+    "changed_lines": 266
+  },
+  "requirement": {
+    "id": "REQ-2234",
+    "title": "The analyzer does not work if SuppressSourceGeneration = true",
+    "source": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/issues/2234",
+    "owner": "Camille Durand (synthetic) — CODEOWNER src/MessagePack.SourceGenerator",
+    "policy_guardian": "Sam Leroy (synthetic) — tech lead"
+  },
+  "acceptance_criteria": [
+    {
+      "id": "AC-1",
+      "text": "The analyzer reports its diagnostics when SuppressSourceGeneration = true.",
+      "status": "supported",
+      "evidence": [
+        "E1"
+      ],
+      "tests": [
+        {
+          "test": "E2E-2234-Diagnostics",
+          "origin": "factory",
+          "branch": "passes",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "id": "AC-2",
+      "text": "No code is generated when SuppressSourceGeneration = true.",
+      "status": "supported",
+      "evidence": [
+        "E2"
+      ],
+      "tests": [
+        {
+          "test": "E2E-2234-Program",
+          "origin": "factory",
+          "branch": "passes",
+          "issues": []
+        }
+      ]
+    }
+  ],
+  "claims": [
+    {
+      "id": "C1",
+      "text": "The analyzer still validates [MessagePackObject(SuppressSourceGeneration = true)] types: missing [Key]/[IgnoreMember] (MsgPack004), unique and same-kind keys (MsgPack005), AllowPrivate (MsgPack015), serializable member types (MsgPack003), accessibility (MsgPack012).",
+      "status": "proven",
+      "evidence": [
+        "E1"
+      ]
+    },
+    {
+      "id": "C2",
+      "text": "Duplicate keys and mixed int/string keys are reported (MsgPack005) without the analyzer failing; the conflicting member is skipped and analysis continues.",
+      "status": "proven",
+      "evidence": [
+        "E1",
+        "E3"
+      ]
+    },
+    {
+      "id": "C3",
+      "text": "No formatter is generated for a type that opts out of source generation; it is serialized at run time by the dynamic resolvers.",
+      "status": "proven (weak evidence)",
+      "evidence": [
+        "E2",
+        "TEST-QUALITY"
+      ]
+    },
+    {
+      "id": "C4",
+      "text": "The partial-class requirement (MsgPack011) and the AOT-only checks (MsgPack016, MsgPack017) are not reported for suppressed types.",
+      "status": "proven",
+      "evidence": [
+        "E3"
+      ]
+    },
+    {
+      "id": "C5",
+      "text": "Analyzer tests cover suppressed types: missing key, AllowPrivate, non-serializable member type, duplicate and mixed keys, and source-generation-only diagnostics.",
+      "status": "proven (weak evidence)",
+      "evidence": [
+        "E3",
+        "TEST-QUALITY"
+      ]
+    }
+  ],
+  "zones": [
+    {
+      "zone": "tests",
+      "class": "tests",
+      "files": 2,
+      "lines": 230,
+      "severity": null,
+      "why": "Tests are evidence; their strength is measured, not assumed.",
+      "trust": "new"
+    },
+    {
+      "zone": "generator-analysis",
+      "class": "sensitive",
+      "files": 1,
+      "lines": 22,
+      "severity": "minor",
+      "why": "Analysis logic of the generator and the analyzers.",
+      "trust": "new"
+    },
+    {
+      "zone": "docs",
+      "class": "ordinary",
+      "files": 1,
+      "lines": 14,
+      "severity": null,
+      "why": "Documentation; read because it makes claims.",
+      "trust": "trusted"
+    }
+  ],
+  "mechanical": {
+    "rule": [],
+    "passed": 0,
+    "flagged": []
+  },
+  "traceability": {
+    "hunks": 9,
+    "traced": 9,
+    "orphans": []
+  },
+  "evidence": [
+    {
+      "id": "E1",
+      "type": "executed-e2e",
+      "by": "E2E sandbox: consumer project with [MessagePackObject(SuppressSourceGeneration = true)] types that break the contract, built and run on base and branch (3 runs per side)",
+      "what": "Does the analyzer still report its diagnostics on SuppressSourceGeneration = true types?",
+      "result": "fail-before",
+      "detail": "Base (3/3 identical): MsgPack004, MsgPack005 x4 and MsgPack003 are reported, but the analyzer crashes twice (AD0001: ArgumentException 'An item with the same key has already been added' on duplicate keys, InvalidOperationException 'Nullable object must have a value' on mixed keys) and the generator crashes (CS8785); as a result MsgPack004 is missing on the unkeyed member that follows a duplicate key and a mixed key (DuplicateThenMissingKey.C, MixedThenMissingKey.C). Branch (3/3 identical): 8 diagnostics, including those two MsgPack004, no AD0001, no CS8785. Note: plain cases (missing key alone, non-serializable member type) are already reported on base; the 'analyzer does not work at all' symptom from the issue was not reproduced on base 32258fdb.",
+      "supports": [
+        "AC-1",
+        "C1",
+        "C2"
+      ],
+      "test_results": [
+        {
+          "test": "E2E-2234-Diagnostics",
+          "base": "fails",
+          "branch": "passes",
+          "criteria": [
+            "AC-1"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "E2",
+      "type": "executed-e2e",
+      "by": "E2E sandbox: consumer project with a valid suppressed type and a normal control type, EmitCompilerGeneratedFiles on, built and run on base and branch (3 runs per side)",
+      "what": "With SuppressSourceGeneration = true, is no formatter generated, while a normal type still gets one?",
+      "result": "pass",
+      "detail": "Identical on base and branch (3/3 each): generated resolver present, no generated formatter for Suppressed (GetFormatter returns null, 0 generated types and 0 generated source files mention it), control type Control has a generated formatter (2 generated files), Suppressed round-trips through the dynamic resolver. AC-2 already held on base: this is a non-regression proof, not a fail-before.",
+      "supports": [
+        "AC-2",
+        "C3"
+      ],
+      "test_results": [
+        {
+          "test": "E2E-2234-Program",
+          "base": "passes",
+          "branch": "passes",
+          "criteria": [
+            "AC-2"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "E3",
+      "type": "executed",
+      "by": "Isolated CI (dotnet test, 3 runs per side)",
+      "what": "Agent's tests (SuppressSourceGenerationAnalyzerTests) on base 32258fdb and on the branch",
+      "result": "fail-before",
+      "detail": "Base: 4/8 fail (the three duplicate/mixed key tests on suppressed types, and DuplicateKeysAreReportedWithoutAnalyzerFailureForGeneratedTypes, which shows the crash is not specific to SuppressSourceGeneration), 4/8 pass (missing key, AllowPrivate, non-serializable member type, source-generation-only diagnostics). Branch: 8/8 pass. Stable over 3 runs on each side.",
+      "supports": [
+        "C2",
+        "C4",
+        "C5"
+      ],
+      "test_results": [
+        {
+          "test": "DuplicateIntKeysAreReportedWithoutAnalyzerFailure",
+          "base": "fails",
+          "branch": "passes"
+        },
+        {
+          "test": "DuplicateStringKeysAreReportedWithoutAnalyzerFailure",
+          "base": "fails",
+          "branch": "passes"
+        },
+        {
+          "test": "MixedKeyKindsAreReportedWithoutAnalyzerFailure",
+          "base": "fails",
+          "branch": "passes"
+        },
+        {
+          "test": "DuplicateKeysAreReportedWithoutAnalyzerFailureForGeneratedTypes",
+          "base": "fails",
+          "branch": "passes"
+        },
+        {
+          "test": "MemberWithoutKeyIsReported",
+          "base": "passes",
+          "branch": "passes"
+        },
+        {
+          "test": "AllowPrivateRequiredIsReported",
+          "base": "passes",
+          "branch": "passes"
+        },
+        {
+          "test": "MemberTypeMustBeMessagePackObjectIsReported",
+          "base": "passes",
+          "branch": "passes"
+        },
+        {
+          "test": "SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed",
+          "base": "passes",
+          "branch": "passes"
+        }
+      ]
+    },
+    {
+      "id": "E4",
+      "type": "executed",
+      "by": "Isolated CI (dotnet test)",
+      "regenerates": [
+        "snapshots"
+      ],
+      "what": "Full MessagePack.SourceGenerator.Tests suite on the branch (regenerates and compares snapshots)",
+      "result": "pass",
+      "detail": "175 passed / 0 failed",
+      "supports": []
+    },
+    {
+      "id": "TEST-QUALITY",
+      "type": "test-strength",
+      "by": "static analysis of the tests (test_quality.py)",
+      "what": "Assertion strength and test → criterion links across 12 tests",
+      "result": "weak",
+      "detail": "10 agent test(s) linked to no criterion",
+      "affects": [
+        "C3",
+        "C5"
+      ]
+    }
+  ],
+  "findings": [],
+  "missed_by_ai": [],
+  "weakened_tests": [],
+  "refusals": [],
+  "verdict": {
+    "lane": "ORANGE",
+    "action": "Targeted reading of the reading contract + refusals settled + signature",
+    "reasons_red": [],
+    "reasons_orange": [
+      "sensitive zone generator-analysis touched",
+      "zone generator-analysis not trusted yet (new)",
+      "zone tests not trusted yet (new)",
+      "claim C3 proven (weak evidence)",
+      "claim C5 proven (weak evidence)"
+    ]
+  },
+  "tests": [
+    {
+      "test": "NoFormatterIsGeneratedForSuppressedType",
+      "source": "tests/MessagePack.SourceGenerator.ExecutionTests/SuppressedSourceGenerationTests.cs",
+      "criteria": [],
+      "assertions": 1,
+      "lines": 3,
+      "issues": [],
+      "origin": "agent",
+      "branch": "not run"
+    },
+    {
+      "test": "SuppressedTypeRoundTripsThroughDynamicResolver",
+      "source": "tests/MessagePack.SourceGenerator.ExecutionTests/SuppressedSourceGenerationTests.cs",
+      "criteria": [],
+      "assertions": 2,
+      "lines": 9,
+      "issues": [],
+      "origin": "agent",
+      "branch": "not run"
+    },
+    {
+      "test": "MemberWithoutKeyIsReported",
+      "source": "tests/MessagePack.SourceGenerator.Tests/SuppressSourceGenerationAnalyzerTests.cs",
+      "criteria": [],
+      "assertions": 1,
+      "lines": 15,
+      "issues": [],
+      "origin": "agent",
+      "branch": "passes"
+    },
+    {
+      "test": "AllowPrivateRequiredIsReported",
+      "source": "tests/MessagePack.SourceGenerator.Tests/SuppressSourceGenerationAnalyzerTests.cs",
+      "criteria": [],
+      "assertions": 1,
+      "lines": 16,
+      "issues": [],
+      "origin": "agent",
+      "branch": "passes"
+    },
+    {
+      "test": "MemberTypeMustBeMessagePackObjectIsReported",
+      "source": "tests/MessagePack.SourceGenerator.Tests/SuppressSourceGenerationAnalyzerTests.cs",
+      "criteria": [],
+      "assertions": 1,
+      "lines": 20,
+      "issues": [],
+      "origin": "agent",
+      "branch": "passes"
+    },
+    {
+      "test": "DuplicateIntKeysAreReportedWithoutAnalyzerFailure",
+      "source": "tests/MessagePack.SourceGenerator.Tests/SuppressSourceGenerationAnalyzerTests.cs",
+      "criteria": [],
+      "assertions": 1,
+      "lines": 19,
+      "issues": [],
+      "origin": "agent",
+      "branch": "passes"
+    },
+    {
+      "test": "DuplicateStringKeysAreReportedWithoutAnalyzerFailure",
+      "source": "tests/MessagePack.SourceGenerator.Tests/SuppressSourceGenerationAnalyzerTests.cs",
+      "criteria": [],
+      "assertions": 1,
+      "lines": 19,
+      "issues": [],
+      "origin": "agent",
+      "branch": "passes"
+    },
+    {
+      "test": "MixedKeyKindsAreReportedWithoutAnalyzerFailure",
+      "source": "tests/MessagePack.SourceGenerator.Tests/SuppressSourceGenerationAnalyzerTests.cs",
+      "criteria": [],
+      "assertions": 1,
+      "lines": 19,
+      "issues": [],
+      "origin": "agent",
+      "branch": "passes"
+    },
+    {
+      "test": "DuplicateKeysAreReportedWithoutAnalyzerFailureForGeneratedTypes",
+      "source": "tests/MessagePack.SourceGenerator.Tests/SuppressSourceGenerationAnalyzerTests.cs",
+      "criteria": [],
+      "assertions": 1,
+      "lines": 19,
+      "issues": [],
+      "origin": "agent",
+      "branch": "passes"
+    },
+    {
+      "test": "SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed",
+      "source": "tests/MessagePack.SourceGenerator.Tests/SuppressSourceGenerationAnalyzerTests.cs",
+      "criteria": [],
+      "assertions": 1,
+      "lines": 23,
+      "issues": [],
+      "origin": "agent",
+      "branch": "passes"
+    },
+    {
+      "test": "E2E-2234-Diagnostics",
+      "source": "E1",
+      "criteria": [
+        "AC-1"
+      ],
+      "assertions": 1,
+      "lines": 0,
+      "issues": [],
+      "origin": "factory",
+      "branch": "passes"
+    },
+    {
+      "test": "E2E-2234-Program",
+      "source": "E2",
+      "criteria": [
+        "AC-2"
+      ],
+      "assertions": 1,
+      "lines": 0,
+      "issues": [],
+      "origin": "factory",
+      "branch": "passes"
+    }
+  ],
+  "reading_contract": {
+    "must_read": [
+      {
+        "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+        "header": "-1007,0 +1008",
+        "lines": 1,
+        "why": "zone generator-analysis"
+      },
+      {
+        "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+        "header": "-1022 +1023,4",
+        "lines": 5,
+        "why": "zone generator-analysis"
+      },
+      {
+        "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+        "header": "-1035 +1039,4",
+        "lines": 5,
+        "why": "zone generator-analysis"
+      },
+      {
+        "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+        "header": "-1140,0 +1148",
+        "lines": 1,
+        "why": "zone generator-analysis"
+      },
+      {
+        "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+        "header": "-1155 +1163,4",
+        "lines": 5,
+        "why": "zone generator-analysis"
+      },
+      {
+        "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+        "header": "-1168 +1179,4",
+        "lines": 5,
+        "why": "zone generator-analysis"
+      },
+      {
+        "file": "README.md",
+        "header": "-1619,0 +1620,14",
+        "lines": 14,
+        "why": "zone docs"
+      }
+    ],
+    "excluded": [
+      {
+        "what": "2 test file(s)",
+        "lines": 230,
+        "why": "summarised by the evidence (execution, assertion strength, links to criteria)",
+        "proof": "TEST-QUALITY + executed evidence"
+      }
+    ],
+    "test_files_summarised": [
+      "tests/MessagePack.SourceGenerator.ExecutionTests/SuppressedSourceGenerationTests.cs",
+      "tests/MessagePack.SourceGenerator.Tests/SuppressSourceGenerationAnalyzerTests.cs"
+    ],
+    "lines_to_read": 36,
+    "lines_total": 266,
+    "files_to_read": 2,
+    "files_total": 4
+  },
+  "attestation_draft": {
+    "checked": [
+      {
+        "what": "Does the analyzer still report its diagnostics on SuppressSourceGeneration = true types? → fail-before",
+        "by": "E2E sandbox: consumer project with [MessagePackObject(SuppressSourceGeneration = true)] types that break the contract, built and run on base and branch (3 runs per side)",
+        "id": "E1"
+      },
+      {
+        "what": "With SuppressSourceGeneration = true, is no formatter generated, while a normal type still gets one? → pass",
+        "by": "E2E sandbox: consumer project with a valid suppressed type and a normal control type, EmitCompilerGeneratedFiles on, built and run on base and branch (3 runs per side)",
+        "id": "E2"
+      },
+      {
+        "what": "Agent's tests (SuppressSourceGenerationAnalyzerTests) on base 32258fdb and on the branch → fail-before",
+        "by": "Isolated CI (dotnet test, 3 runs per side)",
+        "id": "E3"
+      },
+      {
+        "what": "Full MessagePack.SourceGenerator.Tests suite on the branch (regenerates and compares snapshots) → pass",
+        "by": "Isolated CI (dotnet test)",
+        "id": "E4"
+      },
+      {
+        "what": "Assertion strength and test → criterion links across 12 tests → weak",
+        "by": "static analysis of the tests (test_quality.py)",
+        "id": "TEST-QUALITY"
+      },
+      {
+        "what": "7 reading-contract hunks (36 lines)",
+        "by": "owner (to tick)"
+      }
+    ],
+    "not_checked": [
+      {
+        "what": "The exact regression reported in the issue (analyzer silent for suppressed types since 3.1.1)",
+        "why": "not reproduced on base 32258fdb: simple diagnostics are already reported there; only the crash on duplicate/mixed keys was observed. The issue gives no reproduction code."
+      },
+      {
+        "what": "MsgPack012 (inaccessible type) on suppressed types, listed in claim C1",
+        "why": "no scenario covers it"
+      },
+      {
+        "what": "Agent's execution test SuppressedSourceGenerationTests (MessagePack.SourceGenerator.ExecutionTests)",
+        "why": "project not built (disk/time); the same behaviour is covered by E2"
+      },
+      {
+        "what": "Live analysis in the IDE",
+        "why": "only command-line builds were run in the sandbox"
+      }
+    ],
+    "decisions": [],
+    "residual_risk": null,
+    "signed_by": null,
+    "date": null
+  },
+  "fingerprint": "9191488e85f16865"
+}

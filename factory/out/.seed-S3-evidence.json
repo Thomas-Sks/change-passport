@@ -1,0 +1,1 @@
+{"runs": [{"id": "REGEN", "type": "executed", "by": "test suite (regenerates the snapshots)", "what": "regeneration", "result": "pass", "regenerates": ["snapshots"]}]}

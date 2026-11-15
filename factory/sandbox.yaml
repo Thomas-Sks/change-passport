@@ -1,0 +1,7 @@
+# Local sandbox paths (illustration: isolated git worktrees, not containers — see lessons-log).
+dotnet_root: /tmp/claude-1000/-home-weaver-Documents-30-hackathons-junction26-ai-code-review/0eea537c-1f04-4448-b28b-60af5434becb/scratchpad/dotnet
+nuget_packages: /tmp/claude-1000/-home-weaver-Documents-30-hackathons-junction26-ai-code-review/0eea537c-1f04-4448-b28b-60af5434becb/scratchpad/nuget
+worktree_base: /tmp/claude-1000/-home-weaver-Documents-30-hackathons-junction26-ai-code-review/0eea537c-1f04-4448-b28b-60af5434becb/scratchpad/wt-base
+worktree_head: /tmp/claude-1000/-home-weaver-Documents-30-hackathons-junction26-ai-code-review/0eea537c-1f04-4448-b28b-60af5434becb/scratchpad/wt-2297
+e2e_workdir: /tmp/claude-1000/-home-weaver-Documents-30-hackathons-junction26-ai-code-review/0eea537c-1f04-4448-b28b-60af5434becb/scratchpad/e2e-replay
+e2e_runner_dll: /tmp/claude-1000/-home-weaver-Documents-30-hackathons-junction26-ai-code-review/0eea537c-1f04-4448-b28b-60af5434becb/scratchpad/e2e/Runner/bin/Release/net8.0/Runner.dll

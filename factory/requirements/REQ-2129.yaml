@@ -1,0 +1,13 @@
+id: REQ-2129
+title: "Allow generation of Formatter for a type in a referenced assembly"
+source: https://github.com/MessagePack-CSharp/MessagePack-CSharp/issues/2129
+branch: ju26-issue-2129
+base: 32258fdb
+owner: "Camille Durand (synthetic) — CODEOWNER src/MessagePack.SourceGenerator"
+policy_guardian: "Sam Leroy (synthetic) — tech lead"
+acceptance_criteria:
+  - id: AC-1
+    text: "A formatter can be generated in project B for a type defined in a referenced project A."
+  - id: AC-2
+    text: "Existing projects compile and behave as before."
+claims: []          # the agent declared no structured claims (commit message only)

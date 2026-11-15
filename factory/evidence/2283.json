@@ -1,0 +1,84 @@
+{
+  "change": "ju26-issue-2283",
+  "environment": ".NET SDK 8.0.402, isolated worktrees, run 2026-11-14",
+  "runs": [
+    {
+      "id": "E1",
+      "type": "executed-e2e",
+      "by": "E2E sandbox: the issue's reproduction project (lib + app), built and run on base and branch",
+      "what": "Does the issue's lib + app project compile without a crash, with a working resolver?",
+      "result": "fail-before",
+      "detail": "Base: CS8785 + AD0001 (IndexOutOfRangeException), no resolver generated. Branch: no warnings, resolver generated, formatter for Cmd, round-trip OK.",
+      "supports": [
+        "AC-1",
+        "AC-2",
+        "AC-3",
+        "C1"
+      ],
+      "test_results": [
+        {
+          "test": "E2E-2283-Program",
+          "base": "fails",
+          "branch": "passes",
+          "criteria": [
+            "AC-1",
+            "AC-2",
+            "AC-3"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "E2",
+      "type": "executed",
+      "by": "Isolated CI (dotnet test)",
+      "regenerates": [
+        "snapshots"
+      ],
+      "what": "Full MessagePack.SourceGenerator.Tests suite on the branch (regenerates and compares the snapshots)",
+      "result": "pass",
+      "detail": "170 passed / 0 failed",
+      "supports": [
+        "AC-4"
+      ]
+    },
+    {
+      "id": "E3",
+      "type": "executed",
+      "by": "Isolated CI (dotnet test)",
+      "what": "Agent's tests (…FromMetadataReference) on base 32258fdb",
+      "result": "fail-before",
+      "detail": "3/3 fail on base, 3/3 pass on the branch",
+      "supports": [
+        "C4"
+      ],
+      "test_results": [
+        {
+          "test": "ClosedGenericStruct_FromMetadataReference",
+          "base": "fails",
+          "branch": "passes"
+        },
+        {
+          "test": "ClosedGenericRecordStruct_FromMetadataReference",
+          "base": "fails",
+          "branch": "passes"
+        },
+        {
+          "test": "ClosedGenericStruct_FromMetadataReference_UnkeyedMember",
+          "base": "fails",
+          "branch": "passes"
+        }
+      ]
+    }
+  ],
+  "not_checked": [
+    {
+      "what": "Analyzer diagnostics that are now filtered (claim C2)",
+      "why": "no scenario has yet checked that a legitimate diagnostic without a location is not suppressed"
+    },
+    {
+      "what": "Trimmed / NativeAOT applications mentioned in the issue",
+      "why": "no AOT environment in the sandbox"
+    }
+  ]
+}

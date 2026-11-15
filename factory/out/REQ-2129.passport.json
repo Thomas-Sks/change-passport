@@ -1,0 +1,1123 @@
+{
+  "schema": "change-passport/2",
+  "change": {
+    "branch": "ju26-issue-2129",
+    "base": "32258fdb",
+    "head": "083afd99",
+    "files": 28,
+    "changed_lines": 1043
+  },
+  "requirement": {
+    "id": "REQ-2129",
+    "title": "Allow generation of Formatter for a type in a referenced assembly",
+    "source": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/issues/2129",
+    "owner": "Camille Durand (synthetic) — CODEOWNER src/MessagePack.SourceGenerator",
+    "policy_guardian": "Sam Leroy (synthetic) — tech lead"
+  },
+  "acceptance_criteria": [
+    {
+      "id": "AC-1",
+      "text": "A formatter can be generated in project B for a type defined in a referenced project A.",
+      "status": "not demonstrated",
+      "evidence": [],
+      "tests": []
+    },
+    {
+      "id": "AC-2",
+      "text": "Existing projects compile and behave as before.",
+      "status": "not demonstrated",
+      "evidence": [],
+      "tests": []
+    }
+  ],
+  "claims": [],
+  "zones": [
+    {
+      "zone": "generator-analysis",
+      "class": "sensitive",
+      "files": 7,
+      "lines": 410,
+      "severity": "minor",
+      "why": "Analysis logic of the generator and the analyzers.",
+      "trust": "new"
+    },
+    {
+      "zone": "tests",
+      "class": "tests",
+      "files": 6,
+      "lines": 397,
+      "severity": null,
+      "why": "Tests are evidence; their strength is measured, not assumed.",
+      "trust": "new"
+    },
+    {
+      "zone": "docs",
+      "class": "ordinary",
+      "files": 6,
+      "lines": 159,
+      "severity": null,
+      "why": "Documentation; read because it makes claims.",
+      "trust": "trusted"
+    },
+    {
+      "zone": "public-api",
+      "class": "sensitive",
+      "files": 1,
+      "lines": 36,
+      "severity": "major",
+      "why": "Public contract: shape, naming and compatibility are a human's call.",
+      "trust": "new"
+    },
+    {
+      "zone": "build-ci-agents",
+      "class": "sensitive",
+      "files": 3,
+      "lines": 25,
+      "severity": "minor",
+      "why": "Build, CI and agent instructions: execution and security surface.",
+      "trust": "new"
+    },
+    {
+      "zone": "compiled-templates",
+      "class": "derived",
+      "files": 2,
+      "lines": 8,
+      "severity": null,
+      "why": "Code produced by T4 from the .tt; its observable behaviour is the generated output (snapshots). Read the .tt, not the .cs.",
+      "trust": "new"
+    },
+    {
+      "zone": "diagnostics",
+      "class": "sensitive",
+      "files": 1,
+      "lines": 4,
+      "severity": "major",
+      "why": "Allocation of public diagnostic IDs (MsgPackXXX). v2: only declaring an ID counts, not documenting an existing diagnostic.",
+      "trust": "new"
+    },
+    {
+      "zone": "generator-output",
+      "class": "sensitive",
+      "files": 2,
+      "lines": 4,
+      "severity": "minor",
+      "why": "Changes the code compiled into every user's projects.",
+      "trust": "new"
+    }
+  ],
+  "mechanical": {
+    "rule": [],
+    "passed": 0,
+    "flagged": []
+  },
+  "traceability": {
+    "hunks": 37,
+    "traced": 0,
+    "orphans": [
+      {
+        "file": "README.md",
+        "zone": "docs",
+        "class": "ordinary",
+        "header": "-1638,0 +1639,52",
+        "lines": 52,
+        "claim": null,
+        "preview": [
+          "+### Formatters for types from other assemblies",
+          "+",
+          "+A type that comes from an assembly you cannot change, such as a dependency-free library, may have no MessagePack attributes at all."
+        ]
+      },
+      {
+        "file": "doc/analyzers/MsgPack019.md",
+        "zone": "docs",
+        "class": "ordinary",
+        "header": "-0,0 +1,26",
+        "lines": 26,
+        "claim": null,
+        "preview": [
+          "+# MsgPack019 Generated formatter must be partial",
+          "+",
+          "+A class marked with `[GeneratedMessagePackFormatter]` is the target of source generation. The generator writes the body of the formatter into the class, so the"
+        ]
+      },
+      {
+        "file": "doc/analyzers/MsgPack020.md",
+        "zone": "docs",
+        "class": "ordinary",
+        "header": "-0,0 +1,23",
+        "lines": 23,
+        "claim": null,
+        "preview": [
+          "+# MsgPack020 Generated formatter must implement IMessagePackFormatter<T>",
+          "+",
+          "+A class marked with `[GeneratedMessagePackFormatter]` identifies the data type to serialize by its `IMessagePackFormatter<T>` interface. The class must impleme"
+        ]
+      },
+      {
+        "file": "doc/analyzers/MsgPack021.md",
+        "zone": "docs",
+        "class": "ordinary",
+        "header": "-0,0 +1,23",
+        "lines": 23,
+        "claim": null,
+        "preview": [
+          "+# MsgPack021 Generated formatter data type not supported",
+          "+",
+          "+The source generator writes formatters for non-generic, non-abstract classes and structs that the formatter can access. The data type named by the formatter's "
+        ]
+      },
+      {
+        "file": "doc/analyzers/MsgPack022.md",
+        "zone": "docs",
+        "class": "ordinary",
+        "header": "-0,0 +1,31",
+        "lines": 31,
+        "claim": null,
+        "preview": [
+          "+# MsgPack022 Surrogate member does not match the formatted type",
+          "+",
+          "+When `[GeneratedMessagePackFormatter(SurrogateType = typeof(...))]` is used, each keyed member of the surrogate must match a public, read-write instance member"
+        ]
+      },
+      {
+        "file": "doc/analyzers/index.md",
+        "zone": "docs",
+        "class": "ordinary",
+        "header": "-25,0 +26,4",
+        "lines": 4,
+        "claim": null,
+        "preview": [
+          "+[MsgPack019](MsgPack019.md) | Generated formatter must be partial",
+          "+[MsgPack020](MsgPack020.md) | Generated formatter must implement `IMessagePackFormatter<T>`",
+          "+[MsgPack021](MsgPack021.md) | Generated formatter data type not supported"
+        ]
+      },
+      {
+        "file": "src/MessagePack.Annotations/Attributes.cs",
+        "zone": "public-api",
+        "class": "sensitive",
+        "header": "-141,0 +142,36",
+        "lines": 36,
+        "claim": null,
+        "preview": [
+          "+",
+          "+    /// <summary>",
+          "+    /// Marks a <see langword=\"partial\"/> class that implements <c>IMessagePackFormatter&lt;T&gt;</c> so that the MessagePack source generator"
+        ]
+      },
+      {
+        "file": "src/MessagePack.SourceGenerator/AnalyzerReleases.Unshipped.md",
+        "zone": "diagnostics",
+        "class": "sensitive",
+        "header": "-25,0 +26,4",
+        "lines": 4,
+        "claim": null,
+        "preview": [
+          "+MsgPack019 | Usage | Error | Generated formatter must be partial",
+          "+MsgPack020 | Usage | Error | Generated formatter must implement IMessagePackFormatter<T>",
+          "+MsgPack021 | Usage | Error | Generated formatter data type not supported"
+        ]
+      },
+      {
+        "file": "src/MessagePack.SourceGenerator/Analyzers/MsgPack00xMessagePackAnalyzer.cs",
+        "zone": "generator-analysis",
+        "class": "sensitive",
+        "header": "-31,0 +32,4",
+        "lines": 4,
+        "claim": null,
+        "preview": [
+          "+    public const string GeneratedFormatterMustBePartialId = \"MsgPack019\";",
+          "+    public const string GeneratedFormatterMustImplementFormatterId = \"MsgPack020\";",
+          "+    public const string GeneratedFormatterDataTypeNotSupportedId = \"MsgPack021\";"
+        ]
+      },
+      {
+        "file": "src/MessagePack.SourceGenerator/Analyzers/MsgPack00xMessagePackAnalyzer.cs",
+        "zone": "generator-analysis",
+        "class": "sensitive",
+        "header": "-313,0 +318,36",
+        "lines": 36,
+        "claim": null,
+        "preview": [
+          "+    public static readonly DiagnosticDescriptor GeneratedFormatterMustBePartial = new(",
+          "+        id: GeneratedFormatterMustBePartialId,",
+          "+        title: \"Generated formatter must be partial\","
+        ]
+      },
+      {
+        "file": "src/MessagePack.SourceGenerator/Analyzers/MsgPack00xMessagePackAnalyzer.cs",
+        "zone": "generator-analysis",
+        "class": "sensitive",
+        "header": "-341 +381,5",
+        "lines": 6,
+        "claim": null,
+        "preview": [
+          "+        CollidingMemberNamesInForceMapMode,",
+          "+        GeneratedFormatterMustBePartial,",
+          "+        GeneratedFormatterMustImplementFormatter,",
+          "-        CollidingMemberNamesInForceMapMode);"
+        ]
+      },
+      {
+        "file": "src/MessagePack.SourceGenerator/CodeAnalysis/GeneratedFormatterCollector.cs",
+        "zone": "generator-analysis",
+        "class": "sensitive",
+        "header": "-0,0 +1,300",
+        "lines": 300,
+        "claim": null,
+        "preview": [
+          "+// Copyright (c) All contributors. All rights reserved.",
+          "+// Licensed under the MIT license. See LICENSE file in the project root for full license information.",
+          "+"
+        ]
+      },
+      {
+        "file": "src/MessagePack.SourceGenerator/CodeAnalysis/GeneratedFormatterRequest.cs",
+        "zone": "generator-analysis",
+        "class": "sensitive",
+        "header": "-0,0 +1,13",
+        "lines": 13,
+        "claim": null,
+        "preview": [
+          "+// Copyright (c) All contributors. All rights reserved.",
+          "+// Licensed under the MIT license. See LICENSE file in the project root for full license information.",
+          "+"
+        ]
+      },
+      {
+        "file": "src/MessagePack.SourceGenerator/CodeAnalysis/ObjectSerializationInfo.cs",
+        "zone": "generator-analysis",
+        "class": "sensitive",
+        "header": "-12,0 +13,6",
+        "lines": 6,
+        "claim": null,
+        "preview": [
+          "+    /// <summary>",
+          "+    /// Gets a value indicating whether the formatter is a user-declared <c>partial</c> class marked with",
+          "+    /// <c>[GeneratedMessagePackFormatter]</c>, into which the generator writes the formatter body."
+        ]
+      },
+      {
+        "file": "src/MessagePack.SourceGenerator/CodeAnalysis/ObjectSerializationInfo.cs",
+        "zone": "generator-analysis",
+        "class": "sensitive",
+        "header": "-161,0 +168",
+        "lines": 1,
+        "claim": null,
+        "preview": [
+          "+            && IsUserDeclaredFormatter == other.IsUserDeclaredFormatter"
+        ]
+      },
+      {
+        "file": "src/MessagePack.SourceGenerator/GeneratorUtilities.cs",
+        "zone": "generator-analysis",
+        "class": "sensitive",
+        "header": "-34,0 +35,2",
+        "lines": 2,
+        "claim": null,
+        "preview": [
+          "+                // Formatters marked with [GeneratedMessagePackFormatter] are generated by the source generator",
+          "+                // and are registered as ObjectSerializationInfo, so they must not also be registered as hand-written formatters."
+        ]
+      },
+      {
+        "file": "src/MessagePack.SourceGenerator/GeneratorUtilities.cs",
+        "zone": "generator-analysis",
+        "class": "sensitive",
+        "header": "-35,0 +38",
+        "lines": 1,
+        "claim": null,
+        "preview": [
+          "+                    && !symbol.GetAttributes().Any(a => a.AttributeClass?.ToDisplayString() == $\"{AttributeNamespace}.{GeneratedMessagePackFormatterAttributeNa"
+        ]
+      },
+      {
+        "file": "src/MessagePack.SourceGenerator/MessagePackGenerator.cs",
+        "zone": "generator-analysis",
+        "class": "sensitive",
+        "header": "-28,0 +29,7",
+        "lines": 7,
+        "claim": null,
+        "preview": [
+          "+        var generatedFormatters = context.SyntaxProvider.ForAttributeWithMetadataName(",
+          "+            $\"{AttributeNamespace}.{GeneratedMessagePackFormatterAttributeName}\",",
+          "+            predicate: static (node, _) => node is ClassDeclarationSyntax,"
+        ]
+      },
+      {
+        "file": "src/MessagePack.SourceGenerator/MessagePackGenerator.cs",
+        "zone": "generator-analysis",
+        "class": "sensitive",
+        "header": "-30 +37",
+        "lines": 2,
+        "claim": null,
+        "preview": [
+          "+            messagePackObjectTypes.Collect().Combine(unionTypes.Collect()).Combine(generatedFormatters.Collect());",
+          "-            messagePackObjectTypes.Collect().Combine(unionTypes.Collect());"
+        ]
+      },
+      {
+        "file": "src/MessagePack.SourceGenerator/MessagePackGenerator.cs",
+        "zone": "generator-analysis",
+        "class": "sensitive",
+        "header": "-53 +60",
+        "lines": 2,
+        "claim": null,
+        "preview": [
+          "+                foreach (var typeSymbol in s.Left.Left.Left.Left)",
+          "-                foreach (var typeSymbol in s.Left.Left.Left)"
+        ]
+      },
+      {
+        "file": "src/MessagePack.SourceGenerator/MessagePackGenerator.cs",
+        "zone": "generator-analysis",
+        "class": "sensitive",
+        "header": "-58 +65",
+        "lines": 2,
+        "claim": null,
+        "preview": [
+          "+                foreach (var typeSymbol in s.Left.Left.Left.Right)",
+          "-                foreach (var typeSymbol in s.Left.Left.Right)"
+        ]
+      },
+      {
+        "file": "src/MessagePack.SourceGenerator/MessagePackGenerator.cs",
+        "zone": "generator-analysis",
+        "class": "sensitive",
+        "header": "-62,0 +70,8",
+        "lines": 8,
+        "claim": null,
+        "preview": [
+          "+                foreach (GeneratedFormatterRequest request in s.Left.Left.Right)",
+          "+                {",
+          "+                    if (GeneratedFormatterCollector.Collect(s.Left.Right, options, referenceSymbols, reportDiagnostic: null, request.Formatter, request.Surroga"
+        ]
+      },
+      {
+        "file": "src/MessagePack.SourceGenerator/MessagePackGenerator.cs",
+        "zone": "generator-analysis",
+        "class": "sensitive",
+        "header": "-99,0 +115,18",
+        "lines": 18,
+        "claim": null,
+        "preview": [
+          "+        // Diagnostics for [GeneratedMessagePackFormatter] classes are reported separately from the models,",
+          "+        // so that a rejected formatter produces a diagnostic and no partial output.",
+          "+        var generatedFormatterDiagnostics = generatedFormatters"
+        ]
+      },
+      {
+        "file": "src/MessagePack.SourceGenerator/Transforms/FormatterTemplate.cs",
+        "zone": "compiled-templates",
+        "class": "derived",
+        "header": "-33 +33,3",
+        "lines": 4,
+        "claim": null,
+        "preview": [
+          "+            this.Write(\"\\t\");",
+          "+            this.Write(this.ToStringHelper.ToStringWithCulture(Info.IsUserDeclaredFormatter ? \"partial class\" : \"internal sealed class\"));",
+          "+            this.Write(\" \");",
+          "-            this.Write(\"\\tinternal sealed class \");"
+        ]
+      },
+      {
+        "file": "src/MessagePack.SourceGenerator/Transforms/FormatterTemplate.tt",
+        "zone": "generator-output",
+        "class": "sensitive",
+        "header": "-14 +14",
+        "lines": 2,
+        "claim": null,
+        "preview": [
+          "+\t<#= Info.IsUserDeclaredFormatter ? \"partial class\" : \"internal sealed class\" #> <#= Info.Formatter.GetQualifiedName(Qualifiers.None) #> : MsgPack::Formatters.",
+          "-\tinternal sealed class <#= Info.Formatter.GetQualifiedName(Qualifiers.None) #> : MsgPack::Formatters.IMessagePackFormatter<<#= Info.DataType.GetQualifiedName(g"
+        ]
+      },
+      {
+        "file": "src/MessagePack.SourceGenerator/Transforms/StringKey/StringKeyFormatterTemplate.cs",
+        "zone": "compiled-templates",
+        "class": "derived",
+        "header": "-37 +37,3",
+        "lines": 4,
+        "claim": null,
+        "preview": [
+          "+            this.Write(\"\\t\");",
+          "+            this.Write(this.ToStringHelper.ToStringWithCulture(Info.IsUserDeclaredFormatter ? \"partial class\" : \"internal sealed class\"));",
+          "+            this.Write(\" \");",
+          "-            this.Write(\"\\tinternal sealed class \");"
+        ]
+      },
+      {
+        "file": "src/MessagePack.SourceGenerator/Transforms/StringKey/StringKeyFormatterTemplate.tt",
+        "zone": "generator-output",
+        "class": "sensitive",
+        "header": "-18 +18",
+        "lines": 2,
+        "claim": null,
+        "preview": [
+          "+\t<#= Info.IsUserDeclaredFormatter ? \"partial class\" : \"internal sealed class\" #> <#= Info.Formatter.GetQualifiedName(Qualifiers.None) #> : global::MessagePack.",
+          "-\tinternal sealed class <#= Info.Formatter.GetQualifiedName(Qualifiers.None) #> : global::MessagePack.Formatters.IMessagePackFormatter<<#= Info.DataType.GetQual"
+        ]
+      },
+      {
+        "file": "src/MessagePack.SourceGenerator/Utils/Constants.cs",
+        "zone": "generator-analysis",
+        "class": "sensitive",
+        "header": "-16,0 +17,2",
+        "lines": 2,
+        "claim": null,
+        "preview": [
+          "+    internal const string GeneratedMessagePackFormatterAttributeName = \"GeneratedMessagePackFormatterAttribute\";",
+          "+    internal const string GeneratedMessagePackFormatterSurrogatePropertyName = \"SurrogateType\";"
+        ]
+      },
+      {
+        "file": "tests/MessagePack.SourceGenerator.ExecutionTests/GeneratedFormatterForExternalTypes.cs",
+        "zone": "tests",
+        "class": "tests",
+        "header": "-0,0 +1,50",
+        "lines": 50,
+        "claim": null,
+        "preview": [
+          "+// Copyright (c) All contributors. All rights reserved.",
+          "+// Licensed under the MIT license. See LICENSE file in the project root for full license information.",
+          "+"
+        ]
+      },
+      {
+        "file": "tests/MessagePack.SourceGenerator.ExecutionTests/GeneratedFormatterForExternalTypesTests.cs",
+        "zone": "tests",
+        "class": "tests",
+        "header": "-0,0 +1,95",
+        "lines": 95,
+        "claim": null,
+        "preview": [
+          "+// Copyright (c) All contributors. All rights reserved.",
+          "+// Licensed under the MIT license. See LICENSE file in the project root for full license information.",
+          "+"
+        ]
+      },
+      {
+        "file": "tests/MessagePack.SourceGenerator.ExecutionTests/MessagePack.SourceGenerator.ExecutionTests.csproj",
+        "zone": "build-ci-agents",
+        "class": "sensitive",
+        "header": "-16,0 +17,5",
+        "lines": 5,
+        "claim": null,
+        "preview": [
+          "+  <ItemGroup>",
+          "+    <!-- Types from an assembly that does not reference MessagePack (https://github.com/MessagePack-CSharp/MessagePack-CSharp/issues/2129). -->",
+          "+    <ProjectReference Include=\"..\\MessagePack.SourceGenerator.ExternalTypes\\MessagePack.SourceGenerator.ExternalTypes.csproj\" />"
+        ]
+      },
+      {
+        "file": "tests/MessagePack.SourceGenerator.ExternalTypes/ExternalPerson.cs",
+        "zone": "tests",
+        "class": "tests",
+        "header": "-0,0 +1,15",
+        "lines": 15,
+        "claim": null,
+        "preview": [
+          "+// Copyright (c) All contributors. All rights reserved.",
+          "+// Licensed under the MIT license. See LICENSE file in the project root for full license information.",
+          "+"
+        ]
+      },
+      {
+        "file": "tests/MessagePack.SourceGenerator.ExternalTypes/ExternalPoint.cs",
+        "zone": "tests",
+        "class": "tests",
+        "header": "-0,0 +1,12",
+        "lines": 12,
+        "claim": null,
+        "preview": [
+          "+// Copyright (c) All contributors. All rights reserved.",
+          "+// Licensed under the MIT license. See LICENSE file in the project root for full license information.",
+          "+"
+        ]
+      },
+      {
+        "file": "tests/MessagePack.SourceGenerator.ExternalTypes/ExternalWidget.cs",
+        "zone": "tests",
+        "class": "tests",
+        "header": "-0,0 +1,15",
+        "lines": 15,
+        "claim": null,
+        "preview": [
+          "+// Copyright (c) All contributors. All rights reserved.",
+          "+// Licensed under the MIT license. See LICENSE file in the project root for full license information.",
+          "+"
+        ]
+      },
+      {
+        "file": "tests/MessagePack.SourceGenerator.ExternalTypes/MessagePack.SourceGenerator.ExternalTypes.csproj",
+        "zone": "build-ci-agents",
+        "class": "sensitive",
+        "header": "-0,0 +1,17",
+        "lines": 17,
+        "claim": null,
+        "preview": [
+          "+<Project Sdk=\"Microsoft.NET.Sdk\">",
+          "+",
+          "+  <!--"
+        ]
+      },
+      {
+        "file": "tests/MessagePack.SourceGenerator.MapModeExecutionTests/MessagePack.SourceGenerator.MapModeExecutionTests.csproj",
+        "zone": "build-ci-agents",
+        "class": "sensitive",
+        "header": "-13 +13,2",
+        "lines": 3,
+        "claim": null,
+        "preview": [
+          "+    <!-- GeneratedFormatterForExternalTypes*.cs need the ExternalTypes assembly, which this project does not reference. -->",
+          "+    <Compile Include=\"..\\MessagePack.SourceGenerator.ExecutionTests\\**\\*.cs\" Exclude=\"..\\MessagePack.SourceGenerator.ExecutionTests\\**\\GeneratedMessagePackReso",
+          "-    <Compile Include=\"..\\MessagePack.SourceGenerator.ExecutionTests\\**\\*.cs\" Exclude=\"..\\MessagePack.SourceGenerator.ExecutionTests\\**\\GeneratedMessagePackReso"
+        ]
+      },
+      {
+        "file": "tests/MessagePack.SourceGenerator.Tests/GeneratedMessagePackFormatterTests.cs",
+        "zone": "tests",
+        "class": "tests",
+        "header": "-0,0 +1,210",
+        "lines": 210,
+        "claim": null,
+        "preview": [
+          "+// Copyright (c) All contributors. All rights reserved.",
+          "+// Licensed under the MIT license. See LICENSE file in the project root for full license information.",
+          "+"
+        ]
+      }
+    ]
+  },
+  "evidence": [
+    {
+      "id": "TEST-QUALITY",
+      "type": "test-strength",
+      "by": "static analysis of the tests (test_quality.py)",
+      "what": "Assertion strength and test → criterion links across 13 tests",
+      "result": "weak",
+      "detail": "ContractlessClassUsesStringKeysForPublicReadWriteMembers: text only; GeneratedFormattersAreRegisteredInGeneratedResolver: no assertion; 13 agent test(s) linked to no criterion",
+      "affects": []
+    }
+  ],
+  "findings": [],
+  "missed_by_ai": [],
+  "weakened_tests": [],
+  "refusals": [
+    {
+      "id": "R1",
+      "kind": "public-api",
+      "severity": "major",
+      "decider": "public API owner",
+      "question": "Approve the shape and naming of the added public API",
+      "why": "Public contract, irreversible once published",
+      "source": "zone rule"
+    },
+    {
+      "id": "R2",
+      "kind": "diagnostic-ids",
+      "severity": "major",
+      "decider": "maintainer",
+      "question": "Approve the allocation of the new diagnostic IDs",
+      "why": "Public, permanent identifiers",
+      "source": "zone rule"
+    }
+  ],
+  "verdict": {
+    "lane": "RED",
+    "action": "Send back to the agent with the evidence, or full reading + written decision",
+    "reasons_red": [
+      "zone public-api touched (Public contract: shape, naming and compatibility are a human's call.)",
+      "zone diagnostics touched (Allocation of public diagnostic IDs (MsgPackXXX). v2: only declaring an ID counts, not documenting an existing diagnostic.)",
+      "open major refusal R1: Approve the shape and naming of the added public API",
+      "open major refusal R2: Approve the allocation of the new diagnostic IDs",
+      "1043 non-mechanical lines > 800"
+    ],
+    "reasons_orange": [
+      "sensitive zone public-api touched",
+      "zone public-api not trusted yet (new)",
+      "sensitive zone diagnostics touched",
+      "zone diagnostics not trusted yet (new)",
+      "sensitive zone generator-analysis touched",
+      "zone generator-analysis not trusted yet (new)",
+      "sensitive zone compiled-templates touched",
+      "zone compiled-templates not trusted yet (new)",
+      "sensitive zone generator-output touched",
+      "zone generator-output not trusted yet (new)",
+      "zone tests not trusted yet (new)",
+      "sensitive zone build-ci-agents touched",
+      "zone build-ci-agents not trusted yet (new)",
+      "orphan hunk (no claim): README.md -1638,0 +1639,52",
+      "orphan hunk (no claim): doc/analyzers/MsgPack019.md -0,0 +1,26",
+      "orphan hunk (no claim): doc/analyzers/MsgPack020.md -0,0 +1,23",
+      "orphan hunk (no claim): doc/analyzers/MsgPack021.md -0,0 +1,23",
+      "orphan hunk (no claim): doc/analyzers/MsgPack022.md -0,0 +1,31",
+      "orphan hunk (no claim): doc/analyzers/index.md -25,0 +26,4",
+      "orphan hunk (no claim): src/MessagePack.Annotations/Attributes.cs -141,0 +142,36",
+      "orphan hunk (no claim): src/MessagePack.SourceGenerator/AnalyzerReleases.Unshipped.md -25,0 +26,4",
+      "orphan hunk (no claim): src/MessagePack.SourceGenerator/Analyzers/MsgPack00xMessagePackAnalyzer.cs -31,0 +32,4",
+      "orphan hunk (no claim): src/MessagePack.SourceGenerator/Analyzers/MsgPack00xMessagePackAnalyzer.cs -313,0 +318,36",
+      "orphan hunk (no claim): src/MessagePack.SourceGenerator/Analyzers/MsgPack00xMessagePackAnalyzer.cs -341 +381,5",
+      "orphan hunk (no claim): src/MessagePack.SourceGenerator/CodeAnalysis/GeneratedFormatterCollector.cs -0,0 +1,300",
+      "orphan hunk (no claim): src/MessagePack.SourceGenerator/CodeAnalysis/GeneratedFormatterRequest.cs -0,0 +1,13",
+      "orphan hunk (no claim): src/MessagePack.SourceGenerator/CodeAnalysis/ObjectSerializationInfo.cs -12,0 +13,6",
+      "orphan hunk (no claim): src/MessagePack.SourceGenerator/CodeAnalysis/ObjectSerializationInfo.cs -161,0 +168",
+      "orphan hunk (no claim): src/MessagePack.SourceGenerator/GeneratorUtilities.cs -34,0 +35,2",
+      "orphan hunk (no claim): src/MessagePack.SourceGenerator/GeneratorUtilities.cs -35,0 +38",
+      "orphan hunk (no claim): src/MessagePack.SourceGenerator/MessagePackGenerator.cs -28,0 +29,7",
+      "orphan hunk (no claim): src/MessagePack.SourceGenerator/MessagePackGenerator.cs -30 +37",
+      "orphan hunk (no claim): src/MessagePack.SourceGenerator/MessagePackGenerator.cs -53 +60",
+      "orphan hunk (no claim): src/MessagePack.SourceGenerator/MessagePackGenerator.cs -58 +65",
+      "orphan hunk (no claim): src/MessagePack.SourceGenerator/MessagePackGenerator.cs -62,0 +70,8",
+      "orphan hunk (no claim): src/MessagePack.SourceGenerator/MessagePackGenerator.cs -99,0 +115,18",
+      "orphan hunk (no claim): src/MessagePack.SourceGenerator/Transforms/FormatterTemplate.cs -33 +33,3",
+      "orphan hunk (no claim): src/MessagePack.SourceGenerator/Transforms/FormatterTemplate.tt -14 +14",
+      "orphan hunk (no claim): src/MessagePack.SourceGenerator/Transforms/StringKey/StringKeyFormatterTemplate.cs -37 +37,3",
+      "orphan hunk (no claim): src/MessagePack.SourceGenerator/Transforms/StringKey/StringKeyFormatterTemplate.tt -18 +18",
+      "orphan hunk (no claim): src/MessagePack.SourceGenerator/Utils/Constants.cs -16,0 +17,2",
+      "orphan hunk (no claim): tests/MessagePack.SourceGenerator.ExecutionTests/GeneratedFormatterForExternalTypes.cs -0,0 +1,50",
+      "orphan hunk (no claim): tests/MessagePack.SourceGenerator.ExecutionTests/GeneratedFormatterForExternalTypesTests.cs -0,0 +1,95",
+      "orphan hunk (no claim): tests/MessagePack.SourceGenerator.ExecutionTests/MessagePack.SourceGenerator.ExecutionTests.csproj -16,0 +17,5",
+      "orphan hunk (no claim): tests/MessagePack.SourceGenerator.ExternalTypes/ExternalPerson.cs -0,0 +1,15",
+      "orphan hunk (no claim): tests/MessagePack.SourceGenerator.ExternalTypes/ExternalPoint.cs -0,0 +1,12",
+      "orphan hunk (no claim): tests/MessagePack.SourceGenerator.ExternalTypes/ExternalWidget.cs -0,0 +1,15",
+      "orphan hunk (no claim): tests/MessagePack.SourceGenerator.ExternalTypes/MessagePack.SourceGenerator.ExternalTypes.csproj -0,0 +1,17",
+      "orphan hunk (no claim): tests/MessagePack.SourceGenerator.MapModeExecutionTests/MessagePack.SourceGenerator.MapModeExecutionTests.csproj -13 +13,2",
+      "orphan hunk (no claim): tests/MessagePack.SourceGenerator.Tests/GeneratedMessagePackFormatterTests.cs -0,0 +1,210",
+      "criterion AC-1 not demonstrated",
+      "criterion AC-2 not demonstrated",
+      "weak agent test: ContractlessClassUsesStringKeysForPublicReadWriteMembers (text only)",
+      "weak agent test: GeneratedFormattersAreRegisteredInGeneratedResolver (no assertion)"
+    ]
+  },
+  "tests": [
+    {
+      "test": "ContractlessClassRoundTrips",
+      "source": "tests/MessagePack.SourceGenerator.ExecutionTests/GeneratedFormatterForExternalTypesTests.cs",
+      "criteria": [],
+      "assertions": 2,
+      "lines": 9,
+      "issues": [],
+      "origin": "agent",
+      "branch": "not run"
+    },
+    {
+      "test": "ContractlessClassUsesStringKeysForPublicReadWriteMembers",
+      "source": "tests/MessagePack.SourceGenerator.ExecutionTests/GeneratedFormatterForExternalTypesTests.cs",
+      "criteria": [],
+      "assertions": 4,
+      "lines": 10,
+      "issues": [
+        "text only"
+      ],
+      "origin": "agent",
+      "branch": "not run"
+    },
+    {
+      "test": "ContractlessClassNullRoundTrips",
+      "source": "tests/MessagePack.SourceGenerator.ExecutionTests/GeneratedFormatterForExternalTypesTests.cs",
+      "criteria": [],
+      "assertions": 1,
+      "lines": 4,
+      "issues": [],
+      "origin": "agent",
+      "branch": "not run"
+    },
+    {
+      "test": "ContractlessStructRoundTrips",
+      "source": "tests/MessagePack.SourceGenerator.ExecutionTests/GeneratedFormatterForExternalTypesTests.cs",
+      "criteria": [],
+      "assertions": 2,
+      "lines": 8,
+      "issues": [],
+      "origin": "agent",
+      "branch": "not run"
+    },
+    {
+      "test": "SurrogateControlsKeysAndMembership",
+      "source": "tests/MessagePack.SourceGenerator.ExecutionTests/GeneratedFormatterForExternalTypesTests.cs",
+      "criteria": [],
+      "assertions": 4,
+      "lines": 14,
+      "issues": [],
+      "origin": "agent",
+      "branch": "not run"
+    },
+    {
+      "test": "MessagePackObjectCanContainExternalTypes",
+      "source": "tests/MessagePack.SourceGenerator.ExecutionTests/GeneratedFormatterForExternalTypesTests.cs",
+      "criteria": [],
+      "assertions": 4,
+      "lines": 14,
+      "issues": [],
+      "origin": "agent",
+      "branch": "not run"
+    },
+    {
+      "test": "GeneratedFormattersAreRegisteredInGeneratedResolver",
+      "source": "tests/MessagePack.SourceGenerator.ExecutionTests/GeneratedFormatterForExternalTypesTests.cs",
+      "criteria": [],
+      "assertions": 0,
+      "lines": 5,
+      "issues": [
+        "no assertion"
+      ],
+      "origin": "agent",
+      "branch": "not run"
+    },
+    {
+      "test": "FormatterMustBePartial",
+      "source": "tests/MessagePack.SourceGenerator.Tests/GeneratedMessagePackFormatterTests.cs",
+      "criteria": [],
+      "assertions": 2,
+      "lines": 25,
+      "issues": [],
+      "origin": "agent",
+      "branch": "not run"
+    },
+    {
+      "test": "FormatterMustImplementFormatterOfT",
+      "source": "tests/MessagePack.SourceGenerator.Tests/GeneratedMessagePackFormatterTests.cs",
+      "criteria": [],
+      "assertions": 2,
+      "lines": 18,
+      "issues": [],
+      "origin": "agent",
+      "branch": "not run"
+    },
+    {
+      "test": "FormattedTypeMustNotBeAbstract",
+      "source": "tests/MessagePack.SourceGenerator.Tests/GeneratedMessagePackFormatterTests.cs",
+      "criteria": [],
+      "assertions": 2,
+      "lines": 24,
+      "issues": [],
+      "origin": "agent",
+      "branch": "not run"
+    },
+    {
+      "test": "SurrogateMemberMustMatchFormattedType",
+      "source": "tests/MessagePack.SourceGenerator.Tests/GeneratedMessagePackFormatterTests.cs",
+      "criteria": [],
+      "assertions": 2,
+      "lines": 31,
+      "issues": [],
+      "origin": "agent",
+      "branch": "not run"
+    },
+    {
+      "test": "SurrogateMemberMustHaveMatchingType",
+      "source": "tests/MessagePack.SourceGenerator.Tests/GeneratedMessagePackFormatterTests.cs",
+      "criteria": [],
+      "assertions": 2,
+      "lines": 31,
+      "issues": [],
+      "origin": "agent",
+      "branch": "not run"
+    },
+    {
+      "test": "SurrogateKeysMustNotMixStringAndInt",
+      "source": "tests/MessagePack.SourceGenerator.Tests/GeneratedMessagePackFormatterTests.cs",
+      "criteria": [],
+      "assertions": 2,
+      "lines": 36,
+      "issues": [],
+      "origin": "agent",
+      "branch": "not run"
+    }
+  ],
+  "reading_contract": {
+    "must_read": [
+      {
+        "file": "README.md",
+        "header": "-1638,0 +1639,52",
+        "lines": 52,
+        "why": "orphan"
+      },
+      {
+        "file": "doc/analyzers/MsgPack019.md",
+        "header": "-0,0 +1,26",
+        "lines": 26,
+        "why": "orphan"
+      },
+      {
+        "file": "doc/analyzers/MsgPack020.md",
+        "header": "-0,0 +1,23",
+        "lines": 23,
+        "why": "orphan"
+      },
+      {
+        "file": "doc/analyzers/MsgPack021.md",
+        "header": "-0,0 +1,23",
+        "lines": 23,
+        "why": "orphan"
+      },
+      {
+        "file": "doc/analyzers/MsgPack022.md",
+        "header": "-0,0 +1,31",
+        "lines": 31,
+        "why": "orphan"
+      },
+      {
+        "file": "doc/analyzers/index.md",
+        "header": "-25,0 +26,4",
+        "lines": 4,
+        "why": "orphan"
+      },
+      {
+        "file": "src/MessagePack.Annotations/Attributes.cs",
+        "header": "-141,0 +142,36",
+        "lines": 36,
+        "why": "orphan"
+      },
+      {
+        "file": "src/MessagePack.SourceGenerator/AnalyzerReleases.Unshipped.md",
+        "header": "-25,0 +26,4",
+        "lines": 4,
+        "why": "orphan"
+      },
+      {
+        "file": "src/MessagePack.SourceGenerator/Analyzers/MsgPack00xMessagePackAnalyzer.cs",
+        "header": "-31,0 +32,4",
+        "lines": 4,
+        "why": "orphan"
+      },
+      {
+        "file": "src/MessagePack.SourceGenerator/Analyzers/MsgPack00xMessagePackAnalyzer.cs",
+        "header": "-313,0 +318,36",
+        "lines": 36,
+        "why": "orphan"
+      },
+      {
+        "file": "src/MessagePack.SourceGenerator/Analyzers/MsgPack00xMessagePackAnalyzer.cs",
+        "header": "-341 +381,5",
+        "lines": 6,
+        "why": "orphan"
+      },
+      {
+        "file": "src/MessagePack.SourceGenerator/CodeAnalysis/GeneratedFormatterCollector.cs",
+        "header": "-0,0 +1,300",
+        "lines": 300,
+        "why": "orphan"
+      },
+      {
+        "file": "src/MessagePack.SourceGenerator/CodeAnalysis/GeneratedFormatterRequest.cs",
+        "header": "-0,0 +1,13",
+        "lines": 13,
+        "why": "orphan"
+      },
+      {
+        "file": "src/MessagePack.SourceGenerator/CodeAnalysis/ObjectSerializationInfo.cs",
+        "header": "-12,0 +13,6",
+        "lines": 6,
+        "why": "orphan"
+      },
+      {
+        "file": "src/MessagePack.SourceGenerator/CodeAnalysis/ObjectSerializationInfo.cs",
+        "header": "-161,0 +168",
+        "lines": 1,
+        "why": "orphan"
+      },
+      {
+        "file": "src/MessagePack.SourceGenerator/GeneratorUtilities.cs",
+        "header": "-34,0 +35,2",
+        "lines": 2,
+        "why": "orphan"
+      },
+      {
+        "file": "src/MessagePack.SourceGenerator/GeneratorUtilities.cs",
+        "header": "-35,0 +38",
+        "lines": 1,
+        "why": "orphan"
+      },
+      {
+        "file": "src/MessagePack.SourceGenerator/MessagePackGenerator.cs",
+        "header": "-28,0 +29,7",
+        "lines": 7,
+        "why": "orphan"
+      },
+      {
+        "file": "src/MessagePack.SourceGenerator/MessagePackGenerator.cs",
+        "header": "-30 +37",
+        "lines": 2,
+        "why": "orphan"
+      },
+      {
+        "file": "src/MessagePack.SourceGenerator/MessagePackGenerator.cs",
+        "header": "-53 +60",
+        "lines": 2,
+        "why": "orphan"
+      },
+      {
+        "file": "src/MessagePack.SourceGenerator/MessagePackGenerator.cs",
+        "header": "-58 +65",
+        "lines": 2,
+        "why": "orphan"
+      },
+      {
+        "file": "src/MessagePack.SourceGenerator/MessagePackGenerator.cs",
+        "header": "-62,0 +70,8",
+        "lines": 8,
+        "why": "orphan"
+      },
+      {
+        "file": "src/MessagePack.SourceGenerator/MessagePackGenerator.cs",
+        "header": "-99,0 +115,18",
+        "lines": 18,
+        "why": "orphan"
+      },
+      {
+        "file": "src/MessagePack.SourceGenerator/Transforms/FormatterTemplate.tt",
+        "header": "-14 +14",
+        "lines": 2,
+        "why": "orphan"
+      },
+      {
+        "file": "src/MessagePack.SourceGenerator/Transforms/StringKey/StringKeyFormatterTemplate.tt",
+        "header": "-18 +18",
+        "lines": 2,
+        "why": "orphan"
+      },
+      {
+        "file": "src/MessagePack.SourceGenerator/Utils/Constants.cs",
+        "header": "-16,0 +17,2",
+        "lines": 2,
+        "why": "orphan"
+      },
+      {
+        "file": "tests/MessagePack.SourceGenerator.ExecutionTests/GeneratedFormatterForExternalTypes.cs",
+        "header": "-0,0 +1,50",
+        "lines": 50,
+        "why": "orphan"
+      },
+      {
+        "file": "tests/MessagePack.SourceGenerator.ExecutionTests/GeneratedFormatterForExternalTypesTests.cs",
+        "header": "-0,0 +1,95",
+        "lines": 95,
+        "why": "orphan"
+      },
+      {
+        "file": "tests/MessagePack.SourceGenerator.ExecutionTests/MessagePack.SourceGenerator.ExecutionTests.csproj",
+        "header": "-16,0 +17,5",
+        "lines": 5,
+        "why": "orphan"
+      },
+      {
+        "file": "tests/MessagePack.SourceGenerator.ExternalTypes/ExternalPerson.cs",
+        "header": "-0,0 +1,15",
+        "lines": 15,
+        "why": "orphan"
+      },
+      {
+        "file": "tests/MessagePack.SourceGenerator.ExternalTypes/ExternalPoint.cs",
+        "header": "-0,0 +1,12",
+        "lines": 12,
+        "why": "orphan"
+      },
+      {
+        "file": "tests/MessagePack.SourceGenerator.ExternalTypes/ExternalWidget.cs",
+        "header": "-0,0 +1,15",
+        "lines": 15,
+        "why": "orphan"
+      },
+      {
+        "file": "tests/MessagePack.SourceGenerator.ExternalTypes/MessagePack.SourceGenerator.ExternalTypes.csproj",
+        "header": "-0,0 +1,17",
+        "lines": 17,
+        "why": "orphan"
+      },
+      {
+        "file": "tests/MessagePack.SourceGenerator.MapModeExecutionTests/MessagePack.SourceGenerator.MapModeExecutionTests.csproj",
+        "header": "-13 +13,2",
+        "lines": 3,
+        "why": "orphan"
+      },
+      {
+        "file": "tests/MessagePack.SourceGenerator.Tests/GeneratedMessagePackFormatterTests.cs",
+        "header": "-0,0 +1,210",
+        "lines": 210,
+        "why": "orphan"
+      },
+      {
+        "file": "tests/MessagePack.SourceGenerator.ExecutionTests/GeneratedFormatterForExternalTypesTests.cs",
+        "header": "ContractlessClassUsesStringKeysForPublicReadWriteMembers",
+        "lines": 0,
+        "why": "weak test: text only (lines already counted)"
+      },
+      {
+        "file": "tests/MessagePack.SourceGenerator.ExecutionTests/GeneratedFormatterForExternalTypesTests.cs",
+        "header": "GeneratedFormattersAreRegisteredInGeneratedResolver",
+        "lines": 0,
+        "why": "weak test: no assertion (lines already counted)"
+      }
+    ],
+    "excluded": [
+      {
+        "kind": "derived",
+        "what": "2 files derived from a source",
+        "lines": 8,
+        "why": "read through their source (Code produced by T4 from the .tt; its observable behaviour is the generated output (snapshots). Read the .tt, not the .cs.)",
+        "proof": "policy zone(s) compiled-templates"
+      }
+    ],
+    "test_files_summarised": [
+      "tests/MessagePack.SourceGenerator.ExecutionTests/GeneratedFormatterForExternalTypes.cs",
+      "tests/MessagePack.SourceGenerator.ExecutionTests/GeneratedFormatterForExternalTypesTests.cs",
+      "tests/MessagePack.SourceGenerator.ExternalTypes/ExternalPerson.cs",
+      "tests/MessagePack.SourceGenerator.ExternalTypes/ExternalPoint.cs",
+      "tests/MessagePack.SourceGenerator.ExternalTypes/ExternalWidget.cs",
+      "tests/MessagePack.SourceGenerator.Tests/GeneratedMessagePackFormatterTests.cs"
+    ],
+    "lines_to_read": 1035,
+    "lines_total": 1043,
+    "files_to_read": 26,
+    "files_total": 28
+  },
+  "attestation_draft": {
+    "checked": [
+      {
+        "what": "Assertion strength and test → criterion links across 13 tests → weak",
+        "by": "static analysis of the tests (test_quality.py)",
+        "id": "TEST-QUALITY"
+      },
+      {
+        "what": "37 reading-contract hunks (1035 lines)",
+        "by": "owner (to tick)"
+      }
+    ],
+    "not_checked": [
+      {
+        "what": "2 files derived from a source",
+        "why": "read through their source (Code produced by T4 from the .tt; its observable behaviour is the generated output (snapshots). Read the .tt, not the .cs.)"
+      },
+      {
+        "what": "Criterion AC-1 by a linked test",
+        "why": "not demonstrated"
+      },
+      {
+        "what": "Criterion AC-2 by a linked test",
+        "why": "not demonstrated"
+      },
+      {
+        "what": "Execution of the change",
+        "why": "no executed evidence provided for this change"
+      }
+    ],
+    "decisions": [
+      {
+        "refusal": "R1",
+        "question": "Approve the shape and naming of the added public API",
+        "decision": null
+      },
+      {
+        "refusal": "R2",
+        "question": "Approve the allocation of the new diagnostic IDs",
+        "decision": null
+      }
+    ],
+    "residual_risk": null,
+    "signed_by": null,
+    "date": null
+  },
+  "fingerprint": "c96aecde35b81891"
+}

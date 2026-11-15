@@ -1,0 +1,8 @@
+root = true
+
+# REQ-2234 / E1: report every MessagePack analyzer diagnostic as a warning so the build completes and lists them all.
+[*.cs]
+dotnet_diagnostic.MsgPack003.severity = warning
+dotnet_diagnostic.MsgPack004.severity = warning
+dotnet_diagnostic.MsgPack005.severity = warning
+dotnet_diagnostic.MsgPack015.severity = warning

@@ -1,0 +1,42 @@
+{
+ "evidence": "E1",
+ "title": "Does the issue's project (lib + app) compile without a generator crash, with a working resolver?",
+ "kind": "e2e-project",
+ "scenario_file": "scenarios/E2E-2283-Program.cs",
+ "scenario_modified": false,
+ "base_ref": "32258fdb",
+ "head_ref": "origin/ju26-issue-2283",
+ "base": {
+  "status": "ran with warnings",
+  "runs": [
+   "ran with warnings",
+   "ran with warnings",
+   "ran with warnings"
+  ],
+  "lines": [
+   "warnings: 2",
+   "  warning AD0001: Analyzer 'MessagePack.SourceGenerator.Analyzers.MsgPack00xMessagePackAnalyzer' threw an exception of type 'System.IndexOutOfRangeException' with message 'Index was outside the bounds o",
+   "  warning CS8785: Generator 'MessagePackGenerator' failed to generate source. It will not contribute to the output and compilation errors may occur as a result. Exception was of type 'IndexOutOfRangeExc",
+   "AC-2 resolver generated in app: NO"
+  ],
+  "seconds": 19
+ },
+ "branch": {
+  "status": "ran",
+  "runs": [
+   "ran",
+   "ran",
+   "ran"
+  ],
+  "lines": [
+   "warnings: none",
+   "AC-2 resolver generated in app: yes",
+   "AC-2 formatter for Cmd: yes",
+   "AC-3 round-trip: OK"
+  ],
+  "seconds": 20
+ },
+ "verdict": "different behaviour",
+ "repeat": 3,
+ "replayed_at": "2026-11-15T03:31:35"
+}

@@ -1,0 +1,119 @@
+{
+  "operator": "revert-one-hunk",
+  "mutants": 10,
+  "killed_by_agent_tests": 3,
+  "killed_by_full_suite": 10,
+  "survivors_full_suite": [],
+  "results": [
+    {
+      "id": "M1",
+      "file": "src/MessagePack.SourceGenerator/Transforms/CompositeResolverTemplate.cs",
+      "index": 1,
+      "header": "@@ -27 +27 @@ namespace MessagePack.SourceGenerator.Transforms",
+      "agent_tests": "survived",
+      "agent_detail": "0 failed / 2 passed",
+      "full_suite": "killed",
+      "full_detail": "2 failed / 167 passed",
+      "seconds": 18
+    },
+    {
+      "id": "M2",
+      "file": "src/MessagePack.SourceGenerator/Transforms/CompositeResolverTemplate.cs",
+      "index": 2,
+      "header": "@@ -55,0 +56,3 @@ namespace MessagePack.SourceGenerator.Transforms",
+      "agent_tests": "survived",
+      "agent_detail": "0 failed / 2 passed",
+      "full_suite": "killed",
+      "full_detail": "2 failed / 167 passed",
+      "seconds": 16
+    },
+    {
+      "id": "M3",
+      "file": "src/MessagePack.SourceGenerator/Transforms/EnumTemplate.cs",
+      "index": 1,
+      "header": "@@ -27 +27 @@ namespace MessagePack.SourceGenerator.Transforms",
+      "agent_tests": "survived",
+      "agent_detail": "0 failed / 2 passed",
+      "full_suite": "killed",
+      "full_detail": "9 failed / 160 passed",
+      "seconds": 16
+    },
+    {
+      "id": "M4",
+      "file": "src/MessagePack.SourceGenerator/Transforms/FormatterTemplate.cs",
+      "index": 1,
+      "header": "@@ -33 +33 @@ namespace MessagePack.SourceGenerator.Transforms",
+      "agent_tests": "killed",
+      "agent_detail": "2 failed / 0 passed",
+      "full_suite": "killed",
+      "full_detail": "63 failed / 106 passed",
+      "seconds": 16
+    },
+    {
+      "id": "M5",
+      "file": "src/MessagePack.SourceGenerator/Transforms/ResolverTemplate.cs",
+      "index": 1,
+      "header": "@@ -38 +38 @@ namespace MessagePack.SourceGenerator.Transforms",
+      "agent_tests": "survived",
+      "agent_detail": "0 failed / 2 passed",
+      "full_suite": "killed",
+      "full_detail": "87 failed / 82 passed",
+      "seconds": 17
+    },
+    {
+      "id": "M6",
+      "file": "src/MessagePack.SourceGenerator/Transforms/ResolverTemplate.cs",
+      "index": 2,
+      "header": "@@ -54,0 +55,3 @@ namespace MessagePack.SourceGenerator.Transforms",
+      "agent_tests": "survived",
+      "agent_detail": "0 failed / 2 passed",
+      "full_suite": "killed",
+      "full_detail": "87 failed / 82 passed",
+      "seconds": 30
+    },
+    {
+      "id": "M7",
+      "file": "src/MessagePack.SourceGenerator/Transforms/ResolverTemplate.cs",
+      "index": 3,
+      "header": "@@ -64 +67 @@ namespace MessagePack.SourceGenerator.Transforms",
+      "agent_tests": "survived",
+      "agent_detail": "0 failed / 2 passed",
+      "full_suite": "killed",
+      "full_detail": "87 failed / 82 passed",
+      "seconds": 16
+    },
+    {
+      "id": "M8",
+      "file": "src/MessagePack.SourceGenerator/Transforms/StringKey/StringKeyFormatterTemplate.cs",
+      "index": 1,
+      "header": "@@ -37 +37 @@ namespace MessagePack.SourceGenerator.Transforms",
+      "agent_tests": "killed",
+      "agent_detail": "2 failed / 0 passed",
+      "full_suite": "killed",
+      "full_detail": "25 failed / 144 passed",
+      "seconds": 26
+    },
+    {
+      "id": "M9",
+      "file": "src/MessagePack.SourceGenerator/Transforms/TransformUtilities.cs",
+      "index": 1,
+      "header": "@@ -58 +58 @@ internal static class TransformUtilities",
+      "agent_tests": "survived",
+      "agent_detail": "0 failed / 2 passed",
+      "full_suite": "killed",
+      "full_detail": "1 failed / 168 passed",
+      "seconds": 19
+    },
+    {
+      "id": "M10",
+      "file": "src/MessagePack.SourceGenerator/Transforms/UnionTemplate.cs",
+      "index": 1,
+      "header": "@@ -30 +30 @@ namespace MessagePack.SourceGenerator.Transforms",
+      "agent_tests": "killed",
+      "agent_detail": "2 failed / 0 passed",
+      "full_suite": "killed",
+      "full_detail": "6 failed / 163 passed",
+      "seconds": 17
+    }
+  ]
+}

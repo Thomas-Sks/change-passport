@@ -1,0 +1,92 @@
+{
+  "passport": "REQ-2297",
+  "fingerprint": "see out/REQ-2297.passport.json",
+  "lane": "RED",
+  "signed_by": "Camille Durand (synthetic) — CODEOWNER src/MessagePack.SourceGenerator",
+  "date": "2026-11-14",
+  "answers_before_ai": {
+    "criteria_reflect_requirement": "Yes for AC-1/AC-4. AC-2 and AC-3 make explicit what the issue implicitly assumes: all consumers, no breakage.",
+    "must_not_change": "Users' code must keep compiling, and their own code must remain measured by coverage."
+  },
+  "checked": [
+    {
+      "what": "221/222 snapshots compliant with the mechanical rule; 2 deviations explained by the orphan hunk in TransformUtilities",
+      "by": "mechanical rule"
+    },
+    {
+      "what": "Every generated type in every snapshot carries the attribute (MECH-COV)",
+      "by": "coverage rule derived from AC-1"
+    },
+    {
+      "what": "SourceGenerator.Tests suite: 169/169",
+      "by": "isolated CI"
+    },
+    {
+      "what": "Agent's tests: fail on base, pass on the branch",
+      "by": "isolated CI"
+    },
+    {
+      "what": "CS0579 regression for a resolver that is already annotated",
+      "by": "independent acceptance test (E3)"
+    },
+    {
+      "what": "User code in a partial resolver excluded from coverage",
+      "by": "independent acceptance test (E4)"
+    },
+    {
+      "what": "Attribute available in netstandard2.0 and net472",
+      "by": "inspection of the reference assemblies (E5)"
+    },
+    {
+      "what": "Real consumer project net8.0 + netstandard2.0: user code excluded on net8.0, feature missing on netstandard2.0",
+      "by": "E2E sandbox (E8)"
+    },
+    {
+      "what": "The 7 .tt files, TransformUtilities.cs, README, 2 flagged snapshots (42 lines)",
+      "by": "me (reading)"
+    }
+  ],
+  "not_checked": [
+    {
+      "what": "T4-generated .cs templates",
+      "why": "read through their .tt; behaviour covered by the snapshot rule"
+    },
+    {
+      "what": "Third-party coverage tools",
+      "why": "outside the repository"
+    },
+    {
+      "what": "Real user projects",
+      "why": "no corpus; 2 scenarios tested"
+    }
+  ],
+  "decisions": [
+    {
+      "refusal": "R1",
+      "question": "Exclude hand-written code in a partial resolver from coverage?",
+      "decision": "Rejected: send back to the agent",
+      "condition": "Do not annotate the resolver's partial declaration; annotate only the generated members and nested types."
+    },
+    {
+      "refusal": "R2",
+      "question": "Ship to netstandard2.0 and .NET Framework consumers?",
+      "decision": "Accepted",
+      "condition": "Remove the #if guard: the attribute exists on these targets (E5)."
+    },
+    {
+      "refusal": "R3",
+      "question": "A setting to switch it on/off?",
+      "decision": "Rejected",
+      "condition": "No setting, as per the issue."
+    },
+    {
+      "refusal": "R4",
+      "question": "Accept C3 (README) without evidence?",
+      "decision": "Accepted with condition",
+      "condition": "Rewrite the sentence about targets after the fix."
+    }
+  ],
+  "outcome": "NOT ACCEPTED — sent back to the agent with E3, E4, E5 and the decisions above. The change will go through the factory again.",
+  "residual_risk": "None accepted: change sent back.",
+  "time_spent_minutes": "not timed in this demo (to be measured live)"
+}

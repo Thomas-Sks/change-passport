@@ -1,0 +1,514 @@
+{
+  "schema": "change-passport/2",
+  "change": {
+    "branch": "ju26-issue-2283",
+    "base": "32258fdb",
+    "head": "9df83c38",
+    "files": 4,
+    "changed_lines": 228
+  },
+  "requirement": {
+    "id": "REQ-2283",
+    "title": "Generator and analyzer crash with IndexOutOfRangeException on a closed generic struct from a referenced assembly",
+    "source": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/issues/2283",
+    "owner": "Camille Durand (synthetic) — CODEOWNER src/MessagePack.SourceGenerator",
+    "policy_guardian": "Sam Leroy (synthetic) — tech lead"
+  },
+  "acceptance_criteria": [
+    {
+      "id": "AC-1",
+      "text": "Neither the generator (CS8785) nor the analyzer (AD0001) crashes when a [MessagePackObject] type has a member whose type is a closed generic value type (struct or record struct) declared in a referenced assembly.",
+      "status": "not demonstrated",
+      "evidence": [],
+      "tests": []
+    },
+    {
+      "id": "AC-2",
+      "text": "In that case, the consuming assembly gets a generated resolver that provides a formatter for the type.",
+      "status": "not demonstrated",
+      "evidence": [],
+      "tests": []
+    },
+    {
+      "id": "AC-3",
+      "text": "At runtime, such a type round-trips (serialize then deserialize) with the generated resolver.",
+      "status": "not demonstrated",
+      "evidence": [],
+      "tests": []
+    },
+    {
+      "id": "AC-4",
+      "text": "Cases that already worked (non-generic struct, generic class, generic struct declared in the same assembly) keep working.",
+      "status": "not demonstrated",
+      "evidence": [],
+      "tests": []
+    }
+  ],
+  "claims": [
+    {
+      "id": "C1",
+      "text": "Closed generic types from a referenced assembly, including generic value types and record structs, can be used as members of [MessagePackObject] types.",
+      "status": "unproven",
+      "evidence": []
+    },
+    {
+      "id": "C2",
+      "text": "Diagnostics about members of such a type are reported by the defining assembly, not by the consuming project (the analyzer only reports on members declared in the project being compiled).",
+      "status": "unproven",
+      "evidence": []
+    },
+    {
+      "id": "C3",
+      "text": "Documentation describes the new behaviour.",
+      "status": "unproven",
+      "evidence": []
+    },
+    {
+      "id": "C4",
+      "text": "Tests cover closed generic structs and record structs from a metadata reference.",
+      "status": "unproven",
+      "evidence": [
+        "TEST-QUALITY"
+      ]
+    }
+  ],
+  "zones": [
+    {
+      "zone": "tests",
+      "class": "tests",
+      "files": 1,
+      "lines": 189,
+      "severity": null,
+      "why": "Tests are evidence; their strength is measured, not assumed.",
+      "trust": "new"
+    },
+    {
+      "zone": "generator-analysis",
+      "class": "sensitive",
+      "files": 1,
+      "lines": 29,
+      "severity": "minor",
+      "why": "Analysis logic of the generator and the analyzers.",
+      "trust": "new"
+    },
+    {
+      "zone": "docs",
+      "class": "ordinary",
+      "files": 2,
+      "lines": 10,
+      "severity": null,
+      "why": "Documentation; read because it makes claims.",
+      "trust": "trusted"
+    }
+  ],
+  "mechanical": {
+    "rule": [],
+    "passed": 0,
+    "flagged": []
+  },
+  "traceability": {
+    "hunks": 9,
+    "traced": 9,
+    "orphans": []
+  },
+  "evidence": [
+    {
+      "id": "TEST-QUALITY",
+      "type": "test-strength",
+      "by": "static analysis of the tests (test_quality.py)",
+      "what": "Assertion strength and test → criterion links across 19 tests",
+      "result": "weak",
+      "detail": "19 agent test(s) linked to no criterion",
+      "affects": [
+        "C4"
+      ]
+    }
+  ],
+  "findings": [],
+  "missed_by_ai": [],
+  "weakened_tests": [],
+  "refusals": [
+    {
+      "id": "R1",
+      "kind": "unproven-claim",
+      "severity": "minor",
+      "decider": "named owner",
+      "question": "Accept claim C1 without evidence: “Closed generic types from a referenced assembly, including generic value types and record structs, can be used as members of [MessagePackObject] types.”",
+      "why": "No executed or mechanical evidence",
+      "source": "rule"
+    },
+    {
+      "id": "R2",
+      "kind": "unproven-claim",
+      "severity": "minor",
+      "decider": "named owner",
+      "question": "Accept claim C2 without evidence: “Diagnostics about members of such a type are reported by the defining assembly, not by the consuming project (the analyzer only reports on members declared in the project being compiled).”",
+      "why": "No executed or mechanical evidence",
+      "source": "rule"
+    },
+    {
+      "id": "R3",
+      "kind": "unproven-claim",
+      "severity": "minor",
+      "decider": "named owner",
+      "question": "Accept claim C3 without evidence: “Documentation describes the new behaviour.”",
+      "why": "No executed or mechanical evidence",
+      "source": "rule"
+    },
+    {
+      "id": "R4",
+      "kind": "unproven-claim",
+      "severity": "minor",
+      "decider": "named owner",
+      "question": "Accept claim C4 without evidence: “Tests cover closed generic structs and record structs from a metadata reference.”",
+      "why": "No executed or mechanical evidence",
+      "source": "rule"
+    }
+  ],
+  "verdict": {
+    "lane": "ORANGE",
+    "action": "Targeted reading of the reading contract + refusals settled + signature",
+    "reasons_red": [],
+    "reasons_orange": [
+      "sensitive zone generator-analysis touched",
+      "zone generator-analysis not trusted yet (new)",
+      "zone tests not trusted yet (new)",
+      "criterion AC-1 not demonstrated",
+      "criterion AC-2 not demonstrated",
+      "criterion AC-3 not demonstrated",
+      "criterion AC-4 not demonstrated",
+      "claim C1 unproven",
+      "claim C2 unproven",
+      "claim C3 unproven",
+      "claim C4 unproven",
+      "refusal R1: Accept claim C1 without evidence: “Closed generic types from a referenced assembly, including generic value types and record structs, can be used as members of [MessagePackObject] types.”",
+      "refusal R2: Accept claim C2 without evidence: “Diagnostics about members of such a type are reported by the defining assembly, not by the consuming project (the analyzer only reports on members declared in the project being compiled).”",
+      "refusal R3: Accept claim C3 without evidence: “Documentation describes the new behaviour.”",
+      "refusal R4: Accept claim C4 without evidence: “Tests cover closed generic structs and record structs from a metadata reference.”"
+    ]
+  },
+  "tests": [
+    {
+      "test": "NullableFormatter",
+      "source": "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs",
+      "criteria": [],
+      "assertions": 2,
+      "lines": 27,
+      "issues": [],
+      "origin": "agent",
+      "branch": "not run"
+    },
+    {
+      "test": "WellKnownGenericsFormatter",
+      "source": "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs",
+      "criteria": [],
+      "assertions": 2,
+      "lines": 22,
+      "issues": [],
+      "origin": "agent",
+      "branch": "not run"
+    },
+    {
+      "test": "GenericsUnionFormatter",
+      "source": "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs",
+      "criteria": [],
+      "assertions": 2,
+      "lines": 21,
+      "issues": [],
+      "origin": "agent",
+      "branch": "not run"
+    },
+    {
+      "test": "GenericsUnionFormatter_Nested",
+      "source": "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs",
+      "criteria": [],
+      "assertions": 2,
+      "lines": 35,
+      "issues": [],
+      "origin": "agent",
+      "branch": "not run"
+    },
+    {
+      "test": "NestedGenericTypes",
+      "source": "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs",
+      "criteria": [],
+      "assertions": 2,
+      "lines": 43,
+      "issues": [],
+      "origin": "agent",
+      "branch": "not run"
+    },
+    {
+      "test": "GenericsOfTFormatter_WithKnownTypes",
+      "source": "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs",
+      "criteria": [],
+      "assertions": 2,
+      "lines": 29,
+      "issues": [],
+      "origin": "agent",
+      "branch": "not run"
+    },
+    {
+      "test": "GenericsOfTFormatter",
+      "source": "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs",
+      "criteria": [],
+      "assertions": 2,
+      "lines": 32,
+      "issues": [],
+      "origin": "agent",
+      "branch": "not run"
+    },
+    {
+      "test": "GenericsOfT1T2Formatter",
+      "source": "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs",
+      "criteria": [],
+      "assertions": 2,
+      "lines": 34,
+      "issues": [],
+      "origin": "agent",
+      "branch": "not run"
+    },
+    {
+      "test": "GenericsOfTFormatter_FormatterOnly",
+      "source": "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs",
+      "criteria": [],
+      "assertions": 2,
+      "lines": 20,
+      "issues": [],
+      "origin": "agent",
+      "branch": "not run"
+    },
+    {
+      "test": "Generics_Constraints_Type",
+      "source": "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs",
+      "criteria": [],
+      "assertions": 2,
+      "lines": 19,
+      "issues": [],
+      "origin": "agent",
+      "branch": "not run"
+    },
+    {
+      "test": "Generics_Constraints_NullableReferenceType",
+      "source": "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs",
+      "criteria": [],
+      "assertions": 2,
+      "lines": 28,
+      "issues": [],
+      "origin": "agent",
+      "branch": "not run"
+    },
+    {
+      "test": "Generics_Constraints_Struct",
+      "source": "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs",
+      "criteria": [],
+      "assertions": 2,
+      "lines": 19,
+      "issues": [],
+      "origin": "agent",
+      "branch": "not run"
+    },
+    {
+      "test": "Generics_Constraints_Multiple",
+      "source": "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs",
+      "criteria": [],
+      "assertions": 2,
+      "lines": 28,
+      "issues": [],
+      "origin": "agent",
+      "branch": "not run"
+    },
+    {
+      "test": "Generics_Constraints_ReferenceType_Nullable",
+      "source": "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs",
+      "criteria": [],
+      "assertions": 2,
+      "lines": 24,
+      "issues": [],
+      "origin": "agent",
+      "branch": "not run"
+    },
+    {
+      "test": "Generics_Defined_In_ReferencedProject",
+      "source": "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs",
+      "criteria": [],
+      "assertions": 1,
+      "lines": 55,
+      "issues": [],
+      "origin": "agent",
+      "branch": "not run"
+    },
+    {
+      "test": "ClosedGenericStruct_FromMetadataReference",
+      "source": "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs",
+      "criteria": [],
+      "assertions": 1,
+      "lines": 34,
+      "issues": [],
+      "origin": "agent",
+      "branch": "not run"
+    },
+    {
+      "test": "ClosedGenericRecordStruct_FromMetadataReference",
+      "source": "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs",
+      "criteria": [],
+      "assertions": 1,
+      "lines": 29,
+      "issues": [],
+      "origin": "agent",
+      "branch": "not run"
+    },
+    {
+      "test": "ClosedGenericStruct_FromMetadataReference_UnkeyedMember",
+      "source": "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs",
+      "criteria": [],
+      "assertions": 1,
+      "lines": 36,
+      "issues": [],
+      "origin": "agent",
+      "branch": "not run"
+    },
+    {
+      "test": "RecursiveGenerics_Direct",
+      "source": "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs",
+      "criteria": [],
+      "assertions": 2,
+      "lines": 14,
+      "issues": [],
+      "origin": "agent",
+      "branch": "not run"
+    }
+  ],
+  "reading_contract": {
+    "must_read": [
+      {
+        "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+        "header": "-1077 +1077",
+        "lines": 2,
+        "why": "zone generator-analysis"
+      },
+      {
+        "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+        "header": "-1428,0 +1429,23",
+        "lines": 23,
+        "why": "zone generator-analysis"
+      },
+      {
+        "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+        "header": "-239 +239",
+        "lines": 2,
+        "why": "zone generator-analysis"
+      },
+      {
+        "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+        "header": "-985 +985",
+        "lines": 2,
+        "why": "zone generator-analysis"
+      },
+      {
+        "file": "README.md",
+        "header": "-1638,0 +1639,5",
+        "lines": 5,
+        "why": "zone docs"
+      },
+      {
+        "file": "doc/analyzers/MsgPack004.md",
+        "header": "-47,0 +48,5",
+        "lines": 5,
+        "why": "zone docs"
+      }
+    ],
+    "excluded": [
+      {
+        "what": "1 test file(s)",
+        "lines": 189,
+        "why": "summarised by the evidence (execution, assertion strength, links to criteria)",
+        "proof": "TEST-QUALITY + executed evidence"
+      }
+    ],
+    "test_files_summarised": [
+      "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs"
+    ],
+    "lines_to_read": 39,
+    "lines_total": 228,
+    "files_to_read": 3,
+    "files_total": 4
+  },
+  "attestation_draft": {
+    "checked": [
+      {
+        "what": "Assertion strength and test → criterion links across 19 tests → weak",
+        "by": "static analysis of the tests (test_quality.py)",
+        "id": "TEST-QUALITY"
+      },
+      {
+        "what": "6 reading-contract hunks (39 lines)",
+        "by": "owner (to tick)"
+      }
+    ],
+    "not_checked": [
+      {
+        "what": "Claim C1: Closed generic types from a referenced assembly, including generic value types and record structs, can be used as members of [MessagePackObject] types.",
+        "why": "no executed or mechanical evidence"
+      },
+      {
+        "what": "Claim C2: Diagnostics about members of such a type are reported by the defining assembly, not by the consuming project (the analyzer only reports on members declared in the project being compiled).",
+        "why": "no executed or mechanical evidence"
+      },
+      {
+        "what": "Claim C3: Documentation describes the new behaviour.",
+        "why": "no executed or mechanical evidence"
+      },
+      {
+        "what": "Claim C4: Tests cover closed generic structs and record structs from a metadata reference.",
+        "why": "no executed or mechanical evidence"
+      },
+      {
+        "what": "Criterion AC-1 by a linked test",
+        "why": "not demonstrated"
+      },
+      {
+        "what": "Criterion AC-2 by a linked test",
+        "why": "not demonstrated"
+      },
+      {
+        "what": "Criterion AC-3 by a linked test",
+        "why": "not demonstrated"
+      },
+      {
+        "what": "Criterion AC-4 by a linked test",
+        "why": "not demonstrated"
+      },
+      {
+        "what": "Execution of the change",
+        "why": "no executed evidence provided for this change"
+      }
+    ],
+    "decisions": [
+      {
+        "refusal": "R1",
+        "question": "Accept claim C1 without evidence: “Closed generic types from a referenced assembly, including generic value types and record structs, can be used as members of [MessagePackObject] types.”",
+        "decision": null
+      },
+      {
+        "refusal": "R2",
+        "question": "Accept claim C2 without evidence: “Diagnostics about members of such a type are reported by the defining assembly, not by the consuming project (the analyzer only reports on members declared in the project being compiled).”",
+        "decision": null
+      },
+      {
+        "refusal": "R3",
+        "question": "Accept claim C3 without evidence: “Documentation describes the new behaviour.”",
+        "decision": null
+      },
+      {
+        "refusal": "R4",
+        "question": "Accept claim C4 without evidence: “Tests cover closed generic structs and record structs from a metadata reference.”",
+        "decision": null
+      }
+    ],
+    "residual_risk": null,
+    "signed_by": null,
+    "date": null
+  },
+  "fingerprint": "9e8e3f177e0dfabc"
+}

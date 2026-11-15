@@ -1,0 +1,103 @@
+# review-policy.yaml — versioned, protected by CODEOWNERS (policy guardian).
+# Zones are matched in order; first match wins. The LLM may RAISE a lane, never lower it.
+version: 2   # v2 (14/11): diagnostics zone narrowed after a false red on 2283 (see lessons-log)
+guardian: "Sam Leroy (synthetic) — tech lead"
+
+zones:
+  - name: snapshots
+    class: mechanical
+    globs: ["tests/**/Resources/**/*.g.cs"]
+    why: "Frozen generator output; checkable by a mechanical rule derived from the requirement."
+
+  - name: public-api
+    class: sensitive
+    severity: major
+    globs: ["src/**/PublicAPI.*.txt", "src/MessagePack.Annotations/**"]
+    why: "Public contract: shape, naming and compatibility are a human's call."
+
+  - name: diagnostics
+    class: sensitive
+    severity: major
+    globs: ["src/**/AnalyzerReleases.*.md"]
+    why: "Allocation of public diagnostic IDs (MsgPackXXX). v2: only declaring an ID counts, not documenting an existing diagnostic."
+
+  - name: compiled-templates
+    class: derived
+    globs: ["src/MessagePack.SourceGenerator/Transforms/**/*Template.cs"]
+    derived_from: ".tt"
+    why: "Code produced by T4 from the .tt; its observable behaviour is the generated output (snapshots). Read the .tt, not the .cs."
+
+  - name: generator-output
+    class: sensitive
+    severity: minor
+    globs: ["src/MessagePack.SourceGenerator/Transforms/**"]
+    why: "Changes the code compiled into every user's projects."
+
+  - name: generator-analysis
+    class: sensitive
+    severity: minor
+    globs: ["src/MessagePack.SourceGenerator/**"]
+    why: "Analysis logic of the generator and the analyzers."
+
+  - name: build-ci-agents
+    class: sensitive
+    severity: minor
+    globs: [".github/**", "**/*.props", "**/*.targets", "**/*.csproj", "global.json", "AGENTS.md", "CLAUDE.md", "**/.editorconfig", "azure-pipelines/**"]
+    why: "Build, CI and agent instructions: execution and security surface."
+
+  - name: runtime
+    class: sensitive
+    severity: minor
+    globs: ["src/MessagePack/**"]
+    why: "Runtime library used in production by consumers."
+
+  - name: tests
+    class: tests
+    globs: ["tests/**"]
+    why: "Tests are evidence; their strength is measured, not assumed."
+
+  - name: docs
+    class: ordinary
+    globs: ["README.md", "doc/**", "*.md"]
+    why: "Documentation; read because it makes claims."
+
+  - name: other
+    class: ordinary
+    globs: ["**"]
+    why: "Default."
+
+# Repository helpers that assert internally (snapshot/analyzer verifiers): count as assertions.
+assertion_helpers: ['VerifyCS\.', '\bVerify\w*\.\w+Async\(', 'RunDefaultAsync\(']
+
+limits:
+  max_non_mechanical_changed_lines: 800   # above this: red (split required)
+
+# Decisions the AI never takes. Raised by rules, evidence, or the AI reviewer.
+refusal_catalog:
+  public-api: { severity: major, decider: "public API owner", question: "Shape, naming and compatibility of the public API" }
+  diagnostic-ids: { severity: major, decider: "maintainer", question: "Allocation of new diagnostic IDs" }
+  user-visible-behaviour: { severity: major, decider: "named owner", question: "User-visible behaviour change" }
+  compat-scope: { severity: minor, decider: "named owner", question: "Target/compatibility scope covered by the feature" }
+  security-risk-acceptance: { severity: major, decider: "owner + security", question: "Acceptance of a security risk" }
+  unproven-claim: { severity: minor, decider: "named owner", question: "Claim with no available evidence" }
+
+lanes:
+  # Evaluated in order by the deterministic verdict engine (factory/passport.py).
+  - lane: RED
+    action: "Send back to the agent with the evidence, or full reading + written decision"
+    when:
+      - "an acceptance criterion is contradicted by executed or mechanical evidence"
+      - "a zone of major severity is touched"
+      - "a refusal of major severity is open"
+      - "non-mechanical lines > limits.max_non_mechanical_changed_lines"
+  - lane: ORANGE
+    action: "Targeted reading of the reading contract + refusals settled + signature"
+    when:
+      - "a sensitive zone is touched"
+      - "a hunk is not traced to any claim (orphan)"
+      - "a mechanical file does not follow the rule"
+      - "a claim is not proven"
+      - "a touched zone is not trusted yet"
+  - lane: GREEN
+    action: "Light check of the summary + signature"
+    when: ["none of the conditions above"]

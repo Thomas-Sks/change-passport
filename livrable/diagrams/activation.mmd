@@ -1,0 +1,4 @@
+flowchart LR
+  A["Replay<br/>past changes"] --> B["Shadow<br/>computed, hidden"] --> C["Visible<br/>shown, no effect"] --> D["Active<br/>if ≥ 90% agreement<br/>with humans"]
+  D -- "a revert or incident" --> X["Zone suspended"]
+  X --> C

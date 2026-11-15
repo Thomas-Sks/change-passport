@@ -1,0 +1,161 @@
+{
+ "passport": "REQ-2297",
+ "fingerprint": "780ee6688887bd9c",
+ "commit": "a0aa5ab2de7f5a669d97e37184a89034c1de82b6",
+ "pr": "https://github.com/Thomas-Sks/change-passport-demo/pull/4",
+ "lane": "RED",
+ "decision": "send-back",
+ "full_read": false,
+ "decisions": [
+  {
+   "refusal": "R1",
+   "question": "Should the feature be shipped to netstandard2.0 and .NET Framework consumers?",
+   "answer": "accept"
+  },
+  {
+   "refusal": "R2",
+   "question": "Should code written by hand in a user's partial resolver be excluded from coverage?",
+   "answer": "reject"
+  },
+  {
+   "refusal": "R3",
+   "question": "Is a nested generated class, excluded only through its parent class, enough for the targeted coverage tools?",
+   "answer": "send-back"
+  },
+  {
+   "refusal": "R4",
+   "question": "Should the exclusion be switchable by a setting? Apply it to netstandard2.0/net472?",
+   "answer": "reject"
+  },
+  {
+   "refusal": "R5",
+   "question": "Is the whitespace change in the generated output acceptable for snapshot consumers?",
+   "answer": "accept"
+  },
+  {
+   "refusal": "R6",
+   "question": "Accept claim C3 without evidence: “Documentation describes the new behaviour.”",
+   "answer": "send-back"
+  }
+ ],
+ "checked": [
+  {
+   "what": "222 generated files identical after regeneration",
+   "by": "regeneration in the sandbox"
+  },
+  {
+   "what": "Full MessagePack.SourceGenerator.Tests suite on the branch (regenerates every snapshot and compares it with the committed file) → pass",
+   "by": "Isolated CI (dotnet test)",
+   "id": "E1"
+  },
+  {
+   "what": "Agent's tests (CodeCoverageExclusionTests) on base 32258fdb → fail-before",
+   "by": "Isolated CI (dotnet test)",
+   "id": "E2"
+  },
+  {
+   "what": "Does a user who already has [ExcludeFromCodeCoverage] on their partial resolver still compile? → regression",
+   "by": "Independent acceptance test (PassportAcceptanceTests)",
+   "id": "E3"
+  },
+  {
+   "what": "Is code written by hand in a user's partial resolver excluded from coverage? → observed",
+   "by": "Independent acceptance test (PassportAcceptanceTests)",
+   "id": "E4"
+  },
+  {
+   "what": "Does ExcludeFromCodeCoverageAttribute exist in netstandard2.0 and .NET Framework? → present",
+   "by": "Inspection of the reference assemblies",
+   "id": "E5"
+  },
+  {
+   "what": "Do all types emitted by the generator carry the attribute? → pass",
+   "by": "Static analysis of the snapshots",
+   "id": "E6"
+  },
+  {
+   "what": "Assertion strength of CodeCoverageExclusionTests → weak",
+   "by": "Analysis of the agent's test",
+   "id": "E7"
+  },
+  {
+   "what": "A real user project built with the generator: which types are excluded from coverage, per target? → regression",
+   "by": "E2E sandbox (real consumer project, net8.0 + netstandard2.0, inspected by reflection)",
+   "id": "E8"
+  },
+  {
+   "what": "Do the tests notice each of the agent's changes? → weak",
+   "by": "Diff-scoped mutation testing (revert one hunk at a time)",
+   "id": "E9"
+  },
+  {
+   "what": "8 disposable scenarios run on base and branch → regression",
+   "by": "Catching tests generated from the criteria (claude -p --model sonnet), without seeing the agent's tests or ours",
+   "id": "E10"
+  },
+  {
+   "what": "Scenarios that fail on base AND branch: criterion not met or invalid test? → observed",
+   "by": "Catching tests — failures on both sides, reviewed",
+   "id": "E11"
+  },
+  {
+   "what": "Assertion strength and test → criterion links across 12 tests → weak",
+   "by": "static analysis of the tests (test_quality.py)",
+   "id": "TEST-QUALITY"
+  },
+  {
+   "what": "F1 The #if guard excludes netstandard2.0 and .NET Framework although the attribute exists there → confirmed",
+   "by": "AI reviewer + verification",
+   "id": "F1"
+  },
+  {
+   "what": "F2 Unrequested change in the nested-type emitter → confirmed (justified)",
+   "by": "AI reviewer + verification",
+   "id": "F2"
+  },
+  {
+   "what": "F3 The test checks one substring per file, not each type, and compiles nothing → confirmed",
+   "by": "AI reviewer + verification",
+   "id": "F3"
+  },
+  {
+   "what": "F4 Possible CS0579 if the user's partial resolver already carries the attribute → confirmed — severity underestimated",
+   "by": "AI reviewer + verification",
+   "id": "F4"
+  },
+  {
+   "what": "12 reading-contract hunks (46 lines)",
+   "by": "owner (to tick)"
+  }
+ ],
+ "not_checked": [
+  {
+   "what": "6 files derived from a source",
+   "why": "read through their source (Code produced by T4 from the .tt; its observable behaviour is the generated output (snapshots). Read the .tt, not the .cs.)"
+  },
+  {
+   "what": "Claim C3: Documentation describes the new behaviour.",
+   "why": "no executed or mechanical evidence"
+  },
+  {
+   "what": "Criterion AC-1 by a linked test",
+   "why": "supported without a passing linked test"
+  },
+  {
+   "what": "Criterion AC-4 by a linked test",
+   "why": "supported without a passing linked test"
+  },
+  {
+   "what": "Behaviour with third-party coverage tools (coverlet, dotCover…)",
+   "why": "outside the repository, no environment"
+  },
+  {
+   "what": "Real user projects beyond the tested scenarios",
+   "why": "no corpus; scenarios covered: E3, E4, E8"
+  }
+ ],
+ "residual_risk": "None accepted: change sent back (CS0579 break E3, netstandard gap E5)",
+ "signed_by": "Camille Durand (synthetic)",
+ "date": "2026-11-15T03:41:27+00:00",
+ "digest": "43cab90d7d3f5994"
+}

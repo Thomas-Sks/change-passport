@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Change Passport Pipeline</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="vendor/mermaid.min.js"></script>
+<style>
+:root{
+  --bg:#0b0f14; --panel:#10151b; --panel2:#141a22; --line:#1f2731; --line2:#2b3540;
+  --fg:#d5dce4; --fg2:#aab5c1; --mut:#738191;
+  --acc:#4c90f0; --acc-d:#173250;
+  --ok:#32a467; --bad:#e76a6e; --warn:#ec9a3c;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{font-size:min(1vw,1.8vh)}
+body{background:var(--bg);color:var(--fg);font:400 1rem/1.5 Inter,system-ui,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;height:100vh;overflow:hidden}
+.app{display:grid;grid-template-rows:auto 27% 1fr auto;height:100vh;padding:1.1rem 1.6rem 1rem;gap:.8rem}
+.lbl{font:600 .72rem var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--mut)}
+
+header{display:flex;align-items:center;gap:1.6rem;border-bottom:1px solid var(--line);padding-bottom:.8rem}
+header .brand{font:600 .85rem var(--mono);letter-spacing:.16em;color:var(--fg)}
+header .brand span{color:var(--mut)}
+header .ctx{margin-left:auto;display:flex;gap:1.4rem}
+header .ctx div{font:500 .78rem var(--mono);color:var(--fg2)}
+header .ctx b{color:var(--mut);font-weight:500;margin-right:.4rem}
+
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:4px;display:flex;flex-direction:column;min-height:0;overflow:hidden}
+.ph{display:flex;align-items:center;justify-content:space-between;padding:.55rem .9rem;border-bottom:1px solid var(--line);background:var(--panel2)}
+.ph .t{font:600 .72rem var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--fg2)}
+.ph .t i{font-style:normal;color:var(--acc)}
+.ph .r{font:500 .72rem var(--mono);color:var(--mut)}
+.diagram{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:.8rem 1.2rem}
+.diagram svg{max-width:100%;max-height:100%;height:auto}
+
+.lower{display:grid;grid-template-columns:57fr 43fr;gap:.8rem;min-height:0}
+
+/* info panel */
+.info{padding:1rem 1.4rem;display:flex;flex-direction:column;gap:.7rem;overflow:hidden}
+.head{display:flex;align-items:baseline;gap:.9rem}
+.num{font:600 2.1rem var(--mono);color:var(--acc);line-height:1}
+h2{font-size:1.55rem;font-weight:600;line-height:1.2;letter-spacing:-.01em}
+.sec .lbl{display:block;margin-bottom:.3rem}
+.sec p{color:var(--fg2);font-size:.94rem}
+.tags{display:flex;flex-wrap:wrap;gap:.35rem}
+.tags span{font:500 .78rem var(--mono);color:var(--fg);border:1px solid var(--line2);background:var(--panel2);padding:.15rem .5rem;border-radius:3px}
+.sec ul{list-style:none;display:flex;flex-direction:column;gap:.2rem}
+.sec li{color:var(--fg2);font-size:.95rem;padding-left:1rem;position:relative}
+.sec li::before{content:"—";position:absolute;left:0;color:var(--mut)}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:.25rem 1rem;font:500 .88rem var(--mono)}
+.kv dt{color:var(--mut)}
+.kv dd{color:var(--fg)}
+.kv .bad{color:var(--bad)} .kv .ok{color:var(--ok)} .kv .warn{color:var(--warn)}
+.effect{margin-top:auto;border-left:2px solid var(--acc);background:var(--acc-d);padding:.55rem .9rem;font-size:.95rem;color:var(--fg)}
+.effect .lbl{color:var(--acc);margin-right:.6rem}
+
+footer{display:flex;align-items:center;gap:1.2rem}
+.segs{display:flex;gap:3px;flex:0 0 32%}
+.segs i{flex:1;height:3px;background:var(--line2);transition:background .3s}
+.segs i.d{background:#2d5b9a} .segs i.c{background:var(--acc)}
+.notes{flex:1;font-size:.85rem;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.notes.hide{visibility:hidden}
+.keys{font:500 .72rem var(--mono);color:var(--mut);display:flex;gap:.4rem;align-items:center}
+.keys button{font:500 .72rem var(--mono);color:var(--fg2);background:var(--panel2);border:1px solid var(--line2);border-radius:3px;padding:.25rem .6rem;cursor:pointer}
+
+.fade{animation:fade .35s ease both}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@keyframes rise{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.err{font:500 .85rem var(--mono);color:var(--bad)}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="brand">CHANGE PASSPORT <span>/ REVIEW PIPELINE</span></div>
+    <div class="ctx"><div><b>REQ</b>2297</div><div><b>CHANGE</b>agent-written · 237 files · 1,392 lines</div><div><b>OWNER</b>Camille Durand (synthetic)</div><div><b>STEP</b><span id="ctr"></span></div></div>
+  </header>
+  <section class="panel"><div class="ph"><span class="t">Pipeline</span><span class="r">base 32258fdb → head a0aa5ab2</span></div><div class="diagram" id="g"></div></section>
+  <div class="lower">
+    <section class="panel"><div class="ph"><span class="t" id="dt"></span><span class="r" id="dr"></span></div><div class="diagram" id="d"></div></section>
+    <section class="panel"><div class="info" id="info"></div></section>
+  </div>
+  <footer>
+    <div class="segs" id="segs"></div>
+    <div class="notes hide" id="notes"></div>
+    <div class="keys"><button onclick="go(cur-1)">◀</button><button onclick="go(cur+1)">▶</button><button onclick="toggleNotes()">N notes</button><button onclick="toggleAuto()" id="ab">A auto</button></div>
+  </footer>
+</div>
+<script>
+/* ---------- global pipeline ---------- */
+const PIPE = ["REQ","PART","REGEN","E2E","CATCH","MUT","AI","VER","LANE","SIGN","MEAS"];
+const pipeline = (active) => {
+  const idx = PIPE.indexOf(active);
+  const cls = id => { const i = PIPE.indexOf(id); return active==="ALL" ? "done" : i===idx ? "active" : (idx>=0 && i<idx) ? "done" : "pend"; };
+  const sbxOn = ["REGEN","E2E","CATCH","MUT","SBX"].includes(active);
+  return `flowchart LR
+  REQ["Requirement<br/>& claims"] --> PART["Partition<br/>& trace"]
+  PART --> SBX
+  subgraph SBX["SANDBOX · base vs head · ×3"]
+    direction LR
+    REGEN["Regenerate"] ~~~ E2E["End-to-end"] ~~~ CATCH["Catching<br/>tests"] ~~~ MUT["Mutation"]
+  end
+  SBX --> AI["AI review"] --> VER["Verification"] --> LANE["Lane<br/>rules"] --> SIGN["Owner<br/>signature"] --> MEAS["Trust<br/>metrics"]
+  classDef pend fill:#121820,stroke:#2b3540,color:#738191
+  classDef done fill:#132235,stroke:#2d5b9a,color:#b9cbe0
+  classDef active fill:#4c90f0,stroke:#8ab8ff,color:#ffffff,stroke-width:2px
+  ${PIPE.map(id=>`class ${id} ${cls(id)}`).join("\n  ")}
+  style SBX fill:${sbxOn?"#0f1d2e":"#0e1318"},stroke:${sbxOn?"#4c90f0":"#2b3540"},color:#aab5c1,stroke-dasharray:4 3`;
+};
+
+/* ---------- shared detail classes ---------- */
+const CD = `
+  classDef n fill:#141a22,stroke:#2b3540,color:#d5dce4
+  classDef hl fill:#173250,stroke:#4c90f0,color:#ffffff
+  classDef bad fill:#2e1719,stroke:#e76a6e,color:#ffd9da
+  classDef ok fill:#122a1f,stroke:#32a467,color:#d4f5e2
+  classDef warn fill:#2c2112,stroke:#ec9a3c,color:#ffe7c7
+  classDef dim fill:#0f1419,stroke:#2b3540,color:#738191,stroke-dasharray:3 3`;
+
+/* ---------- steps ---------- */
+const S = [
+{ key:"ALL", t:"Overview", title:"Review the evidence, not the lines",
+  what:"Every agent-written change goes through one pipeline. It comes out with a passport: what was asked, what the agent claims, an executed proof per claim, what the AI refused to decide, and how much a human must read.",
+  stack:["Python reference implementation","git",".NET SDK 8","xUnit","Claude (claude -p)","GitHub status API"],
+  why:["Line-by-line review does not scale with agent output","AI approval removes accountability","Agent tests prove what the agent believes, not what was asked"],
+  res:[["agent tests","169 / 169 green","ok"],["after merge","users' builds break","bad"]],
+  effect:"The LLM proposes · execution proves · rules decide · a named human signs.",
+  note:"237 files, all green, and it breaks users. Here is the pipeline that catches it and keeps a human accountable.",
+  d:`flowchart LR
+  H["Human<br/>locks criteria"]:::hl --> F
+  A["Coding agent<br/>diff + claims"]:::n --> F
+  F["Review factory<br/>sandbox · AI · rules"]:::n --> P["Change passport"]:::hl
+  P --> O["Named owner<br/>signs"]:::hl --> PR["Pull request<br/>merge gate"]:::n
+  AI["AI reviewer"]:::dim -. "advice only" .-> F` },
+
+{ key:"REQ", t:"Requirement & claims", title:"Lock the oracle before review",
+  what:"A human writes 3–6 acceptance criteria and locks them (hash). The agent must declare its claims. Each claim opens an evidence slot that later steps must fill.",
+  stack:["requirements/REQ-*.yaml","SHA-256 lock","agent claims (structured)","Jira story field (target)"],
+  why:["Every check needs a definition of correct that does not come from the agent","Locking prevents goalposts moving after the fact"],
+  res:[["criteria","AC-1 … AC-4 locked"],["claims","C1 … C4 declared"]],
+  effect:"Passport header: requirement, criteria hash, claims to prove.",
+  note:"First, a human locks what correct means. The agent declares claims; each one will need a proof.",
+  d:`flowchart LR
+  PO["Product owner"]:::n -->|writes| AC["Acceptance criteria<br/>AC-1 … AC-4"]:::hl
+  AC -->|sha256| L["Locked hash"]:::n
+  AG["Coding agent"]:::n -->|declares| CL["Claims<br/>C1 … C4"]:::n
+  CL -.->|each needs| EV["Evidence slot"]:::dim
+  AC -.->|oracle for| EV` },
+
+{ key:"PART", t:"Partition & traceability", title:"Route attention with readable rules",
+  what:"The diff is split into zones by a versioned policy. Each hunk is linked to a claim; a hunk linked to nothing is orphan code and is always shown to the owner.",
+  stack:["git diff (unified hunks)","review-policy.yaml (zones, like CODEOWNERS)","passport.py"],
+  why:["Routing must be explainable by anyone, not a black-box score","Orphan code = undeclared behaviour"],
+  res:[["zones","5 (snapshots, templates, compiled, tests, docs)"],["hunks traced","20 / 21"],["orphan","1 → always read","warn"]],
+  effect:"Reading contract drafted: what the owner must read, sorted by risk.",
+  note:"Rules anyone can read sort the diff into zones and link each hunk to a claim. Orphan code is always shown.",
+  d:`flowchart LR
+  D["git diff base..head<br/>237 files · 21 hunks"]:::n --> P{"review-policy.yaml"}:::hl
+  P --> Z1["snapshots · mechanical"]:::n
+  P --> Z2["templates · sensitive"]:::warn
+  P --> Z3["tests · tool-checked"]:::n
+  P --> Z4["docs · ordinary"]:::n
+  D --> T["hunk → claim links"]:::n --> O["1 orphan hunk<br/>always read"]:::warn` },
+
+{ key:"REGEN", t:"Sandbox · regenerate & compare", title:"Generated code is proven, not read",
+  what:"In an isolated worktree, the generator is re-run from its sources and the output is compared byte for byte with the committed generated files.",
+  stack:["git worktree (isolated)",".NET SDK 8.0.402 (pinned)","Roslyn source generator","snapshot tests"],
+  why:["Generic for any generator: replaces per-change rules we removed as over-fitted","A machine comparison is stronger than a human skim of 1,210 lines"],
+  res:[["generated files","222 / 222 identical","ok"],["lines removed from reading","1,210"]],
+  effect:"Lines to read: 1,392 → 46 (with tool-checked tests).",
+  note:"Generated files are regenerated in the sandbox and compared. 222 identical: 1,210 lines nobody has to read.",
+  d:`flowchart LR
+  S["Templates<br/>(sources)"]:::n --> G["dotnet build<br/>source generator"]:::hl --> R["Regenerated output"]:::n
+  C["Committed snapshots<br/>222 files"]:::n --> X{"byte compare"}:::hl
+  R --> X
+  X -->|identical| OK["1,210 lines<br/>no human reading"]:::ok
+  X -.->|differs| H["hidden change<br/>→ read"]:::dim` },
+
+{ key:"E2E", t:"Sandbox · end-to-end", title:"Run it as a user would, before and after",
+  what:"A real consumer project, written from the criteria, is built against the base and the head, three times each, then inspected. The difference between base and head is the signal.",
+  stack:["dotnet build (net8.0 + netstandard2.0)","System.Reflection inspection","xUnit acceptance tests","replay.py (one-click replay)"],
+  why:["Reading shows what code says; running shows what it does","The agent's own tests are not independent evidence","3 runs per side: unstable results never count"],
+  res:[["agent tests","fail → pass (weak: agent-written)"],["existing user project","builds → compile error","bad"],["older target","feature missing","bad"],["criteria","AC-2, AC-3 contradicted","bad"]],
+  effect:"Two criteria contradicted by execution → lane forced to RED.",
+  note:"End-to-end: a real user project built against old and new. The agent's tests were green; two criteria break for real users.",
+  d:`flowchart LR
+  P["Consumer project<br/>from the criteria"]:::hl --> B["build vs base ×3"]:::n
+  P --> H["build vs head ×3"]:::n
+  B --> IB["inspect by reflection"]:::n
+  H --> IH["inspect by reflection"]:::n
+  IB --> X{"compare"}:::hl
+  IH --> X
+  X -->|"pass → fail"| R1["AC-3 · existing users<br/>no longer compile"]:::bad
+  X -->|"missing"| R2["AC-2 · older target<br/>not covered"]:::bad` },
+
+{ key:"CATCH", t:"Sandbox · catching tests", title:"An independent oracle, blind to the agent",
+  what:"A separate LLM generates throw-away tests from the criteria and the list of touched files only. They run on base and head, three times, and are sorted by outcome. They are never committed.",
+  stack:["Claude Sonnet via claude -p","xUnit","dotnet test","catching.py"],
+  why:["Inspired by just-in-time catching tests (Meta, 2026)","Observed: a generator that read the agent's comments repeated its false premise","Outcome matrix: pass→fail = catch, fail→fail = human"],
+  res:[["generated","8 tests · 0 unstable"],["catch","1 (AC-3)","bad"],["to a human","4 (fail on both sides)","warn"],["no signal","3"]],
+  effect:"AC-3 contradicted a second time, independently; 4 questions for the owner.",
+  note:"Catching tests: another model writes tests from the criteria only, never seeing the agent's code. One catch, four questions for a human.",
+  d:`flowchart LR
+  AC["Criteria +<br/>touched file list"]:::hl --> G["LLM test generator<br/>claude -p"]:::n
+  AG["Agent code,<br/>tests, comments"]:::dim -. "not visible" .-x G
+  G --> T["8 throw-away<br/>xUnit tests"]:::n --> R{"base vs head ×3"}:::hl
+  R -->|"pass → fail"| C["1 CATCH"]:::bad
+  R -->|"fail → fail"| H["4 → human"]:::warn
+  R -->|"pass → pass"| N["3 no signal"]:::dim` },
+
+{ key:"MUT", t:"Sandbox · mutation testing", title:"Measure the tests, don't assume them",
+  what:"Each of the agent's hunks is reverted one at a time, and the tests are re-run. A test suite that stays green when a change disappears does not check that change.",
+  stack:["mutate.py (revert-one-hunk operator)","dotnet test --filter","test_quality.py (assertion strength)"],
+  why:["Green tests and coverage say nothing about test strength","Agent-written tests often have weak or no assertions"],
+  res:[["mutants","10 (one per hunk)"],["killed by agent tests","3 / 10","bad"],["killed by full suite","10 / 10","ok"]],
+  effect:"Claim C4 “tests verify it” → proven, weak evidence.",
+  note:"Mutation testing: undo each change, rerun the tests. The agent's tests notice 3 of 10.",
+  d:`flowchart LR
+  D["Agent diff<br/>10 hunks"]:::n --> M["revert one hunk<br/>→ 10 mutants"]:::hl
+  M --> A["agent's tests"]:::n --> RA["3 / 10 killed"]:::bad
+  M --> F["full suite"]:::n --> RF["10 / 10 killed"]:::ok
+  Q["assertion check<br/>test_quality.py"]:::n --> W["text-only assertion<br/>flagged"]:::warn` },
+
+{ key:"AI", t:"AI review", title:"Advice with quotes, blind to the proofs",
+  what:"A reviewer model reads the diff and the requirement, without the evidence. Every finding must quote the code. Decisions that belong to people are returned as refusals.",
+  stack:["claude -p --model sonnet","--disallowedTools (read-only, no tools)","JSON findings schema","refusal catalogue (review-policy.yaml)"],
+  why:["Useful but often wrong: findings must be checkable","Blind, so its precision and recall can be measured","No tools, no merge rights: PR content is untrusted input"],
+  res:[["findings","4 (1 high, 2 medium, 1 low)"],["refusals","6 (1 major)","warn"]],
+  effect:"Refusals become owner decisions; the AI can only raise the lane.",
+  note:"The AI reviews blind and must quote code. It refused six decisions that belong to the owner.",
+  d:`flowchart LR
+  IN["diff + requirement"]:::n --> R["Reviewer LLM<br/>read-only · no tools"]:::hl
+  EV["Evidence"]:::dim -. "not visible" .-x R
+  R --> F["4 findings<br/>each with a code quote"]:::n
+  R --> RF["6 refusals<br/>API · behaviour · compat · risk"]:::warn
+  RF --> O["Owner decides"]:::hl` },
+
+{ key:"VER", t:"Verification", title:"Every AI finding is checked against execution",
+  what:"Deterministic checks: is the quote really in the code? Does an executed proof agree? What did the proofs find that the AI did not flag?",
+  stack:["deterministic Python (pipeline.py)","quote lookup in base/head","evidence cross-reference by criterion"],
+  why:["A finding without proof is an opinion","Measures AI precision and recall on every change","Model-stated confidence is never used"],
+  res:[["confirmed","4 / 4 (1 severity raised: low → breaks users)","ok"],["missed by AI","1 (user code excluded; AI said “fine”)","bad"],["live run, other change","2 / 6 findings contradicted by proofs","warn"]],
+  effect:"Severity set by evidence, not by the model.",
+  note:"Each finding is verified against the proofs: four confirmed, one missed. On another change, two findings were contradicted.",
+  d:`flowchart LR
+  F["Finding + quote"]:::n --> Q{"quote in code?"}:::hl
+  Q -->|no| RJ["rejected"]:::bad
+  Q -->|yes| E{"proof on same<br/>criterion?"}:::hl
+  E -->|agrees| CF["confirmed"]:::ok
+  E -->|disagrees| OP["opinion"]:::warn
+  E -->|none| UV["unverified"]:::dim
+  P["Proof nobody flagged"]:::n --> MS["missed by AI"]:::bad` },
+
+{ key:"LANE", t:"Lane rules", title:"Rules decide; the AI can only raise risk",
+  what:"A deterministic rule engine turns evidence, refusals, zones and trust into a lane. Every lane lists the rule that fired.",
+  stack:["review-policy.yaml v2","passport.py verdict engine","trust.yaml (per-zone register)"],
+  why:["“A risk score nobody can explain” is rejected","A false orange costs a review; a false green costs an incident"],
+  res:[["fired","AC-2 contradicted · AC-3 contradicted · R2 open","bad"],["lane","RED","bad"],["action","send back with the evidence"]],
+  effect:"GREEN → summary & sign · ORANGE → reading contract · RED → back to the agent.",
+  note:"Written rules pick the lane. Two contradicted criteria and a major refusal: red.",
+  d:`flowchart LR
+  IN["evidence · refusals<br/>zones · trust"]:::n --> R1{"criterion<br/>contradicted?"}:::hl
+  R1 -->|yes| RED["RED"]:::bad
+  R1 -->|no| R2{"major refusal<br/>open?"}:::n
+  R2 -->|yes| RED
+  R2 -->|no| R3{"sensitive · unproven<br/>· orphan?"}:::n
+  R3 -->|yes| OR["ORANGE"]:::warn
+  R3 -->|no| GR["GREEN"]:::ok` },
+
+{ key:"SIGN", t:"Owner signature", title:"A bounded attestation, bound to the commit",
+  what:"The passport is posted on the pull request and a status stays pending. The named owner answers each refusal and signs what was checked, what was not, and the residual risk.",
+  stack:["pr_flow.py","gh CLI","GitHub commit status API","SHA-256 attestation digest"],
+  why:["Accountability enforced by the tool, not by goodwill","A new commit voids the signature","Works with any required-check merge gate"],
+  res:[["pull request","#4 · passport/owner-signature"],["signed by","Camille Durand (synthetic)"],["decision","sent back · digest 43cab90d","bad"],["refused","wrong signer · stale commit · open refusal · RED w/o full read"]],
+  effect:"Merge gate: pending → owner's decision, on exactly this commit.",
+  note:"The owner signs on the real pull request. The tool refuses the wrong signer, a stale commit, or an unanswered refusal.",
+  d:`sequenceDiagram
+  participant F as Factory
+  participant PR as Pull request
+  participant O as Owner
+  F->>PR: passport comment + status pending
+  O->>F: answers R1…R6 · residual risk
+  F->>F: check owner · head sha · refusals · RED rule
+  F->>PR: status "sent back" + attestation digest
+  Note over PR: new commit → signature void` },
+
+{ key:"MEAS", t:"Trust metrics", title:"Trust is earned per zone and withdrawn",
+  what:"The factory is tested continuously: seeded agent bugs measure what it misses, a random 10% of green changes get a full review, and an escape suspends trust in its zone.",
+  stack:["seed_bugs.py","trust.yaml","circuit breakers (policy)","reverts & incidents per lane"],
+  why:["Measure recall without waiting for incidents","A randomised control, unlike industry baselines"],
+  res:[["seeded bugs","8 / 8 flagged (optimistic)","ok"],["counter-review","10% of greens, random"],["escape","zone suspended"]],
+  effect:"The LLM proposes · execution proves · rules decide · a named human signs.",
+  note:"We test the factory itself. Trust is earned per zone, and withdrawn after an escape.",
+  d:`flowchart LR
+  SB["8 seeded<br/>agent bugs"]:::n --> P["Pipeline"]:::hl --> D["8 / 8 flagged"]:::ok
+  G["Green changes"]:::n -->|"10% random"| CR["Full counter-review"]:::n --> AG["agreement rate"]:::n
+  ESC["Revert / incident"]:::bad --> Z["Zone trust<br/>suspended"]:::warn --> T["trust.yaml"]:::n` },
+];
+
+/* ---------- render ---------- */
+const $ = id => document.getElementById(id);
+let cur = 0, auto = null, rid = 0;
+mermaid.initialize({ startOnLoad:false, securityLevel:"loose", theme:"base",
+  themeVariables:{ background:"#10151b", fontFamily:"Inter, system-ui, sans-serif", fontSize:"14px",
+    primaryColor:"#141a22", primaryBorderColor:"#2b3540", primaryTextColor:"#d5dce4", lineColor:"#5f6e7e",
+    secondaryColor:"#141a22", tertiaryColor:"#10151b", clusterBkg:"#0e1318", clusterBorder:"#2b3540",
+    edgeLabelBackground:"#10151b", nodeTextColor:"#d5dce4", titleColor:"#aab5c1",
+    actorBkg:"#141a22", actorBorder:"#4c90f0", actorTextColor:"#d5dce4", signalColor:"#aab5c1", signalTextColor:"#d5dce4",
+    noteBkgColor:"#173250", noteBorderColor:"#4c90f0", noteTextColor:"#d5dce4", activationBkgColor:"#173250", sequenceNumberColor:"#fff" },
+  flowchart:{ curve:"basis", htmlLabels:true, padding:12, nodeSpacing:28, rankSpacing:34 },
+  sequence:{ actorMargin:70, messageMargin:28, mirrorActors:false } });
+
+async function draw(el, code, stagger){
+  try{
+    const { svg } = await mermaid.render("m"+(rid++), code);
+    el.innerHTML = svg;
+    const s = el.querySelector("svg"); s.removeAttribute("height"); s.setAttribute("width","100%"); s.style.maxWidth = "100%"; s.style.height = "100%";
+    if(stagger){
+      const parts = [...s.querySelectorAll(".node, .cluster, .actor, .messageText, .messageLine0, .messageLine1, .note")];
+      parts.forEach((n,i)=>{ n.style.animation = `fade .45s ease ${0.15+i*0.16}s both`; });
+      s.querySelectorAll(".edgePath, .flowchart-link, .edgeLabel").forEach(e=>{ e.style.animation = `fade .4s ease ${0.3+parts.length*0.16*0.6}s both`; });
+    }
+  }catch(e){ el.innerHTML = `<div class="err">diagram error: ${String(e.message||e).slice(0,200)}</div>`; console.error(e); }
+}
+function info(s, i){
+  const n = String(i).padStart(2,"0");
+  return `<div class="head fade"><span class="num">${n}</span><h2>${s.title}</h2></div>
+  <div class="sec fade"><span class="lbl">What it does</span><p>${s.what}</p></div>
+  <div class="sec fade"><span class="lbl">Stack</span><div class="tags">${s.stack.map(t=>`<span>${t}</span>`).join("")}</div></div>
+  <div class="sec fade"><span class="lbl">Why this choice</span><ul>${s.why.map(w=>`<li>${w}</li>`).join("")}</ul></div>
+  <div class="sec fade"><span class="lbl">Result · REQ-2297</span><dl class="kv">${s.res.map(([k,v,c])=>`<dt>${k}</dt><dd class="${c||""}">${v}</dd>`).join("")}</dl></div>
+  <div class="effect fade"><span class="lbl">Passport effect</span>${s.effect}</div>`;
+}
+async function go(i){
+  cur = Math.max(0, Math.min(S.length-1, i));
+  const s = S[cur];
+  $("ctr").textContent = `${String(cur).padStart(2,"0")} / ${String(S.length-1).padStart(2,"0")}`;
+  $("dt").innerHTML = `Step detail · <i>${s.t}</i>`;
+  $("dr").textContent = s.key === "ALL" ? "concept" : s.key.toLowerCase();
+  $("info").innerHTML = info(s, cur);
+  $("notes").textContent = s.note;
+  $("segs").innerHTML = S.map((_,k)=>`<i class="${k<cur?"d":k===cur?"c":""}"></i>`).join("");
+  try{ history.replaceState(null,"","#"+cur); }catch(e){}
+  await Promise.all([draw($("g"), pipeline(s.key), cur===0), draw($("d"), s.d.startsWith("flowchart") ? s.d + CD : s.d, true)]);
+  if(auto){ clearTimeout(auto); auto = cur < S.length-1 ? setTimeout(()=>go(cur+1), 15000) : null; }
+}
+function toggleNotes(){ $("notes").classList.toggle("hide"); }
+function toggleAuto(){ if(auto){ clearTimeout(auto); auto=null; $("ab").textContent="A auto"; } else { auto = setTimeout(()=>go(cur+1), 15000); $("ab").textContent="A stop"; } }
+document.addEventListener("keydown", e=>{
+  if(["ArrowRight","PageDown"," ","Enter"].includes(e.key)){ e.preventDefault(); go(cur+1); }
+  else if(["ArrowLeft","PageUp"].includes(e.key)){ e.preventDefault(); go(cur-1); }
+  else if(e.key==="n"||e.key==="N") toggleNotes();
+  else if(e.key==="a"||e.key==="A") toggleAuto();
+  else if(e.key==="Home") go(0);
+});
+go(parseInt((location.hash||"").slice(1))||0);
+if(new URLSearchParams(location.search).has("auto")) toggleAuto();
+</script>
+</body>
+</html>

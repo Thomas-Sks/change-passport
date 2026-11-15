@@ -1,0 +1,46 @@
+{
+ "method": "Quote must exist in base or branch; a finding is confirmed only by a proof contradicting the same criterion.",
+ "verdicts": [
+  {
+   "finding": "F1",
+   "status": "opinion — proofs disagree",
+   "evidence": [
+    "E1"
+   ],
+   "note": "Executed proofs show the affected criteria hold; kept for the owner to judge."
+  },
+  {
+   "finding": "F2",
+   "status": "opinion (unverified)",
+   "evidence": [],
+   "note": "Quote found; no proof covers it."
+  },
+  {
+   "finding": "F3",
+   "status": "opinion — proofs disagree",
+   "evidence": [
+    "E1"
+   ],
+   "note": "Executed proofs show the affected criteria hold; kept for the owner to judge."
+  },
+  {
+   "finding": "F4",
+   "status": "opinion (unverified)",
+   "evidence": [],
+   "note": "Quote found; no proof covers it."
+  },
+  {
+   "finding": "F5",
+   "status": "opinion (unverified)",
+   "evidence": [],
+   "note": "Quote found; no proof covers it."
+  },
+  {
+   "finding": "F6",
+   "status": "opinion (unverified)",
+   "evidence": [],
+   "note": "Quote found; no proof covers it."
+  }
+ ],
+ "missed_by_ai": []
+}

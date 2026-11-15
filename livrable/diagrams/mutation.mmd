@@ -1,0 +1,4 @@
+flowchart LR
+  A["Agent's change<br/>= 10 small edits"] --> B["Undo ONE edit"] --> C["Run the tests"]
+  C --> D["A test fails<br/>→ this edit is checked"]
+  C --> E["All tests pass<br/>→ nothing checks this edit<br/>→ orange"]

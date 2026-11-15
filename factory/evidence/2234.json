@@ -1,0 +1,104 @@
+{
+  "change": "ju26-issue-2234",
+  "environment": ".NET SDK 8.0.402, compiler pinned with Microsoft.Net.Compilers.Toolset 4.12.0, isolated worktrees, run 2026-11-15",
+  "runs": [
+    {
+      "id": "E1",
+      "type": "executed-e2e",
+      "by": "E2E sandbox: consumer project with [MessagePackObject(SuppressSourceGeneration = true)] types that break the contract, built and run on base and branch (3 runs per side)",
+      "what": "Does the analyzer still report its diagnostics on SuppressSourceGeneration = true types?",
+      "result": "fail-before",
+      "detail": "Base (3/3 identical): MsgPack004, MsgPack005 x4 and MsgPack003 are reported, but the analyzer crashes twice (AD0001: ArgumentException 'An item with the same key has already been added' on duplicate keys, InvalidOperationException 'Nullable object must have a value' on mixed keys) and the generator crashes (CS8785); as a result MsgPack004 is missing on the unkeyed member that follows a duplicate key and a mixed key (DuplicateThenMissingKey.C, MixedThenMissingKey.C). Branch (3/3 identical): 8 diagnostics, including those two MsgPack004, no AD0001, no CS8785. Note: plain cases (missing key alone, non-serializable member type) are already reported on base; the 'analyzer does not work at all' symptom from the issue was not reproduced on base 32258fdb.",
+      "supports": [
+        "AC-1",
+        "C1",
+        "C2"
+      ],
+      "test_results": [
+        {
+          "test": "E2E-2234-Diagnostics",
+          "base": "fails",
+          "branch": "passes",
+          "criteria": [
+            "AC-1"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "E2",
+      "type": "executed-e2e",
+      "by": "E2E sandbox: consumer project with a valid suppressed type and a normal control type, EmitCompilerGeneratedFiles on, built and run on base and branch (3 runs per side)",
+      "what": "With SuppressSourceGeneration = true, is no formatter generated, while a normal type still gets one?",
+      "result": "pass",
+      "detail": "Identical on base and branch (3/3 each): generated resolver present, no generated formatter for Suppressed (GetFormatter returns null, 0 generated types and 0 generated source files mention it), control type Control has a generated formatter (2 generated files), Suppressed round-trips through the dynamic resolver. AC-2 already held on base: this is a non-regression proof, not a fail-before.",
+      "supports": [
+        "AC-2",
+        "C3"
+      ],
+      "test_results": [
+        {
+          "test": "E2E-2234-Program",
+          "base": "passes",
+          "branch": "passes",
+          "criteria": [
+            "AC-2"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "E3",
+      "type": "executed",
+      "by": "Isolated CI (dotnet test, 3 runs per side)",
+      "what": "Agent's tests (SuppressSourceGenerationAnalyzerTests) on base 32258fdb and on the branch",
+      "result": "fail-before",
+      "detail": "Base: 4/8 fail (the three duplicate/mixed key tests on suppressed types, and DuplicateKeysAreReportedWithoutAnalyzerFailureForGeneratedTypes, which shows the crash is not specific to SuppressSourceGeneration), 4/8 pass (missing key, AllowPrivate, non-serializable member type, source-generation-only diagnostics). Branch: 8/8 pass. Stable over 3 runs on each side.",
+      "supports": [
+        "C2",
+        "C4",
+        "C5"
+      ],
+      "test_results": [
+        {"test": "DuplicateIntKeysAreReportedWithoutAnalyzerFailure", "base": "fails", "branch": "passes"},
+        {"test": "DuplicateStringKeysAreReportedWithoutAnalyzerFailure", "base": "fails", "branch": "passes"},
+        {"test": "MixedKeyKindsAreReportedWithoutAnalyzerFailure", "base": "fails", "branch": "passes"},
+        {"test": "DuplicateKeysAreReportedWithoutAnalyzerFailureForGeneratedTypes", "base": "fails", "branch": "passes"},
+        {"test": "MemberWithoutKeyIsReported", "base": "passes", "branch": "passes"},
+        {"test": "AllowPrivateRequiredIsReported", "base": "passes", "branch": "passes"},
+        {"test": "MemberTypeMustBeMessagePackObjectIsReported", "base": "passes", "branch": "passes"},
+        {"test": "SourceGenerationOnlyDiagnosticsAreNotReportedWhenSuppressed", "base": "passes", "branch": "passes"}
+      ]
+    },
+    {
+      "id": "E4",
+      "type": "executed",
+      "by": "Isolated CI (dotnet test)",
+      "regenerates": [
+        "snapshots"
+      ],
+      "what": "Full MessagePack.SourceGenerator.Tests suite on the branch (regenerates and compares snapshots)",
+      "result": "pass",
+      "detail": "175 passed / 0 failed",
+      "supports": []
+    }
+  ],
+  "not_checked": [
+    {
+      "what": "The exact regression reported in the issue (analyzer silent for suppressed types since 3.1.1)",
+      "why": "not reproduced on base 32258fdb: simple diagnostics are already reported there; only the crash on duplicate/mixed keys was observed. The issue gives no reproduction code."
+    },
+    {
+      "what": "MsgPack012 (inaccessible type) on suppressed types, listed in claim C1",
+      "why": "no scenario covers it"
+    },
+    {
+      "what": "Agent's execution test SuppressedSourceGenerationTests (MessagePack.SourceGenerator.ExecutionTests)",
+      "why": "project not built (disk/time); the same behaviour is covered by E2"
+    },
+    {
+      "what": "Live analysis in the IDE",
+      "why": "only command-line builds were run in the sandbox"
+    }
+  ]
+}

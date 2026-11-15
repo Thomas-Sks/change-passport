@@ -1,0 +1,7 @@
+flowchart LR
+  J["Jira story<br/>+ criteria"] --> A["Agent<br/>writes code"] --> MR["Merge<br/>request"]
+  MR --> CI["Existing CI<br/>build + tests"]
+  MR --> P["Passport<br/>factory"]
+  CI --> GATE{"Merge gate"}
+  P --> GATE
+  GATE --> S["Owner signs<br/>and merges"]

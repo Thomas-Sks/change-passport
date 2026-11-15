@@ -1,0 +1,35 @@
+# How to replay each piece of evidence, on base AND branch, in isolated worktrees.
+# scenario: editable file(s) copied into the worktree before the run (the owner can change them in the page).
+base: 32258fdb
+head: origin/ju26-issue-2297
+
+evidence:
+  E2:
+    title: "Agent's tests: fail before, pass after?"
+    kind: dotnet-test
+    scenario: {file: scenarios/CodeCoverageExclusionTests.cs, dest: tests/MessagePack.SourceGenerator.Tests/CodeCoverageExclusionTests.cs}
+    filter: "FullyQualifiedName~CodeCoverageExclusionTests"
+  E3:
+    title: "Does a user who already has the attribute on their resolver still compile?"
+    kind: dotnet-test
+    scenario: {file: scenarios/PassportAcceptanceTests.cs, dest: tests/MessagePack.SourceGenerator.Tests/PassportAcceptanceTests.cs}
+    filter: "FullyQualifiedName~UserResolverAlreadyExcluded_StillCompiles"
+  E4:
+    title: "Is code written by the user in a partial resolver still measured?"
+    kind: dotnet-test
+    scenario: {file: scenarios/PassportAcceptanceTests.cs, dest: tests/MessagePack.SourceGenerator.Tests/PassportAcceptanceTests.cs}
+    filter: "FullyQualifiedName~UserResolverMembers_AreExcludedFromCoverage"
+  E8:
+    title: "Real user project (net8.0 + netstandard2.0): what is excluded from coverage?"
+    kind: e2e-consumer
+    scenario: {file: scenarios/E2EModel.cs, dest: Model.cs}
+  E10:
+    title: "Catching test C5 (generated from AC-3): does an already-annotated resolver compile?"
+    kind: dotnet-test
+    scenario: {file: scenarios/CatchingTests.cs, dest: tests/MessagePack.SourceGenerator.Tests/CatchingTests.cs}
+    filter: "FullyQualifiedName~CatchingTests.C5"
+  E11:
+    title: "Catching tests that fail on both sides (C1, C2, C3, C8)"
+    kind: dotnet-test
+    scenario: {file: scenarios/CatchingTests.cs, dest: tests/MessagePack.SourceGenerator.Tests/CatchingTests.cs}
+    filter: "FullyQualifiedName~CatchingTests.C1|FullyQualifiedName~CatchingTests.C2|FullyQualifiedName~CatchingTests.C3|FullyQualifiedName~CatchingTests.C8"

@@ -1,0 +1,773 @@
+{
+  "schema": "change-passport/2",
+  "change": {
+    "branch": "ju26-issue-2283",
+    "base": "32258fdb",
+    "head": "9df83c38",
+    "files": 4,
+    "changed_lines": 228
+  },
+  "requirement": {
+    "id": "REQ-2283",
+    "title": "Generator and analyzer crash with IndexOutOfRangeException on a closed generic struct from a referenced assembly",
+    "source": "https://github.com/MessagePack-CSharp/MessagePack-CSharp/issues/2283",
+    "owner": "Camille Durand (synthetic) — CODEOWNER src/MessagePack.SourceGenerator",
+    "policy_guardian": "Sam Leroy (synthetic) — tech lead"
+  },
+  "acceptance_criteria": [
+    {
+      "id": "AC-1",
+      "text": "Neither the generator (CS8785) nor the analyzer (AD0001) crashes when a [MessagePackObject] type has a member whose type is a closed generic value type (struct or record struct) declared in a referenced assembly.",
+      "status": "supported",
+      "evidence": [
+        "E1"
+      ],
+      "tests": [
+        {
+          "test": "E2E-2283-Program",
+          "origin": "factory",
+          "branch": "passes",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "id": "AC-2",
+      "text": "In that case, the consuming assembly gets a generated resolver that provides a formatter for the type.",
+      "status": "supported",
+      "evidence": [
+        "E1"
+      ],
+      "tests": [
+        {
+          "test": "E2E-2283-Program",
+          "origin": "factory",
+          "branch": "passes",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "id": "AC-3",
+      "text": "At runtime, such a type round-trips (serialize then deserialize) with the generated resolver.",
+      "status": "supported",
+      "evidence": [
+        "E1"
+      ],
+      "tests": [
+        {
+          "test": "E2E-2283-Program",
+          "origin": "factory",
+          "branch": "passes",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "id": "AC-4",
+      "text": "Cases that already worked (non-generic struct, generic class, generic struct declared in the same assembly) keep working.",
+      "status": "supported without a passing linked test",
+      "evidence": [
+        "E2"
+      ],
+      "tests": []
+    }
+  ],
+  "claims": [
+    {
+      "id": "C1",
+      "text": "Closed generic types from a referenced assembly, including generic value types and record structs, can be used as members of [MessagePackObject] types.",
+      "status": "proven",
+      "evidence": [
+        "E1"
+      ]
+    },
+    {
+      "id": "C2",
+      "text": "Diagnostics about members of such a type are reported by the defining assembly, not by the consuming project (the analyzer only reports on members declared in the project being compiled).",
+      "status": "unproven",
+      "evidence": []
+    },
+    {
+      "id": "C3",
+      "text": "Documentation describes the new behaviour.",
+      "status": "unproven",
+      "evidence": []
+    },
+    {
+      "id": "C4",
+      "text": "Tests cover closed generic structs and record structs from a metadata reference.",
+      "status": "proven (weak evidence)",
+      "evidence": [
+        "E3",
+        "TEST-QUALITY"
+      ]
+    }
+  ],
+  "zones": [
+    {
+      "zone": "tests",
+      "class": "tests",
+      "files": 1,
+      "lines": 189,
+      "severity": null,
+      "why": "Tests are evidence; their strength is measured, not assumed.",
+      "trust": "new"
+    },
+    {
+      "zone": "generator-analysis",
+      "class": "sensitive",
+      "files": 1,
+      "lines": 29,
+      "severity": "minor",
+      "why": "Analysis logic of the generator and the analyzers.",
+      "trust": "new"
+    },
+    {
+      "zone": "docs",
+      "class": "ordinary",
+      "files": 2,
+      "lines": 10,
+      "severity": null,
+      "why": "Documentation; read because it makes claims.",
+      "trust": "trusted"
+    }
+  ],
+  "mechanical": {
+    "rule": [],
+    "passed": 0,
+    "flagged": []
+  },
+  "traceability": {
+    "hunks": 9,
+    "traced": 9,
+    "orphans": []
+  },
+  "evidence": [
+    {
+      "id": "E1",
+      "type": "executed-e2e",
+      "by": "Live sandbox replay (e2e-project), base vs branch, 3 runs per side",
+      "what": "Does the issue's project (lib + app) compile without a generator crash, with a working resolver?",
+      "result": "fail-before",
+      "detail": "Base: ran with warnings. Branch: ran. warnings: none; AC-2 resolver generated in app: yes; AC-2 formatter for Cmd: yes; AC-3 round-trip: OK",
+      "replayed_at": "2026-11-15T03:31:35",
+      "test_results": [
+        {
+          "test": "E2E-2283-Program",
+          "base": "fails",
+          "branch": "passes",
+          "criteria": [
+            "AC-1",
+            "AC-2",
+            "AC-3",
+            "C1"
+          ]
+        }
+      ],
+      "supports": [
+        "AC-1",
+        "AC-2",
+        "AC-3",
+        "C1"
+      ]
+    },
+    {
+      "id": "E3",
+      "type": "executed",
+      "by": "Live sandbox replay (dotnet-test), base vs branch, 3 runs per side",
+      "what": "The agent's tests for closed generic structs from a metadata reference: do they fail before and pass after?",
+      "result": "fail-before",
+      "detail": "Base: fails. Branch: passes. Passed GenericsFormatterTests.ClosedGenericRecordStruct_FromMetadataReference [1 m 1 s]; Passed GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference_UnkeyedMember; Passed GenericsFormatterTests.ClosedGenericStruct_FromMetadataReference; Total tests: 3",
+      "replayed_at": "2026-11-15T03:33:44",
+      "test_results": [
+        {
+          "test": "ClosedGenericRecordStruct_FromMetadataReference",
+          "base": "fails",
+          "branch": "passes",
+          "criteria": [
+            "C4"
+          ]
+        },
+        {
+          "test": "ClosedGenericStruct_FromMetadataReference_UnkeyedMember",
+          "base": "fails",
+          "branch": "passes",
+          "criteria": [
+            "C4"
+          ]
+        },
+        {
+          "test": "ClosedGenericStruct_FromMetadataReference",
+          "base": "fails",
+          "branch": "passes",
+          "criteria": [
+            "C4"
+          ]
+        }
+      ],
+      "supports": [
+        "C4"
+      ]
+    },
+    {
+      "id": "E2",
+      "type": "executed",
+      "by": "Isolated CI (dotnet test) — reused (recorded run, not replayed live)",
+      "regenerates": [
+        "snapshots"
+      ],
+      "what": "Full MessagePack.SourceGenerator.Tests suite on the branch (regenerates and compares the snapshots)",
+      "result": "pass",
+      "detail": "170 passed / 0 failed",
+      "supports": [
+        "AC-4"
+      ]
+    },
+    {
+      "id": "TEST-QUALITY",
+      "type": "test-strength",
+      "by": "static analysis of the tests (test_quality.py)",
+      "what": "Assertion strength and test → criterion links across 20 tests",
+      "result": "weak",
+      "detail": "19 agent test(s) linked to no criterion",
+      "affects": [
+        "C4"
+      ]
+    }
+  ],
+  "findings": [
+    {
+      "id": "F1",
+      "lens": "correctness",
+      "severity": "high",
+      "title": "Diagnostics are filtered by a wrapper, but the crash fix itself is not shown; the metadata-declared struct path (e.g. DeclaringSyntaxReferences[0] elsewhere) may still throw",
+      "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+      "line": 985,
+      "quote": "GetPropertyIdentifierLocation(item)",
+      "affects": [
+        "AC-1",
+        "AC-2"
+      ],
+      "confidence": 0.35,
+      "verification": "opinion — proofs disagree",
+      "verification_evidence": [
+        "E1"
+      ],
+      "verification_note": "Executed proofs show the affected criteria hold; kept for the owner to judge."
+    },
+    {
+      "id": "F2",
+      "lens": "correctness",
+      "severity": "medium",
+      "title": "Diagnostic.Create with a null location passes the filter check only via the wrapper. Diagnostics for metadata members are silently dropped, including ones the consuming project may legitimately want (e.g. the type is unusable). This hides real problems for referenced types.",
+      "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+      "line": 1429,
+      "quote": "if (diagnostic.Location.IsInSource && this.compilation.ContainsSyntaxTree(diagnostic.Location.SourceTree))",
+      "affects": [
+        "C2",
+        "AC-4"
+      ],
+      "confidence": 0.45,
+      "verification": "opinion (unverified)",
+      "verification_evidence": [],
+      "verification_note": "Quote found; no proof covers it."
+    },
+    {
+      "id": "F3",
+      "lens": "test quality",
+      "severity": "high",
+      "title": "No test performs a runtime serialize/deserialize round trip, so AC-3 is not covered",
+      "file": "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs",
+      "line": 499,
+      "quote": "await RunWithMetadataReferenceAsync(defineSource, usageSource, \"TempProject.MyResolver.g.cs\");",
+      "affects": [
+        "AC-3"
+      ],
+      "confidence": 0.8,
+      "verification": "opinion — proofs disagree",
+      "verification_evidence": [
+        "E1"
+      ],
+      "verification_note": "Executed proofs show the affected criteria hold; kept for the owner to judge."
+    },
+    {
+      "id": "F4",
+      "lens": "test quality",
+      "severity": "medium",
+      "title": "Resolver check only asserts the resolver file hint name exists, not that it contains a formatter for the generic struct (AC-2). The main test also skips generated-source comparison.",
+      "file": "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs",
+      "line": 640,
+      "quote": "Assert.Contains(expectedResolverHintName, hintNames);",
+      "affects": [
+        "AC-2",
+        "C4"
+      ],
+      "confidence": 0.7,
+      "verification": "opinion (unverified)",
+      "verification_evidence": [],
+      "verification_note": "Quote found; no proof covers it."
+    },
+    {
+      "id": "F5",
+      "lens": "test quality",
+      "severity": "medium",
+      "title": "Tests only pass LanguageVersion.CSharp7_3 for the plain struct case, and the unkeyed-member test expects zero diagnostics, which encodes the silent-drop behaviour as correct; it does not verify the analyzer is never invoked on metadata types for the other crash site (AD0001).",
+      "file": "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs",
+      "line": 578,
+      "quote": "await RunWithMetadataReferenceAsync(defineSource, usageSource, \"TempProject.MyResolver.g.cs\");",
+      "affects": [
+        "AC-1",
+        "C4"
+      ],
+      "confidence": 0.4,
+      "verification": "opinion (unverified)",
+      "verification_evidence": [],
+      "verification_note": "Quote found; no proof covers it."
+    },
+    {
+      "id": "F6",
+      "lens": "correctness",
+      "severity": "low",
+      "title": "README states closed generic types from referenced assemblies work, but the defining type is only checked for diagnostics, not that the defining assembly's [MessagePackObject] attribute is honored at runtime",
+      "file": "README.md",
+      "line": 1641,
+      "quote": "Closed generic types defined in a referenced assembly (for example, `Item<int>` where `Item<T>` is defined in another project or NuGet package) can be used as members of your `[MessagePackObject]` types, including generic value types and record structs.",
+      "affects": [
+        "C1",
+        "C3"
+      ],
+      "confidence": 0.3,
+      "verification": "opinion (unverified)",
+      "verification_evidence": [],
+      "verification_note": "Quote found; no proof covers it."
+    }
+  ],
+  "missed_by_ai": [],
+  "weakened_tests": [],
+  "refusals": [
+    {
+      "id": "R1",
+      "kind": "user-visible-behaviour",
+      "severity": "major",
+      "decider": "named owner",
+      "question": "Is it acceptable that diagnostics about members of referenced-assembly types are silently dropped in the consuming project rather than surfaced there?",
+      "why": "This is a user-visible behaviour decision about which diagnostics users see. It is not something I can settle by reading the code.",
+      "source": "AI reviewer (AI-R1)"
+    },
+    {
+      "id": "R2",
+      "kind": "unproven-claim",
+      "severity": "minor",
+      "decider": "named owner",
+      "question": "Does the claim that diagnostics are reported by the defining assembly hold for all consumers, for example when the referenced assembly was built without the analyzer?",
+      "why": "I can't check by reading whether the defining assembly ran the analyzer. The claim depends on build setups outside this diff.",
+      "source": "AI reviewer (AI-R2)"
+    },
+    {
+      "id": "R3",
+      "kind": "unproven-claim",
+      "severity": "minor",
+      "decider": "named owner",
+      "question": "Accept claim C2 without evidence: “Diagnostics about members of such a type are reported by the defining assembly, not by the consuming project (the analyzer only reports on members declared in the project being compiled).”",
+      "why": "No executed or mechanical evidence",
+      "source": "rule"
+    },
+    {
+      "id": "R4",
+      "kind": "unproven-claim",
+      "severity": "minor",
+      "decider": "named owner",
+      "question": "Accept claim C3 without evidence: “Documentation describes the new behaviour.”",
+      "why": "No executed or mechanical evidence",
+      "source": "rule"
+    }
+  ],
+  "verdict": {
+    "lane": "RED",
+    "action": "Send back to the agent with the evidence, or full reading + written decision",
+    "reasons_red": [
+      "open major refusal R1: Is it acceptable that diagnostics about members of referenced-assembly types are silently dropped in the consuming project rather than surfaced there?"
+    ],
+    "reasons_orange": [
+      "sensitive zone generator-analysis touched",
+      "zone generator-analysis not trusted yet (new)",
+      "zone tests not trusted yet (new)",
+      "criterion AC-4 supported without a passing linked test",
+      "claim C2 unproven",
+      "claim C3 unproven",
+      "claim C4 proven (weak evidence)",
+      "refusal R2: Does the claim that diagnostics are reported by the defining assembly hold for all consumers, for example when the referenced assembly was built without the analyzer?",
+      "refusal R3: Accept claim C2 without evidence: “Diagnostics about members of such a type are reported by the defining assembly, not by the consuming project (the analyzer only reports on members declared in the project being compiled).”",
+      "refusal R4: Accept claim C3 without evidence: “Documentation describes the new behaviour.”"
+    ]
+  },
+  "tests": [
+    {
+      "test": "NullableFormatter",
+      "source": "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs",
+      "criteria": [],
+      "assertions": 2,
+      "lines": 27,
+      "issues": [],
+      "origin": "agent",
+      "branch": "not run"
+    },
+    {
+      "test": "WellKnownGenericsFormatter",
+      "source": "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs",
+      "criteria": [],
+      "assertions": 2,
+      "lines": 22,
+      "issues": [],
+      "origin": "agent",
+      "branch": "not run"
+    },
+    {
+      "test": "GenericsUnionFormatter",
+      "source": "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs",
+      "criteria": [],
+      "assertions": 2,
+      "lines": 21,
+      "issues": [],
+      "origin": "agent",
+      "branch": "not run"
+    },
+    {
+      "test": "GenericsUnionFormatter_Nested",
+      "source": "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs",
+      "criteria": [],
+      "assertions": 2,
+      "lines": 35,
+      "issues": [],
+      "origin": "agent",
+      "branch": "not run"
+    },
+    {
+      "test": "NestedGenericTypes",
+      "source": "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs",
+      "criteria": [],
+      "assertions": 2,
+      "lines": 43,
+      "issues": [],
+      "origin": "agent",
+      "branch": "not run"
+    },
+    {
+      "test": "GenericsOfTFormatter_WithKnownTypes",
+      "source": "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs",
+      "criteria": [],
+      "assertions": 2,
+      "lines": 29,
+      "issues": [],
+      "origin": "agent",
+      "branch": "not run"
+    },
+    {
+      "test": "GenericsOfTFormatter",
+      "source": "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs",
+      "criteria": [],
+      "assertions": 2,
+      "lines": 32,
+      "issues": [],
+      "origin": "agent",
+      "branch": "not run"
+    },
+    {
+      "test": "GenericsOfT1T2Formatter",
+      "source": "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs",
+      "criteria": [],
+      "assertions": 2,
+      "lines": 34,
+      "issues": [],
+      "origin": "agent",
+      "branch": "not run"
+    },
+    {
+      "test": "GenericsOfTFormatter_FormatterOnly",
+      "source": "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs",
+      "criteria": [],
+      "assertions": 2,
+      "lines": 20,
+      "issues": [],
+      "origin": "agent",
+      "branch": "not run"
+    },
+    {
+      "test": "Generics_Constraints_Type",
+      "source": "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs",
+      "criteria": [],
+      "assertions": 2,
+      "lines": 19,
+      "issues": [],
+      "origin": "agent",
+      "branch": "not run"
+    },
+    {
+      "test": "Generics_Constraints_NullableReferenceType",
+      "source": "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs",
+      "criteria": [],
+      "assertions": 2,
+      "lines": 28,
+      "issues": [],
+      "origin": "agent",
+      "branch": "not run"
+    },
+    {
+      "test": "Generics_Constraints_Struct",
+      "source": "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs",
+      "criteria": [],
+      "assertions": 2,
+      "lines": 19,
+      "issues": [],
+      "origin": "agent",
+      "branch": "not run"
+    },
+    {
+      "test": "Generics_Constraints_Multiple",
+      "source": "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs",
+      "criteria": [],
+      "assertions": 2,
+      "lines": 28,
+      "issues": [],
+      "origin": "agent",
+      "branch": "not run"
+    },
+    {
+      "test": "Generics_Constraints_ReferenceType_Nullable",
+      "source": "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs",
+      "criteria": [],
+      "assertions": 2,
+      "lines": 24,
+      "issues": [],
+      "origin": "agent",
+      "branch": "not run"
+    },
+    {
+      "test": "Generics_Defined_In_ReferencedProject",
+      "source": "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs",
+      "criteria": [],
+      "assertions": 1,
+      "lines": 55,
+      "issues": [],
+      "origin": "agent",
+      "branch": "not run"
+    },
+    {
+      "test": "ClosedGenericStruct_FromMetadataReference",
+      "source": "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs",
+      "criteria": [],
+      "assertions": 1,
+      "lines": 34,
+      "issues": [],
+      "origin": "agent",
+      "branch": "passes"
+    },
+    {
+      "test": "ClosedGenericRecordStruct_FromMetadataReference",
+      "source": "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs",
+      "criteria": [],
+      "assertions": 1,
+      "lines": 29,
+      "issues": [],
+      "origin": "agent",
+      "branch": "passes"
+    },
+    {
+      "test": "ClosedGenericStruct_FromMetadataReference_UnkeyedMember",
+      "source": "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs",
+      "criteria": [],
+      "assertions": 1,
+      "lines": 36,
+      "issues": [],
+      "origin": "agent",
+      "branch": "passes"
+    },
+    {
+      "test": "RecursiveGenerics_Direct",
+      "source": "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs",
+      "criteria": [],
+      "assertions": 2,
+      "lines": 14,
+      "issues": [],
+      "origin": "agent",
+      "branch": "not run"
+    },
+    {
+      "test": "E2E-2283-Program",
+      "source": "E1",
+      "criteria": [
+        "AC-1",
+        "AC-2",
+        "AC-3",
+        "C1"
+      ],
+      "assertions": 1,
+      "lines": 0,
+      "issues": [],
+      "origin": "factory",
+      "branch": "passes"
+    }
+  ],
+  "reading_contract": {
+    "must_read": [
+      {
+        "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+        "header": "-1077 +1077",
+        "lines": 2,
+        "why": "zone generator-analysis"
+      },
+      {
+        "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+        "header": "-1428,0 +1429,23",
+        "lines": 23,
+        "why": "zone generator-analysis"
+      },
+      {
+        "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+        "header": "-239 +239",
+        "lines": 2,
+        "why": "zone generator-analysis"
+      },
+      {
+        "file": "src/MessagePack.SourceGenerator/CodeAnalysis/TypeCollector.cs",
+        "header": "-985 +985",
+        "lines": 2,
+        "why": "zone generator-analysis"
+      },
+      {
+        "file": "README.md",
+        "header": "-1638,0 +1639,5",
+        "lines": 5,
+        "why": "zone docs"
+      },
+      {
+        "file": "doc/analyzers/MsgPack004.md",
+        "header": "-47,0 +48,5",
+        "lines": 5,
+        "why": "zone docs"
+      }
+    ],
+    "excluded": [
+      {
+        "what": "1 test file(s)",
+        "lines": 189,
+        "why": "summarised by the evidence (execution, assertion strength, links to criteria)",
+        "proof": "TEST-QUALITY + executed evidence"
+      }
+    ],
+    "test_files_summarised": [
+      "tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs"
+    ],
+    "lines_to_read": 39,
+    "lines_total": 228,
+    "files_to_read": 3,
+    "files_total": 4
+  },
+  "attestation_draft": {
+    "checked": [
+      {
+        "what": "Does the issue's project (lib + app) compile without a generator crash, with a working resolver? → fail-before",
+        "by": "Live sandbox replay (e2e-project), base vs branch, 3 runs per side",
+        "id": "E1"
+      },
+      {
+        "what": "The agent's tests for closed generic structs from a metadata reference: do they fail before and pass after? → fail-before",
+        "by": "Live sandbox replay (dotnet-test), base vs branch, 3 runs per side",
+        "id": "E3"
+      },
+      {
+        "what": "Full MessagePack.SourceGenerator.Tests suite on the branch (regenerates and compares the snapshots) → pass",
+        "by": "Isolated CI (dotnet test) — reused (recorded run, not replayed live)",
+        "id": "E2"
+      },
+      {
+        "what": "Assertion strength and test → criterion links across 20 tests → weak",
+        "by": "static analysis of the tests (test_quality.py)",
+        "id": "TEST-QUALITY"
+      },
+      {
+        "what": "F1 Diagnostics are filtered by a wrapper, but the crash fix itself is not shown; the metadata-declared struct path (e.g. DeclaringSyntaxReferences[0] elsewhere) may still throw → opinion — proofs disagree",
+        "by": "AI reviewer + verification",
+        "id": "F1"
+      },
+      {
+        "what": "F2 Diagnostic.Create with a null location passes the filter check only via the wrapper. Diagnostics for metadata members are silently dropped, including ones the consuming project may legitimately want (e.g. the type is unusable). This hides real problems for referenced types. → opinion (unverified)",
+        "by": "AI reviewer + verification",
+        "id": "F2"
+      },
+      {
+        "what": "F3 No test performs a runtime serialize/deserialize round trip, so AC-3 is not covered → opinion — proofs disagree",
+        "by": "AI reviewer + verification",
+        "id": "F3"
+      },
+      {
+        "what": "F4 Resolver check only asserts the resolver file hint name exists, not that it contains a formatter for the generic struct (AC-2). The main test also skips generated-source comparison. → opinion (unverified)",
+        "by": "AI reviewer + verification",
+        "id": "F4"
+      },
+      {
+        "what": "F5 Tests only pass LanguageVersion.CSharp7_3 for the plain struct case, and the unkeyed-member test expects zero diagnostics, which encodes the silent-drop behaviour as correct; it does not verify the analyzer is never invoked on metadata types for the other crash site (AD0001). → opinion (unverified)",
+        "by": "AI reviewer + verification",
+        "id": "F5"
+      },
+      {
+        "what": "F6 README states closed generic types from referenced assemblies work, but the defining type is only checked for diagnostics, not that the defining assembly's [MessagePackObject] attribute is honored at runtime → opinion (unverified)",
+        "by": "AI reviewer + verification",
+        "id": "F6"
+      },
+      {
+        "what": "6 reading-contract hunks (39 lines)",
+        "by": "owner (to tick)"
+      }
+    ],
+    "not_checked": [
+      {
+        "what": "Claim C2: Diagnostics about members of such a type are reported by the defining assembly, not by the consuming project (the analyzer only reports on members declared in the project being compiled).",
+        "why": "no executed or mechanical evidence"
+      },
+      {
+        "what": "Claim C3: Documentation describes the new behaviour.",
+        "why": "no executed or mechanical evidence"
+      },
+      {
+        "what": "Criterion AC-4 by a linked test",
+        "why": "supported without a passing linked test"
+      },
+      {
+        "what": "Analyzer diagnostics that are now filtered (claim C2)",
+        "why": "no scenario has yet checked that a legitimate diagnostic without a location is not suppressed"
+      },
+      {
+        "what": "Trimmed / NativeAOT applications mentioned in the issue",
+        "why": "no AOT environment in the sandbox"
+      }
+    ],
+    "decisions": [
+      {
+        "refusal": "R1",
+        "question": "Is it acceptable that diagnostics about members of referenced-assembly types are silently dropped in the consuming project rather than surfaced there?",
+        "decision": null
+      },
+      {
+        "refusal": "R2",
+        "question": "Does the claim that diagnostics are reported by the defining assembly hold for all consumers, for example when the referenced assembly was built without the analyzer?",
+        "decision": null
+      },
+      {
+        "refusal": "R3",
+        "question": "Accept claim C2 without evidence: “Diagnostics about members of such a type are reported by the defining assembly, not by the consuming project (the analyzer only reports on members declared in the project being compiled).”",
+        "decision": null
+      },
+      {
+        "refusal": "R4",
+        "question": "Accept claim C3 without evidence: “Documentation describes the new behaviour.”",
+        "decision": null
+      }
+    ],
+    "residual_risk": null,
+    "signed_by": null,
+    "date": null
+  },
+  "fingerprint": "8f92699cbab2176b"
+}

@@ -1,0 +1,41 @@
+{
+ "evidence": "E3",
+ "title": "Does a user who already has the attribute on their resolver still compile?",
+ "kind": "dotnet-test",
+ "scenario_file": "scenarios/PassportAcceptanceTests.cs",
+ "scenario_modified": false,
+ "base_ref": "32258fdb",
+ "head_ref": "origin/ju26-issue-2297",
+ "base": {
+  "status": "passes",
+  "runs": [
+   "passes",
+   "passes",
+   "passes"
+  ],
+  "lines": [
+   "Passed PassportAcceptanceTests.UserResolverAlreadyExcluded_StillCompiles",
+   "Total tests: 1"
+  ],
+  "seconds": 15
+ },
+ "branch": {
+  "status": "fails",
+  "runs": [
+   "fails",
+   "fails",
+   "fails"
+  ],
+  "lines": [
+   "Assert.Empty() Failure: Collection was not empty",
+   "Collection: [MessagePack.SourceGenerator/MessagePack.SourceGenerator.MessagePackGenerator/MyNs.MyResolver.g.cs(13,2): error CS0579: Duplicate 'global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage' attribute]",
+   "MessagePack.SourceGenerator/MessagePack.SourceGenerator.MessagePackGenerator/MyNs.MyResolver.g.cs(13,2): error CS0579: Duplicate 'global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage' attribute",
+   "Failed PassportAcceptanceTests.UserResolverAlreadyExcluded_StillCompiles",
+   "Total tests: 1"
+  ],
+  "seconds": 16
+ },
+ "verdict": "different behaviour",
+ "repeat": 3,
+ "replayed_at": "2026-11-15T02:35:17"
+}

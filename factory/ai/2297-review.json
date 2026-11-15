@@ -1,0 +1,87 @@
+{
+  "reviewer": "Claude Sonnet (authoring agent's model family unknown — see limitations)",
+  "mode": "read-only, whole-repository context, no execution, without seeing the executed evidence",
+  "findings": [
+    {
+      "id": "F1",
+      "lens": "compatibility",
+      "severity": "high",
+      "title": "The #if guard excludes netstandard2.0 and .NET Framework although the attribute exists there",
+      "file": "src/MessagePack.SourceGenerator/Transforms/FormatterTemplate.tt",
+      "line": 14,
+      "quote": "#if !NETSTANDARD2_0 && !NETFRAMEWORK\n\t[global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]\n#endif",
+      "affects": [
+        "AC-2",
+        "C2",
+        "C3"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "id": "F2",
+      "lens": "correctness",
+      "severity": "medium",
+      "title": "Unrequested change in the nested-type emitter",
+      "file": "src/MessagePack.SourceGenerator/Transforms/TransformUtilities.cs",
+      "line": 58,
+      "quote": "-                writer(anyConstraints ? \"{\" : \" {\\r\\n\");\n+                writer(anyConstraints ? \"{\\r\\n\" : \" {\\r\\n\");",
+      "affects": [
+        "AC-3",
+        "AC-4"
+      ],
+      "confidence": 0.5
+    },
+    {
+      "id": "F3",
+      "lens": "test quality",
+      "severity": "medium",
+      "title": "The test checks one substring per file, not each type, and compiles nothing",
+      "file": "tests/MessagePack.SourceGenerator.Tests/CodeCoverageExclusionTests.cs",
+      "line": 78,
+      "quote": "text.Contains(ExcludeAttribute)",
+      "affects": [
+        "C4",
+        "AC-1",
+        "AC-3"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "id": "F4",
+      "lens": "correctness",
+      "severity": "low",
+      "title": "Possible CS0579 if the user's partial resolver already carries the attribute",
+      "file": "src/MessagePack.SourceGenerator/Transforms/CompositeResolverTemplate.tt",
+      "line": 7,
+      "quote": "partial class <#= ResolverName.Name #> : MsgPack::IFormatterResolver",
+      "affects": [
+        "AC-3"
+      ],
+      "confidence": 0.4,
+      "also_stated": "[ExcludeFromCodeCoverage] on a partial class is fine"
+    }
+  ],
+  "refusals": [
+    {
+      "id": "AI-R1",
+      "question": "Should the exclusion be switchable by a setting? Apply it to netstandard2.0/net472?",
+      "why_refused": "Product/API decision",
+      "decider": "Maintainer",
+      "kind": "compat-scope"
+    },
+    {
+      "id": "AI-R2",
+      "question": "Is the whitespace change in the generated output acceptable for snapshot consumers?",
+      "why_refused": "Compatibility policy for the generated output; no build",
+      "decider": "Maintainer",
+      "kind": "compat-scope"
+    },
+    {
+      "id": "AI-R3",
+      "question": "Are the 222 snapshots correct?",
+      "why_refused": "Only sampled; cannot regenerate without a build",
+      "decider": "Human who runs the tests",
+      "kind": "unproven-claim"
+    }
+  ]
+}

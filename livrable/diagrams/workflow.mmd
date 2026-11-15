@@ -1,0 +1,12 @@
+flowchart LR
+  A["<b>1 · Change</b><br/>agent code<br/>+ locked criteria<br/>+ agent claims"]
+  B["<b>2 · Sort</b><br/>generated<br/>normal<br/>sensitive"]
+  C["<b>3 · Prove in a sandbox</b><br/>before vs after · 3 runs<br/>────────────<br/>end-to-end run<br/>catching tests<br/>mutation testing<br/>regenerate & compare"]
+  D["<b>4 · AI review</b><br/>findings checked<br/>against proofs<br/>+ refusals"]
+  E["<b>5 · Lane</b><br/>green / orange / red<br/>by explicit rules"]
+  F["<b>6 · Named owner</b><br/>reads what the lane lists<br/>replays proofs<br/>signs & merges"]
+  A --> B --> C --> D --> E --> F
+  classDef sandbox fill:#e3ecfa,stroke:#1f5fbf,color:#172033
+  classDef owner fill:#e2f4e8,stroke:#17803d,color:#0f5228
+  class C sandbox
+  class F owner

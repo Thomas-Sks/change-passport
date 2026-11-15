@@ -1,0 +1,104 @@
+{
+ "requirement": "REQ-2283",
+ "started": "2026-11-15T03:31:15",
+ "done": true,
+ "error": null,
+ "steps": [
+  {
+   "id": "sort",
+   "title": "Sort the change",
+   "state": "done",
+   "lines": [
+    "4 files, 228 lines changed",
+    "zone tests (tests): 1 files, 189 lines",
+    "zone generator-analysis (sensitive): 1 files, 29 lines",
+    "zone docs (ordinary): 2 files, 10 lines",
+    "orphan hunks: 0 of 9",
+    "provisional lane without proofs: ORANGE · 39 lines to read"
+   ],
+   "seconds": 0
+  },
+  {
+   "id": "prove",
+   "title": "Run the proofs, before vs after",
+   "state": "done",
+   "lines": [
+    "E1 · Does the issue's project (lib + app) compile without a generator crash, with a working resolver?",
+    "   base: ran with warnings (ran with warnings/ran with warnings/ran with warnings) · branch: ran (ran/ran/ran) · 39s",
+    "E3 · The agent's tests for closed generic structs from a metadata reference: do they fail before and pass after?",
+    "   base: fails (fails/fails/fails) · branch: passes (passes/passes/passes) · 257s"
+   ],
+   "seconds": 149
+  },
+  {
+   "id": "evidence",
+   "title": "Turn results into evidence",
+   "state": "done",
+   "lines": [
+    "E1: fail-before → supports AC-1, AC-2, AC-3, C1",
+    "E3: fail-before → supports C4",
+    "E2: pass (reused from the recorded run: Full MessagePack.SourceGenerator.Tests suite on the branch (regenerate)"
+   ],
+   "seconds": 0
+  },
+  {
+   "id": "review",
+   "title": "AI review (a second model, blind to the proofs)",
+   "state": "done",
+   "lines": [
+    "reusing recorded review from 2026-11-15T03:29:22",
+    "F1 [high] Diagnostics are filtered by a wrapper, but the crash fix itself is not shown; the metadata-declared struct path (e.g. DeclaringSyntaxReferences[0] elsewhere) may still throw",
+    "F2 [medium] Diagnostic.Create with a null location passes the filter check only via the wrapper. Diagnostics for metadata members are silently dropped, including ones the consuming project may legitimately want (e.g. the type is unusable). This hides real problems for referenced types.",
+    "F3 [high] No test performs a runtime serialize/deserialize round trip, so AC-3 is not covered",
+    "F4 [medium] Resolver check only asserts the resolver file hint name exists, not that it contains a formatter for the generic struct (AC-2). The main test also skips generated-source comparison.",
+    "F5 [medium] Tests only pass LanguageVersion.CSharp7_3 for the plain struct case, and the unkeyed-member test expects zero diagnostics, which encodes the silent-drop behaviour as correct; it does not verify the analyzer is never invoked on metadata types for the other crash site (AD0001).",
+    "F6 [low] README states closed generic types from referenced assemblies work, but the defining type is only checked for diagnostics, not that the defining assembly's [MessagePackObject] attribute is honored at runtime",
+    "refuses: Is it acceptable that diagnostics about members of referenced-assembly types are silently dropped in the consuming project rather than surfaced there?",
+    "refuses: Does the claim that diagnostics are reported by the defining assembly hold for all consumers, for example when the referenced assembly was built without the analyzer?"
+   ],
+   "seconds": 0
+  },
+  {
+   "id": "verify",
+   "title": "Check the AI against code and proofs",
+   "state": "done",
+   "lines": [
+    "F1: opinion — proofs disagree (E1)",
+    "F2: opinion (unverified)",
+    "F3: opinion — proofs disagree (E1)",
+    "F4: opinion (unverified)",
+    "F5: opinion (unverified)",
+    "F6: opinion (unverified)"
+   ],
+   "seconds": 0
+  },
+  {
+   "id": "passport",
+   "title": "Compute the passport",
+   "state": "done",
+   "lines": [
+    "lane RED · 39 of 228 lines to read · 4 decisions for a human",
+    "AC-1: supported",
+    "AC-2: supported",
+    "AC-3: supported",
+    "AC-4: supported without a passing linked test",
+    "action: Send back to the agent with the evidence, or full reading + written decision"
+   ],
+   "seconds": 0
+  }
+ ],
+ "provisional": {
+  "lane": "ORANGE",
+  "lines_to_read": 39,
+  "lines_total": 228
+ },
+ "final": {
+  "lane": "RED",
+  "lines_to_read": 39,
+  "lines_total": 228,
+  "refusals": 4,
+  "page": "REQ-2283.live.html",
+  "fingerprint": "8f92699cbab2176b"
+ },
+ "finished": "2026-11-15T03:33:44"
+}

@@ -1,0 +1,449 @@
+<title>Change Passport</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap">
+<style>
+/* Layout: one reading column (max 980px); tables and flows scroll inside their own box. */
+:root{
+  --bg:#f5f7fa; --surface:#ffffff; --ink:#172033; --muted:#5b6578; --line:#dde3ec; --soft:#eaeff6;
+  --accent:#1f5fbf; --accent-soft:#e3ecfa;
+  --ok:#17803d; --ok-bg:#e2f4e8; --warn:#a15c00; --warn-bg:#fdf0d9; --bad:#b42318; --bad-bg:#fde7e4;
+  --f-display:"Space Grotesk",system-ui,sans-serif; --f-body:"IBM Plex Sans",system-ui,sans-serif; --f-mono:"IBM Plex Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0f141c; --surface:#161d28; --ink:#e6ebf3; --muted:#9aa5b8; --line:#2a3445; --soft:#1c2533;
+  --accent:#7aa7ef; --accent-soft:#1d2b44;
+  --ok:#6fd496; --ok-bg:#12301e; --warn:#f1b65c; --warn-bg:#352409; --bad:#ff8f84; --bad-bg:#3a1714; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f141c; --surface:#161d28; --ink:#e6ebf3; --muted:#9aa5b8; --line:#2a3445; --soft:#1c2533;
+  --accent:#7aa7ef; --accent-soft:#1d2b44;
+  --ok:#6fd496; --ok-bg:#12301e; --warn:#f1b65c; --warn-bg:#352409; --bad:#ff8f84; --bad-bg:#3a1714; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:15.5px/1.6 var(--f-body)}
+.wrap{max-width:980px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0}
+section{padding-block:40px;border-top:1px solid var(--line)}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;line-height:1.2;margin:0}
+h1{font-size:clamp(30px,5vw,46px);letter-spacing:-.01em}
+h2{font-size:26px;margin-bottom:6px}
+h3{font-size:17px;margin-bottom:6px}
+p{margin:0;max-width:68ch}
+.lede{font-size:18px;color:var(--muted);max-width:62ch}
+.eyebrow{font:500 12px/1 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.muted{color:var(--muted)}
+.mono{font-family:var(--f-mono);font-size:13px}
+.stack{display:grid;gap:14px}
+.grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;min-width:0}
+.card h3{font-size:15.5px}
+.card p{font-size:14.5px}
+.tag{display:inline-block;font:500 11.5px/1 var(--f-mono);padding:4px 8px;border-radius:99px;background:var(--soft);color:var(--muted);white-space:nowrap}
+.t-ok{background:var(--ok-bg);color:var(--ok)} .t-warn{background:var(--warn-bg);color:var(--warn)} .t-bad{background:var(--bad-bg);color:var(--bad)} .t-acc{background:var(--accent-soft);color:var(--accent)}
+.scroll{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:14px;min-width:620px}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font:500 12px/1.3 var(--f-mono);text-transform:uppercase;letter-spacing:.05em;color:var(--muted);background:var(--soft)}
+tr:last-child td{border-bottom:0}
+.num{font-variant-numeric:tabular-nums}
+.hero{padding-block:48px 36px}
+.hero .stack{gap:18px}
+.thesis{font-family:var(--f-display);font-size:clamp(19px,2.6vw,24px);font-weight:500;max-width:46ch;border-left:3px solid var(--accent);padding-left:14px}
+.status{display:flex;flex-wrap:wrap;gap:8px}
+.passport{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.pp-head{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;padding:14px 18px;background:var(--soft);border-bottom:1px solid var(--line)}
+.pp-body{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.pp-field{padding:14px 18px;border-bottom:1px solid var(--line);border-right:1px solid var(--line);min-width:0}
+.pp-field b{font:500 11.5px/1 var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:6px}
+.pp-field p{font-size:14.5px}
+.stamp{font:700 13px/1 var(--f-mono);letter-spacing:.1em;color:var(--bad);border:2px solid var(--bad);padding:6px 10px;border-radius:6px;transform:rotate(-4deg);display:inline-block}
+.flow{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));counter-reset:step}
+.step{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px;position:relative;min-width:0}
+.step::before{counter-increment:step;content:counter(step);font:500 12px/1 var(--f-mono);color:var(--accent);display:block;margin-bottom:8px}
+.step h3{font-size:15px}
+.step p{font-size:14px;color:var(--muted)}
+.lanes{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.lane{border-radius:10px;padding:16px;border:1px solid var(--line);background:var(--surface);border-top:4px solid var(--c)}
+.lane.g{--c:var(--ok)} .lane.o{--c:var(--warn)} .lane.r{--c:var(--bad)}
+.lane h3{color:var(--c)}
+.lane p{font-size:14px}
+.kpis{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(160px,1fr))}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px}
+.kpi strong{display:block;font:700 26px/1.1 var(--f-display);font-variant-numeric:tabular-nums}
+.kpi span{font-size:13px;color:var(--muted)}
+.bar{height:8px;border-radius:99px;background:var(--soft);overflow:hidden;margin-top:10px}
+.bar i{display:block;height:100%;background:var(--accent)}
+ul.clean{list-style:none;padding:0;margin:0;display:grid;gap:8px}
+ul.clean li{display:flex;gap:10px;align-items:flex-start;font-size:14.5px}
+ul.clean li .tag{flex:none;margin-top:2px}
+.two{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+footer{padding-block:28px 48px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+/* Phone: tables become stacked cards, each value labelled with its column name */
+@media (max-width:680px){
+  body{font-size:15px}
+  section{padding-block:28px}
+  h2{font-size:21px}
+  .lede{font-size:16px}
+  .hero{padding-block:28px 24px}
+  .scroll{overflow:visible;border:0;background:transparent}
+  .scroll table{min-width:0;font-size:14px}
+  .scroll table,.scroll tbody,.scroll tr,.scroll td{display:block;width:100%}
+  .scroll tr:first-child{display:none}
+  .scroll tr{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:10px}
+  .scroll td{border:0;padding:4px 0}
+  .scroll td:first-child{font-family:var(--f-display);font-weight:700;font-size:15px;padding-bottom:6px}
+  .scroll td[data-label]:not(:first-child)::before{content:attr(data-label);display:block;font:500 11px/1.4 var(--f-mono);letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+  .pp-field{border-right:0}
+  .stamp{transform:none;font-size:12px}
+  .kpi strong{font-size:22px}
+  .step,.card,.lane{padding:12px}
+  ul.clean li{flex-wrap:wrap}
+}
+</style>
+
+<div class="wrap" lang="en">
+
+<header class="hero">
+  <div class="stack">
+    <span class="eyebrow">Junction 26 · AI review of AI-written code</span>
+    <h1>The Change Passport</h1>
+    <p class="thesis">We stop reading the code: we check a passport. The AI advises with evidence and never approves. A named person signs what they actually checked.</p>
+    <p class="lede">This page sums up the concept, what a passport contains, how it moves through review, what the demo actually proved on branch <span class="mono">ju26-issue-2297</span>, what runs under the hood, and where we stand.</p>
+    <div class="status">
+      <span class="tag t-ok">Concept written</span>
+      <span class="tag t-ok">Reference implementation running</span>
+      <span class="tag t-ok">Real demo on 4 branches</span>
+      <span class="tag t-ok">One-click replay, mutation testing, catching tests: built</span>
+      <span class="tag t-warn">Video / presentation to do</span>
+    </div>
+  </div>
+</header>
+
+<section id="plain-words">
+  <div class="stack">
+    <span class="eyebrow">In plain words</span>
+    <h2>The idea in one minute</h2>
+    <div class="card stack">
+      <p><b>The problem.</b> AI agents now write a lot of code. Humans can't read it all, and when they try, they just click "approve". An AI reviewer helps, but it misses things and sometimes it's wrong with full confidence.</p>
+      <p><b>Our idea.</b> Every change comes with a <b>passport</b>. It says: what was asked, what the agent claims it did, and the proof for each claim. The proof comes from running the code, not from someone's opinion.</p>
+      <p><b>The AI helps, it never approves.</b> It points at problems and it says "I won't decide this" when a choice belongs to a person, like a product or compatibility decision.</p>
+      <p><b>Risk decides how much a human reads.</b> Simple, proven changes: a quick check. Risky changes: the human reads the parts that matter. Broken changes: sent back to the agent.</p>
+      <p><b>A named person signs.</b> Not "I read everything", but "this is what was checked, this is what wasn't, this is the risk I accept". And any proof can be replayed with one click.</p>
+    </div>
+    <div class="card stack">
+      <h3>What happened in our demo</h3>
+      <p>The agent changed <b>237 files</b>. All its tests were green. With our passport, the owner had to read only <b>46 lines</b>, and our proofs found that the change <b>broke some users' builds</b> and <b>removed their own code from coverage</b>. The agent's tests never saw it. The AI reviewer found 4 of the 5 problems. So the owner didn't sign: the change went back to the agent, with the proof.</p>
+    </div>
+    <div class="card stack">
+      <h3>The one sentence to remember</h3>
+      <p><b>"The AI reviews, a human stays accountable, and trust comes from proof you can replay, not from the AI being confident."</b></p>
+    </div>
+  </div>
+</section>
+
+<section id="what-we-built">
+  <div class="stack">
+    <span class="eyebrow">What we built</span>
+    <h2>21 steps, each with its keyword, in plain words</h2>
+    <p class="muted">What each step is, and how we actually do it.</p>
+    <div class="scroll"><table>
+      <tr><th>#</th><th>Keyword</th><th>What it is</th><th>How we do it</th></tr>
+      <tr><td>1</td><td><b>Worktrees (sandbox)</b></td><td>Two separate copies of the code: before the change ("base") and after ("branch"), so we can run and compare both safely.</td><td>One git command creates two folders from the same project. We install .NET in a temporary folder to build them.</td></tr>
+      <tr><td>2</td><td><b>Requirement + acceptance criteria</b></td><td>What the change must do, written as 4 simple rules. Locked: the agent can't change them.</td><td>We read the GitHub issue and write the rules in a small text file (YAML).</td></tr>
+      <tr><td>3</td><td><b>Claims</b></td><td>What the agent says it did, one sentence each.</td><td>We copy them from the agent's README and code comments into the same file.</td></tr>
+      <tr><td>4</td><td><b>Policy</b></td><td>Sorts every changed file into "boring" (generated), "normal" or "sensitive" (public API, build, security). No AI.</td><td>A rules file lists folder patterns per group; a Python script matches each file to its group.</td></tr>
+      <tr><td>5</td><td><b>Mechanical rule</b></td><td>Proves 220 generated files changed only in the expected way, so nobody needs to read them.</td><td>The script checks that every added line in those files is one of the 3 lines the requirement allows.</td></tr>
+      <tr><td>6</td><td><b>Traceability / orphan code</b></td><td>Every piece of changed code must link to a claim. One piece didn't: flagged as "orphan".</td><td>The script looks for words from each claim in each changed block of code; a block with no match is an orphan.</td></tr>
+      <tr><td>7</td><td><b>Acceptance tests</b></td><td>Our own tests, written from the rules, not from the agent's code. They found 2 problems the agent's tests missed.</td><td>We write small C# tests that run the code generator on a fake user project, and run them on both copies.</td></tr>
+      <tr><td>8</td><td><b>End-to-end test (E2E)</b></td><td>A real user project built with the agent's code. It confirmed both problems in real life.</td><td>We build a tiny real project for two targets, then a small program looks inside the result to see what was excluded.</td></tr>
+      <tr><td>9</td><td><b>Mutation testing</b></td><td>We undo each of the agent's 10 changes, one at a time, to see if its tests notice. Only 3 of 10: its tests are weak.</td><td>A script removes one change, runs the tests, puts the change back, and repeats 10 times.</td></tr>
+      <tr><td>10</td><td><b>Catching tests</b></td><td>Extra tests written by another AI from the rules only. One passed before and failed after: it found the build break on its own.</td><td>A script asks the AI to write 8 tests from the rules, runs them on both copies, and keeps the ones whose result differs.</td></tr>
+      <tr><td>11</td><td><b>AI reviewer</b></td><td>A separate AI reads the code and lists problems, quoting the exact lines. Found 4 of 5, missed 1.</td><td>We give it read-only access to the code and the rules, and force its answer into a fixed format with quotes.</td></tr>
+      <tr><td>12</td><td><b>Refusals</b></td><td>Questions the AI must not decide and hands to a human, e.g. "should users' own code be excluded?"</td><td>A fixed list of decision types (API, user-visible behaviour, compatibility…) triggers a refusal automatically.</td></tr>
+      <tr><td>13</td><td><b>Lanes: green / orange / red</b></td><td>How much a human must read, decided by rules. This change was red because it breaks users.</td><td>The script applies ordered rules: any broken rule = red, any sensitive or unproven part = orange, else green.</td></tr>
+      <tr><td>14</td><td><b>Reading contract</b></td><td>Exactly what the human must read: 46 lines instead of 1,392.</td><td>The script keeps only sensitive, orphan and flagged code, and drops what is already proven.</td></tr>
+      <tr><td>15</td><td><b>Replay button</b></td><td>One click re-runs any proof on before and after, side by side, so you see the bug yourself.</td><td>A small local web server runs the test on both copies at the same time and shows both results.</td></tr>
+      <tr><td>16</td><td><b>Attestation (signature)</b></td><td>A named person signs what was checked, what wasn't, and the risk they accept. Here: sent back to the agent.</td><td>A form on the passport page; the person can only sign once every refusal is decided and every required part is ticked.</td></tr>
+      <tr><td>17</td><td><b>Anti-flaky guard</b></td><td>Every test runs 3 times on before and after; if the result changes, it is "unstable" and never counts as proof.</td><td>The scripts repeat each run and compare the 3 results.</td></tr>
+      <tr><td>18</td><td><b>Assertion check</b></td><td>Flags tests that check nothing real: no assertion, trivial, always true, or text only. Caught the agent weakening its own test.</td><td>A script reads each test method and looks for these patterns.</td></tr>
+      <tr><td>19</td><td><b>Test ↔ criterion link</b></td><td>Each test names the rule it covers (AC-3). A rule is "supported" only if a linked test passes.</td><td>The script reads the rule ID in the test name or a comment, then checks that test's result.</td></tr>
+      <tr><td>20</td><td><b>Moved code</b></td><td>Code that was only moved is not counted as new and is removed from the reading list, with the proof.</td><td>The script finds identical blocks deleted in one place and added in another.</td></tr>
+      <tr><td>21</td><td><b>Seeded bugs</b></td><td>8 typical bugs planted to test our own system, plus 1 control (moved code). It now catches all 8 and correctly ignores the move.</td><td>A script adds one bug at a time on a local copy and checks whether the passport flags it.</td></tr>
+    </table></div>
+    <p><b>In one line:</b> we turned "the AI says it's fine" into "here is the proof, replay it yourself, and a named person decides".</p>
+  </div>
+</section>
+
+<section>
+  <div class="stack">
+    <span class="eyebrow">The problem</span>
+    <h2>Reading all the code no longer scales, and an AI's opinion is not enough</h2>
+    <div class="grid">
+      <div class="card"><h3>Review is the bottleneck</h3><p>With agents, review time is up 5× and 31% more PRs ship with no review at all (Faros 2026).</p></div>
+      <div class="card"><h3>Human review was already a rubber stamp</h3><p>At Vercel, more than half of PRs were approved without a single comment, 18% in under 5 minutes.</p></div>
+      <div class="card"><h3>AI reviewers plateau</h3><p>50–60% F1 at best on real PRs. And 80% of agent-written tests check very little.</p></div>
+      <div class="card"><h3>Accountability is blurry</h3><p>Meta and Vercel auto-approve some PRs, but don't say who answers when an auto-approved change breaks.</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="stack">
+    <span class="eyebrow">What a passport contains</span>
+    <h2>One document per change, which the owner reads instead of the diff</h2>
+    <p class="muted">Real example, generated by the factory on branch 2297.</p>
+    <div class="passport">
+      <div class="pp-head">
+        <div><b class="mono">REQ-2297</b> · Add ExcludeFromCodeCoverage attribute to generated code<br><span class="muted" style="font-size:13px">Named owner: Camille Durand (synthetic), CODEOWNER of the source generator</span></div>
+        <span class="stamp">RED LANE · DO NOT SIGN AS IS</span>
+      </div>
+      <div class="pp-body">
+        <div class="pp-field"><b>Requirement and locked criteria</b><p>4 criteria written by a human before review. The agent cannot change them. Here: 2 supported, 2 contradicted.</p></div>
+        <div class="pp-field"><b>Agent's claims</b><p>What the agent says it did, one line each. C1 proven, C2 contradicted, C3 unproven, C4 proven but weak.</p></div>
+        <div class="pp-field"><b>Independent evidence</b><p>Mechanical rule, acceptance tests written from the criteria, end-to-end test on a real user project, reference-assembly check, mutation testing, catching tests.</p></div>
+        <div class="pp-field"><b>AI findings, verified</b><p>Each finding quotes the diff and gets a status after being checked against evidence. What the AI missed is shown too.</p></div>
+        <div class="pp-field"><b>What the AI refused to decide</b><p>5 questions sent back to a human, with the reason and who decides.</p></div>
+        <div class="pp-field"><b>Lane and reasons</b><p>Computed by written rules. Every reason is readable; no opaque score.</p></div>
+        <div class="pp-field"><b>Reading contract</b><p>What the owner must read personally: 9 files, 46 lines out of 1,392.</p></div>
+        <div class="pp-field"><b>Attestation</b><p>Checked and by whom or what, not checked and why, decisions taken, residual risk accepted, name and date.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="stack">
+    <span class="eyebrow">How it flows</span>
+    <h2>A change's path, from the agent to the signature</h2>
+    <div class="flow">
+      <div class="step"><h3>Declaration</h3><p>Requirement ID, locked criteria, agent's claims.</p></div>
+      <div class="step"><h3>Split by policy</h3><p>Versioned rules file: mechanical, ordinary and sensitive zones. No AI.</p></div>
+      <div class="step"><h3>Evidence</h3><p>Fails before / passes after, mechanical rules, test strength, traceability, sandboxed end-to-end execution.</p></div>
+      <div class="step"><h3>AI review</h3><p>Different model family, full repo, mandatory quotes, closed grid, refutation before posting.</p></div>
+      <div class="step"><h3>Refusal register</h3><p>Public API, user-visible behaviour, compatibility, security risk, unproven claims.</p></div>
+      <div class="step"><h3>Lane</h3><p>Deterministic verdict engine + per-zone trust register. The AI can only raise the risk.</p></div>
+      <div class="step"><h3>Signature</h3><p>Questions before seeing the AI's view, required reading, refusals decided, signed attestation. The owner merges.</p></div>
+      <div class="step"><h3>Measurement</h3><p>Reverts and incidents per lane and zone, random counter-review, canary bugs, circuit breakers.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="under-the-hood">
+  <div class="stack">
+    <span class="eyebrow">Under the hood</span>
+    <h2>What is used, step by step, in the demo</h2>
+    <p class="muted">Each step shows what actually runs and its nature: <span class="tag t-acc">rule</span> deterministic code, <span class="tag">execution</span> the agent's code is compiled and run, <span class="tag t-warn">LLM</span> a language model, <span class="tag t-ok">human</span> a human decision (played by us in the demo). Everything runs locally; nothing is pushed to a remote repository.</p>
+    <div class="scroll"><table>
+      <tr><th>Step</th><th>What runs</th><th>Nature</th><th>Input → output</th></tr>
+      <tr><td>0 · Environment</td><td><span class="mono">git clone</span> of the challenge repo, then two separate <span class="mono">git worktree</span>s: base <span class="mono">32258fdb</span> and the agent's branch. .NET SDK 8.0.402 installed in a temp folder with <span class="mono">dotnet-install.sh</span>, local NuGet cache.</td><td><span class="tag">execution</span></td><td>Repo → two isolated copies ready to build</td></tr>
+      <tr><td>1 · Requirement</td><td><span class="mono">requirements/REQ-2297.yaml</span>: 4 acceptance criteria, agent's claims taken from its README and comments, expected mechanical rule, coverage rule.</td><td><span class="tag t-ok">human</span></td><td>Issue #2297 → locked criteria</td></tr>
+      <tr><td>2 · Split</td><td><span class="mono">passport.py</span> (Python) reads <span class="mono">git diff -U0</span> and classifies each file using the patterns in <span class="mono">review-policy.yaml</span>.</td><td><span class="tag t-acc">rule</span></td><td>237 files → mechanical, sensitive, derived, tests, docs zones</td></tr>
+      <tr><td>3 · Automatic checks</td><td><span class="mono">passport.py</span>: mechanical rule on snapshots (regexes derived from the requirement), coverage rule on every generated type, hunk → claim traceability, removed-assertion detection.</td><td><span class="tag t-acc">rule</span></td><td>Diff → 220 files proven, 2 flagged, 1 orphan hunk</td></tr>
+      <tr><td>4 · Existing tests</td><td><span class="mono">dotnet test</span> on <span class="mono">MessagePack.SourceGenerator.Tests</span> (169 tests), and the agent's tests copied onto the base to check "fails before, passes after".</td><td><span class="tag">execution</span></td><td>Branch → 169/169; agent tests fail on base</td></tr>
+      <tr><td>5 · Acceptance tests</td><td><span class="mono">PassportAcceptanceTests.cs</span>: 2 hand-written xUnit tests derived from the criteria. They use Roslyn to run the generator on user code, then read compile errors and attributes.</td><td><span class="tag">execution</span></td><td>Base and branch → E3 (CS0579), E4 (user code excluded)</td></tr>
+      <tr><td>6 · .NET references</td><td>Search for the <span class="mono">ExcludeFromCodeCoverageAttribute</span> type in <span class="mono">netstandard.dll</span> (2.0.3) and <span class="mono">System.dll</span> (.NET Framework 4.7.2) with <span class="mono">strings</span>.</td><td><span class="tag t-acc">rule</span></td><td>→ E5: the attribute exists, the agent's premise is false</td></tr>
+      <tr><td>7 · End to end</td><td>A real consumer project, <span class="mono">Consumer.csproj</span>, built for net8.0 and netstandard2.0 with the branch's generator (compiler pinned to 4.12). A small .NET program (<span class="mono">Runner</span>) inspects the assembly by reflection.</td><td><span class="tag">execution</span></td><td>User project → E8: which types are excluded, per target</td></tr>
+      <tr><td>8 · Mutation testing</td><td><span class="mono">mutate.py</span>: for each of the 10 compiled-code hunks, <span class="mono">git apply -R</span> reverts that hunk only, then <span class="mono">dotnet test</span> (agent's tests, then the full suite).</td><td><span class="tag">execution</span></td><td>10 mutants → 3 caught by the agent's tests, 10 by the suite</td></tr>
+      <tr><td>9 · Catching tests</td><td><span class="mono">catching.py</span>: generates 8 xUnit scenarios with <span class="mono">claude -p --model sonnet</span> (no tools, from the criteria), then <span class="mono">dotnet test</span> on base and branch in parallel, classified by rule.</td><td><span class="tag t-warn">LLM</span> <span class="tag">execution</span></td><td>Criteria → 1 catch, 4 to review, 3 no difference</td></tr>
+      <tr><td>10 · AI review</td><td>A Claude Sonnet agent reads the repo (<span class="mono">git show</span>, search) read-only, without executing anything and without seeing our evidence. Enforced JSON output: diff quotes, closed grid, refusals.</td><td><span class="tag t-warn">LLM</span></td><td>Diff + criteria → 4 findings, 3 refusals</td></tr>
+      <tr><td>11 · Finding verification</td><td>Each AI finding is checked against executed evidence (<span class="mono">ai/2297-verification.json</span>). In the demo this is done by us, not by a separate refuter model.</td><td><span class="tag t-ok">human</span></td><td>4 findings → 4 confirmed, 1 issue missed by the AI</td></tr>
+      <tr><td>12 · Refusals and lane</td><td><span class="mono">passport.py</span>: refusals raised by policy, evidence and the AI; then a verdict engine of ordered rules (red, orange, green) and the reading contract.</td><td><span class="tag t-acc">rule</span></td><td>All of the above → red lane, 5 refusals, 46 lines to read</td></tr>
+      <tr><td>13 · Passport page</td><td><span class="mono">render.py</span> generates a standalone HTML page. <span class="mono">server.py</span> (Python server, 127.0.0.1 only) serves it and adds the "Replay" button.</td><td><span class="tag t-acc">rule</span></td><td>Passport JSON → page the owner can read</td></tr>
+      <tr><td>14 · Replay</td><td><span class="mono">replay.py</span>: copies the (editable) scenario into both worktrees, runs <span class="mono">dotnet test</span> or the end-to-end build on base and branch in parallel, compares. Every replay is logged.</td><td><span class="tag">execution</span></td><td>1 click → side-by-side result in 10–25 s</td></tr>
+      <tr><td>15 · Signature</td><td>Page form: questions before the AI's view, refusals to decide, reading contract to tick, residual risk, name → JSON attestation. The signed example is written by us for a fictional person.</td><td><span class="tag t-ok">human</span></td><td>Passport → attestation: sent back to the agent</td></tr>
+      <tr><td>16 · Seeded bugs</td><td><span class="mono">seed_bugs.py</span>: 8 typical defects plus 1 control (code only moved) applied on local git branches, then the passport is recomputed (without re-running .NET tests).</td><td><span class="tag t-acc">rule</span></td><td>9 seeds → 8 of 8 bugs flagged + moved-code control passed</td></tr>
+    </table></div>
+    <div class="card stack">
+      <h3>Where the demo differs from the target concept</h3>
+      <ul class="clean">
+        <li><span class="tag t-warn">Isolation</span><span>The "sandboxes" are git worktrees, not containers: network open for NuGet, running as the local user.</span></li>
+        <li><span class="tag t-warn">Independence</span><span>AI review and catching-test generation use Claude Sonnet; the authoring agent's model family is unknown.</span></li>
+        <li><span class="tag t-warn">Refutation</span><span>AI findings are verified by us from the evidence, not by a second refuter model.</span></li>
+        <li><span class="tag t-warn">Human</span><span>Criteria, decisions and the signature are played by us, for fictional people.</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="stack">
+    <span class="eyebrow">Review depth follows risk</span>
+    <h2>Three lanes, with a human signature in each</h2>
+    <div class="lanes">
+      <div class="lane g"><h3>Green</h3><p><b>When:</b> mechanical or ordinary code in a trusted zone, everything proven, no refusal.</p><p><b>Human:</b> light check of the summary, 1–2 minutes, signed. 10% are drawn at random for a full re-review.</p></div>
+      <div class="lane o"><h3>Orange</h3><p><b>When:</b> sensitive zone, unproven claim, orphan code, zone not yet trusted.</p><p><b>Human:</b> upfront questions, required reading, refusals decided, signature.</p></div>
+      <div class="lane r"><h3>Red</h3><p><b>When:</b> a criterion contradicted by evidence, public API, major refusal, change too large.</p><p><b>Human:</b> send back to the agent with the evidence, or full read and a written decision.</p></div>
+    </div>
+    <p class="muted">Trust is earned zone by zone: 60 days without reverts or incidents and at least 90% agreement in counter-review. An incident linked to a passport suspends the zone.</p>
+  </div>
+</section>
+
+<section>
+  <div class="two">
+    <div class="stack">
+      <span class="eyebrow">Who does what</span>
+      <h2>Roles</h2>
+      <ul class="clean">
+        <li><span class="tag">Agent</span><span>Writes the change and declares its claims.</span></li>
+        <li><span class="tag">Factory</span><span>Splits, proves, reviews, refuses, routes. Never approves, no merge rights.</span></li>
+        <li><span class="tag t-acc">Owner</span><span>Named person for the touched zone. Decides refusals, signs, merges, stays accountable in production.</span></li>
+        <li><span class="tag">Guardian</span><span>Owns the policy and the trust register, reviews the metrics weekly.</span></li>
+      </ul>
+    </div>
+    <div class="stack">
+      <span class="eyebrow">Not accepted</span>
+      <h2>Red lines</h2>
+      <ul class="clean">
+        <li><span class="tag t-bad">No</span><span>"The AI said it was fine."</span></li>
+        <li><span class="tag t-bad">No</span><span>A merge without a named owner.</span></li>
+        <li><span class="tag t-bad">No</span><span>Confidence without evidence, or a risk score nobody can explain.</span></li>
+        <li><span class="tag t-bad">No</span><span>A green end-to-end test presented as "the feature is done right": it only proves the criteria it covers.</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="stack">
+    <span class="eyebrow">Principles</span>
+    <h2>Eight rules that balance risk, hallucination, transparency and confidence</h2>
+    <div class="scroll"><table>
+      <tr><th>Principle</th><th>What it means</th><th>Guards against</th></tr>
+      <tr><td>Requirement first</td><td>Nothing enters without an ID and locked criteria</td><td>Agent drift, weakened spec</td></tr>
+      <tr><td>Evidence, not confidence</td><td>Every claim carries typed evidence; the strongest is end-to-end execution against criteria signed beforehand</td><td>Hallucination, tautological tests</td></tr>
+      <tr><td>Independence</td><td>Reviewer from another model family; evidence derived from the criteria, not from the agent's tests</td><td>Self-preference bias</td></tr>
+      <tr><td>Rules decide the lane</td><td>The LLM can raise the risk, never lower it</td><td>Opaque scores</td></tr>
+      <tr><td>Depth follows risk</td><td>Light green, targeted orange, full red</td><td>Uniform review that turns into a rubber stamp</td></tr>
+      <tr><td>Refusing is normal</td><td>Refusal register with reason and owner</td><td>An AI deciding what isn't its call</td></tr>
+      <tr><td>Trust per zone</td><td>Earned through track record, withdrawn after an incident</td><td>Unearned global trust</td></tr>
+      <tr><td>The factory secures itself</td><td>PR content is untrusted input; reviewer is read-only, with no secrets</td><td>Prompt injection, CI secret theft</td></tr>
+    </table></div>
+  </div>
+</section>
+
+<section>
+  <div class="stack">
+    <span class="eyebrow">Real demo · ju26-issue-2297</span>
+    <h2>The agent's tests were green. The change broke users.</h2>
+    <p class="lede">The agent changed 237 files. Its 169 tests passed and its 2 new tests did fail before the change. Based on its own evidence alone, we would have signed.</p>
+    <div class="kpis">
+      <div class="kpi"><strong class="num">9 / 237</strong><span>files to read</span><div class="bar"><i style="width:3.8%"></i></div></div>
+      <div class="kpi"><strong class="num">46 / 1,392</strong><span>lines to read (3%)</span><div class="bar"><i style="width:3%"></i></div></div>
+      <div class="kpi"><strong class="num">220</strong><span>files proven by a rule, unread</span></div>
+      <div class="kpi"><strong class="num">5</strong><span>decisions the AI refused to make</span></div>
+    </div>
+    <div class="scroll"><table>
+      <tr><th>Evidence</th><th>What it shows</th><th>Status</th></tr>
+      <tr><td class="mono">Mechanical rule</td><td>220 snapshots conform; 2 flagged, tracing back to a change the agent didn't declare</td><td><span class="tag t-ok">proven</span></td></tr>
+      <tr><td class="mono">E3 · independent test</td><td>A user who already had the attribute on their resolver no longer compiles (CS0579)</td><td><span class="tag t-bad">regression</span></td></tr>
+      <tr><td class="mono">E5 · references</td><td>The attribute exists on netstandard2.0 and .NET Framework: the agent's premise is false</td><td><span class="tag t-bad">contradicted</span></td></tr>
+      <tr><td class="mono">E8 · end to end</td><td>Real user project: on net8.0 the user's business rule drops out of coverage; on netstandard2.0 the feature is missing</td><td><span class="tag t-bad">regression</span></td></tr>
+      <tr><td class="mono">E9 · mutation</td><td>The agent's tests notice only 3 of its 10 changes</td><td><span class="tag t-warn">weak</span></td></tr>
+      <tr><td class="mono">E10 · catching</td><td>A test generated from the criteria rediscovers CS0579 on its own, stable over 3 runs per side</td><td><span class="tag t-bad">regression</span></td></tr>
+      <tr><td class="mono">Test quality</td><td>No criterion is backed by a passing linked test; the agent's main test only checks text and links to no criterion</td><td><span class="tag t-warn">weak</span></td></tr>
+    </table></div>
+    <div class="two">
+      <div class="card stack"><h3>What the AI found</h3><p>4 findings, all confirmed by evidence. Only one misjudged: the compile break, rated "low" with 0.4 confidence.</p><p><b>What it missed:</b> user code being excluded from coverage. It even stated that this was fine.</p></div>
+      <div class="card stack"><h3>What it refused to decide</h3><p>Exclude user-written code? Ship to netstandard2.0 consumers? Add a setting? Accept the docs without evidence? Is a nested class excluded only through its parent enough?</p><p><b>Owner's decision:</b> sent back to the agent with evidence E3, E5, E8 and written decisions.</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="stack">
+    <span class="eyebrow">Measurement</span>
+    <h2>What we measured, and what we can't measure yet</h2>
+    <div class="scroll"><table>
+      <tr><th>Judges' question</th><th>In the demo</th><th>In production</th></tr>
+      <tr><td>Share routed to humans</td><td class="num">2297: 3% of lines to read. 2283, 2234, 2129: 100%, because the agent declared no claims</td><td>Green / orange / red split, lines read per lane</td></tr>
+      <tr><td>Are AI findings real?</td><td class="num">4 of 4 confirmed; 4 of 5 issues found</td><td>"Incorrect?" button, share of findings followed by a fix</td></tr>
+      <tr><td>What does the factory miss?</td><td class="num">8 seeded bugs: 8 flagged (the agent weakening its own test is now caught by the tautology check); moved-code control excluded correctly</td><td>Canary bugs injected continuously</td></tr>
+      <tr><td>Are the tests strong?</td><td class="num">Mutation: the agent's tests notice 3 of its 10 changes; the full suite, 10 of 10. Static check: the agent's main test only checks text</td><td>Mutation score per zone; an unnoticed change goes orange</td></tr>
+      <tr><td>Are results stable?</td><td class="num">Every test runs 3 times per side: 0 of 8 catching tests unstable</td><td>Unstable result = never counted as proof</td></tr>
+      <tr><td>Catching tests</td><td class="num">8 scenarios generated from the criteria: 1 catch (CS0579, rediscovered alone), 4 to review incl. 1 invalid test and 1 new question, 3 no difference</td><td>Catch precision tracked (Meta: 60%)</td></tr>
+      <tr><td>Reverts and incidents</td><td>No production history</td><td>Per lane and zone, linked to the passport, random counter-review of 10% of greens</td></tr>
+      <tr><td>Time to merge</td><td>To be timed during the live demo</td><td>Median and 75th percentile per lane</td></tr>
+    </table></div>
+  </div>
+</section>
+
+<section>
+  <div class="stack">
+    <span class="eyebrow">Where we stand</span>
+    <h2>Challenge deliverables</h2>
+    <div class="scroll"><table>
+      <tr><th>Deliverable</th><th>Status</th><th>Where</th></tr>
+      <tr><td>Concept card</td><td><span class="tag t-ok">done</span></td><td class="mono">concept.md</td></tr>
+      <tr><td>Reference implementation</td><td><span class="tag t-ok">done</span></td><td class="mono">factory/ (policy, passport, verdict, rendering, seeded bugs, E2E)</td></tr>
+      <tr><td>Demo on a real change with its ID</td><td><span class="tag t-ok">done</span></td><td class="mono">factory/out/REQ-2297.html</td></tr>
+      <tr><td>What the AI found, refused, and why</td><td><span class="tag t-ok">done</span></td><td class="mono">passport, sections 4 and 5</td></tr>
+      <tr><td>Failure modes and decision log</td><td><span class="tag t-ok">done</span></td><td class="mono">lessons-log.md (24 decisions, 21 failure modes)</td></tr>
+      <tr><td>Priority 1: anti-flaky guard, assertion strength, test ↔ criterion links, moved-code detection, risk-sorted reading contract</td><td><span class="tag t-ok">done</span></td><td class="mono">test_quality.py, passport.py, catching.py, replay.py</td></tr>
+      <tr><td>Measurements</td><td><span class="tag t-ok">done</span></td><td class="mono">measurements.md</td></tr>
+      <tr><td>Walkthrough script</td><td><span class="tag t-ok">done</span></td><td class="mono">walkthrough.md</td></tr>
+      <tr><td>One-click evidence replay</td><td><span class="tag t-ok">done</span></td><td class="mono">factory/replay.py, server.py</td></tr>
+      <tr><td>Diff-scoped mutation testing</td><td><span class="tag t-ok">done</span></td><td class="mono">factory/mutate.py</td></tr>
+      <tr><td>Catching tests generated from the criteria</td><td><span class="tag t-ok">done</span></td><td class="mono">factory/catching.py</td></tr>
+      <tr><td>Video or presentation</td><td><span class="tag t-warn">to do</span></td><td>plan ready in walkthrough.md</td></tr>
+    </table></div>
+    <div class="card stack">
+      <h3>Limits to tell the judges</h3>
+      <ul class="clean">
+        <li><span class="tag t-warn">Isolation</span><span>In the demo, the "sandbox" is an isolated git worktree: network open for packages, running as the local user. The concept describes a disposable container with no network and no secrets.</span></li>
+        <li><span class="tag t-warn">Criteria</span><span>We wrote the acceptance criteria after seeing the change. In production, they are signed beforehand.</span></li>
+        <li><span class="tag t-warn">Statistics</span><span>One change analysed in depth and 8 seeded bugs written knowing the rules: an illustration, not statistical proof.</span></li>
+        <li><span class="tag t-warn">Independence</span><span>The AI reviewer is a Claude model; the authoring agent's model family is unknown.</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="features">
+  <div class="stack">
+    <span class="eyebrow">What's next</span>
+    <h2>Features to add</h2>
+    <p class="muted">Research from 14/11/2026, ranked by impact on the judging criteria and feasibility in a demo. Every idea keeps a named human accountable.</p>
+    <div class="grid">
+      <div class="card stack"><span class="tag t-ok">1 · built</span><h3>Replay every piece of evidence in one click</h3><p>A button re-runs the scenario on base and branch, side by side: "before: compiles, after: CS0579". The owner can edit a line of the scenario to explore, and the replay is recorded in the attestation.</p><p class="muted">Like Replay.io's "rerecording" (same interactions replayed before / after). An AI finding without a replayable scenario stays an opinion.</p><span class="tag">Effort: medium</span></div>
+      <div class="card stack"><span class="tag t-ok">2 · built</span><h3>"Catching" tests generated from the criteria</h3><p>An LLM writes tests that pass on base and fail on the branch, making the behaviour change visible. Our E3 and E4 are exactly that, written by hand.</p><p class="muted">Meta JiTTests (FSE 2026, Oct. 2026): 74 serious bugs caught before merge, −20% incidents, 60% true positives.</p><span class="tag">Effort: medium</span></div>
+      <div class="card stack"><span class="tag t-ok">3 · built</span><h3>Mutation testing on changed lines</h3><p>Small mutations are injected into the changed code: if tests don't detect them, they are weak and the lane goes orange. This targets the only seeded bug the factory missed (S8).</p><p class="muted">Google "Practical Mutation Testing at Scale"; Meta ACH.</p><span class="tag">Effort: low to medium</span></div>
+      <div class="card stack"><span class="tag t-acc">4</span><h3>Signature bound to the exact commit</h3><p>Each explanation points to a precise diff range, and the signature is invalidated if a commit arrives after review: you can't sign a version other than the one you reviewed.</p><p class="muted">CodeRabbit Change Stack (Sept. 2026), Devin Review (Jan. 2026).</p><span class="tag">Effort: low</span></div>
+      <div class="card stack"><span class="tag t-acc">5</span><h3>Post-merge tracking</h3><p>Progressive rollout behind a flag, automatic rollback if a metric degrades, and every incident linked to the passport and the person who signed. This feeds the per-zone trust register.</p><p class="muted">LaunchDarkly Guarded Rollouts; Hud (per-function sensor, 2026). In the demo: mock-up.</p><span class="tag">Effort: medium</span></div>
+    </div>
+    <h3 style="margin-top:8px">Other options</h3>
+    <div class="scroll"><table>
+      <tr><th>Feature</th><th>What it adds</th><th>Who does it</th><th>Effort</th></tr>
+      <tr><td>Session provenance linked to the commit</td><td>Prompts, tools and line-by-line attribution (agent or human) attached to the commit</td><td>Entire Checkpoints; open Agent Trace spec (Cursor, backed by Cognition, Vercel, Cloudflare)</td><td>Low</td></tr>
+      <tr><td>Blast radius</td><td>Small / medium / large label based on scope, list of affected callers, input to lane rules</td><td>Qodo (Sept. 2026)</td><td>Medium</td></tr>
+      <tr><td>API contract diff</td><td>Breaking change detected mechanically, automatic red lane</td><td>oasdiff; for .NET, the PublicAPI analyzers already in the repo</td><td>Low</td></tr>
+      <tr><td>Visual regression</td><td>Base / branch screenshots for frontend, readable by a non-specialist</td><td>Chromatic (Apr. 2026), Argos</td><td>Low</td></tr>
+      <tr><td>Agent's open questions</td><td>The agent declares its confidence and its doubts; doubts go into the refusal register</td><td>Devin 2.1 (green = 2× more merged PRs than red)</td><td>Low</td></tr>
+      <tr><td>AI reviewer calibration dashboard</td><td>Share of real AI findings, by severity and zone</td><td>CodeRabbit, Greptile Analytics</td><td>Low</td></tr>
+      <tr><td>Deterministic simulation</td><td>Exact replay of an intermittent bug (time, network, scheduling)</td><td>Antithesis</td><td>High</td></tr>
+    </table></div>
+    <p class="muted">Already in the concept: questions before seeing the AI's view (cognitive forcing, Buçinca 2021), canary bugs, random counter-review. The research found no product that practises canary bugs or random counter-review: this is where the concept goes further than the market.</p>
+  </div>
+</section>
+
+<section>
+  <div class="stack">
+    <span class="eyebrow">Judges' questions</span>
+    <h2>Our answers</h2>
+    <div class="grid">
+      <div class="card"><h3>What would make you not trust your own output?</h3><p>A canary bug passing green, a revert linked to a green passport, counter-review agreement below 90%, signatures faster than the required reading time, an AI that never refuses anything.</p></div>
+      <div class="card"><h3>Who owns the decision?</h3><p>The CODEOWNER of the touched zone. They sign and they merge. The AI has no approval rights.</p></div>
+      <div class="card"><h3>How would this scale?</h3><p>AI cost bounded per lane, reading proportional to risk, trust earned zone by zone, counter-review at 10% whatever the volume.</p></div>
+    </div>
+  </div>
+</section>
+
+<script>
+// Copy each column header into its cells so stacked tables stay readable on phones.
+document.querySelectorAll('.scroll table').forEach(t=>{
+  const heads=[...t.querySelectorAll('tr:first-child th')].map(th=>th.textContent.trim());
+  t.querySelectorAll('tr').forEach((tr,i)=>{ if(i===0) return; [...tr.children].forEach((td,j)=>{ if(heads[j]) td.setAttribute('data-label',heads[j]); }); });
+});
+</script>
+<footer>Public challenge data, fictional people. Nothing was published to a remote repository. Detailed sources: research-report.md and self-approval-2026.md.</footer>
+</div>

@@ -1,0 +1,80 @@
+{
+  "seeds": 8,
+  "flagged": 8,
+  "routed_to_reading": 0,
+  "missed": 0,
+  "results": [
+    {
+      "id": "S1",
+      "what": "Behaviour change hidden in a regenerated snapshot",
+      "status": "flagged",
+      "how": "mechanical rule / orphan / weakened or tautological test, regeneration failing",
+      "lane": "ORANGE",
+      "lines_to_read": 1258
+    },
+    {
+      "id": "S2",
+      "what": "The agent “forgets” a template (Enum) and regenerates the snapshots to match",
+      "status": "flagged",
+      "how": "regeneration failing",
+      "lane": "ORANGE",
+      "lines_to_read": 1226
+    },
+    {
+      "id": "S3",
+      "what": "Unrequested change in the runtime",
+      "status": "flagged",
+      "how": "mechanical rule / orphan / weakened or tautological test",
+      "lane": "ORANGE",
+      "lines_to_read": 48
+    },
+    {
+      "id": "S4",
+      "what": "Assertion removed from an existing test",
+      "status": "flagged",
+      "how": "mechanical rule / orphan / weakened or tautological test",
+      "lane": "ORANGE",
+      "lines_to_read": 48
+    },
+    {
+      "id": "S5",
+      "what": "Silent addition to the public API",
+      "status": "flagged",
+      "how": "mechanical rule / orphan / weakened or tautological test, major zone → RED",
+      "lane": "RED",
+      "lines_to_read": 47
+    },
+    {
+      "id": "S6",
+      "what": "Build change (props) slipped into the change",
+      "status": "flagged",
+      "how": "mechanical rule / orphan / weakened or tautological test",
+      "lane": "ORANGE",
+      "lines_to_read": 47
+    },
+    {
+      "id": "S7",
+      "what": "Logic change in a template (.tt) unrelated to the requirement",
+      "status": "flagged",
+      "how": "mechanical rule / orphan / weakened or tautological test",
+      "lane": "ORANGE",
+      "lines_to_read": 48
+    },
+    {
+      "id": "S8",
+      "what": "The agent weakens its own new test",
+      "status": "flagged",
+      "how": "mechanical rule / orphan / weakened or tautological test",
+      "lane": "ORANGE",
+      "lines_to_read": 46
+    },
+    {
+      "id": "S9",
+      "what": "CONTROL: method merely moved within the runtime (not a bug)",
+      "status": "control OK: excluded as a move",
+      "how": "src/MessagePack/MessagePackWriter.cs -867 +860,8 ← src/MessagePack/MessagePackWriter.cs -83,7 +82,0",
+      "lane": "ORANGE",
+      "lines_to_read": 46
+    }
+  ]
+}

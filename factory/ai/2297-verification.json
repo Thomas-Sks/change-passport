@@ -1,0 +1,13 @@
+{"method":"Each AI finding is checked against executed or mechanical evidence (verification step before publication). Nothing is shown to the owner without this status.",
+"verdicts":[
+{"finding":"F1","status":"confirmed","evidence":["E5"],"note":"Attribute present in netstandard.dll (2.0.3) and System.dll (net472). Small factual error by the AI: it placed it in mscorlib."},
+{"finding":"F2","status":"confirmed (justified)","evidence":["MECH-1"],"note":"Necessary change: an #if must start a line. Only one snapshot affected (HasPrivateSerializedMemberAndIsGenericNamed). Not declared by the agent → orphan."},
+{"finding":"F3","status":"confirmed","evidence":["E7"],"note":"The test also encodes C2's false premise as expected behaviour."},
+{"finding":"F4","status":"confirmed — severity underestimated","evidence":["E3"],"note":"CS0579 reproduced: compilation regression for these users. The AI had rated it low / confidence 0.4."}
+],
+"missed_by_ai":[
+{"id":"M1","what":"Code written by hand in a user's partial resolver is excluded from coverage","evidence":["E4"],"note":"The AI even stated: “[ExcludeFromCodeCoverage] on a partial class is fine”."}
+],
+"refusals_resolved_by_evidence":[
+{"refusal":"AI-R3","resolution":"Settled by the mechanical rule: 221/222 snapshots compliant, 1 flagged and explained (MECH-1)."}
+]}

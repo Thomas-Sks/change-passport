@@ -1,0 +1,37 @@
+id: REQ-2297
+title: Add ExcludeFromCodeCoverage attribute to generated code
+source: https://github.com/MessagePack-CSharp/MessagePack-CSharp/issues/2297
+branch: ju26-issue-2297
+base: 32258fdb
+owner: "Camille Durand (synthetic) — CODEOWNER src/MessagePack.SourceGenerator"
+policy_guardian: "Sam Leroy (synthetic) — tech lead"
+
+# Written and locked by a human before review. The agent cannot edit this section.
+acceptance_criteria:
+  - id: AC-1
+    text: Every type emitted by the source generator carries [ExcludeFromCodeCoverage].
+  - id: AC-2
+    text: The feature applies to every consumer target where the attribute exists.
+  - id: AC-3
+    text: Generated code still compiles for every existing valid user project.
+  - id: AC-4
+    text: Serialization behaviour is unchanged.
+
+# Claims made by the authoring agent (taken from its README text and test comments).
+claims:
+  - id: C1
+    text: All generated formatters and resolvers are decorated with [ExcludeFromCodeCoverage].
+    criteria: [AC-1]
+    trace_patterns: ['ExcludeFromCodeCoverage', '#if !NETSTANDARD2_0 && !NETFRAMEWORK', '^#endif$']
+  - id: C2
+    text: The attribute is only emitted for targets where it is available (not netstandard2.0 or .NET Framework).
+    criteria: [AC-2]
+    trace_patterns: ['NETSTANDARD2_0']
+  - id: C3
+    text: Documentation describes the new behaviour.
+    criteria: []
+    trace_files: ['README.md']
+  - id: C4
+    text: Tests verify that every generated type is excluded and that the attribute is guarded.
+    criteria: [AC-1]
+    trace_files: ['tests/MessagePack.SourceGenerator.Tests/CodeCoverageExclusionTests.cs']

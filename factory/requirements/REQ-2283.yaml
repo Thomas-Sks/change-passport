@@ -1,0 +1,37 @@
+id: REQ-2283
+title: "Generator and analyzer crash with IndexOutOfRangeException on a closed generic struct from a referenced assembly"
+source: https://github.com/MessagePack-CSharp/MessagePack-CSharp/issues/2283
+branch: ju26-issue-2283
+base: 32258fdb
+owner: "Camille Durand (synthetic) — CODEOWNER src/MessagePack.SourceGenerator"
+policy_guardian: "Sam Leroy (synthetic) — tech lead"
+
+# Written from the ISSUE TEXT ONLY, before reading the agent's fix (14/11/2026). Locked.
+acceptance_criteria:
+  - id: AC-1
+    text: "Neither the generator (CS8785) nor the analyzer (AD0001) crashes when a [MessagePackObject] type has a member whose type is a closed generic value type (struct or record struct) declared in a referenced assembly."
+  - id: AC-2
+    text: "In that case, the consuming assembly gets a generated resolver that provides a formatter for the type."
+  - id: AC-3
+    text: "At runtime, such a type round-trips (serialize then deserialize) with the generated resolver."
+  - id: AC-4
+    text: "Cases that already worked (non-generic struct, generic class, generic struct declared in the same assembly) keep working."
+
+# Claims: taken from the agent's README / doc after the criteria were locked.
+claims:
+  - id: C1
+    text: "Closed generic types from a referenced assembly, including generic value types and record structs, can be used as members of [MessagePackObject] types."
+    criteria: [AC-1, AC-2, AC-3]
+    trace_patterns: ['DeclaringSyntaxReferences', 'GetPropertyIdentifierLocation']
+  - id: C2
+    text: "Diagnostics about members of such a type are reported by the defining assembly, not by the consuming project (the analyzer only reports on members declared in the project being compiled)."
+    criteria: [AC-4]
+    trace_patterns: ['ReportIfLocatedInCompilation', 'reportAnalyzerDiagnostic', 'IsInSource']
+  - id: C3
+    text: "Documentation describes the new behaviour."
+    criteria: []
+    trace_files: ['README.md', 'doc/analyzers/MsgPack004.md']
+  - id: C4
+    text: "Tests cover closed generic structs and record structs from a metadata reference."
+    criteria: [AC-1]
+    trace_files: ['tests/MessagePack.SourceGenerator.Tests/GenericsFormatterTests.cs']
